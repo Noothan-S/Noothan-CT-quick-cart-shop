@@ -4,7 +4,7 @@ import config from '../app/config';
 
 async function hashedPassword(plainPassword: string): Promise<string> {
     try {
-        const hash = await bcrypt.hash(plainPassword, config.bcrypt_salt_round as string);
+        const hash = await bcrypt.hash(plainPassword, Number(config.bcrypt_salt_round));
         return hash;
 
     } catch (error) {

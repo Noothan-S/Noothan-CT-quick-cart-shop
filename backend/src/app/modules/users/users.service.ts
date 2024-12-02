@@ -19,5 +19,9 @@ async function createUserIntoDb(payload: any) {
 
 export const UserServices = {
     createUserIntoDb
+};
+
+async function updateProfile(payload) {
+
 }
 

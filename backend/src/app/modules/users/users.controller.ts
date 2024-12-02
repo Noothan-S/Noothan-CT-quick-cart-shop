@@ -8,7 +8,7 @@ const createUser = catchAsync(async function (req: Request, res: Response) {
 
     sendResponse(res, {
         data: result,
-        message: 'User Created Successfully',
+        message: `User Created Successfully as ${req.body.role || undefined}`,
         statusCode: 201,
         success: true
     })
