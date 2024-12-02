@@ -4,7 +4,7 @@ function globalErrorHandler(error: any, _req: Request, res: Response, _next: Nex
     console.log(error);
     res.status(error.status || 500).json({
         success: false,
-        statusCode: 500,
+        statusCode: error.status || 500,
         message: error.message || 'Something went wrong',
         error
     })
