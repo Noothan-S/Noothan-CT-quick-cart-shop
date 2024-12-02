@@ -1,7 +1,10 @@
+import prisma from "../../constants/prisma_constructor"
+
 
 async function createUserIntoDb(payload: any) {
-    throw new 
-    return 'heloo'
+    const { password, ...othersData } = payload;
+
+    console.log(password);
 }
 
 
