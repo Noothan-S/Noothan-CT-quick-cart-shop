@@ -13,8 +13,30 @@ model User {
   role      UserRole   @default(CUSTOMER)
   status    UserStatus @default(ACTIVE)
   password  String
+  isDeleted Boolean    @default(false)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  profile   Profile?
+
+  @@map("users")
+}
+
+model Profile {
+  id String @id @default(uuid())
+
+  email String @unique
+  user  User   @relation(fields: [email], references: [email])
+
+  firstName String
+  lastName  String
+  phone     String?
+  address   String?
+  img       String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
 }
 
 enum UserStatus {
