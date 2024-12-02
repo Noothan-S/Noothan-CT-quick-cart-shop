@@ -37,7 +37,6 @@ function Auth(role: string) {
                     next();
                 }
             };
-
         });
     };
 };
