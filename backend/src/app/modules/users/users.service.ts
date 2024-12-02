@@ -1,7 +1,8 @@
 import { bcryptOperation } from "../../../utils/bcrypt";
 import prisma from "../../constants/prisma_constructor"
+import { ICreateUser } from "./users.interface";
 
-async function createUserIntoDb(payload: any) {
+async function createUserIntoDb(payload: ICreateUser) {
     const { password, ...othersData } = payload;
     const hashedPassword = await bcryptOperation.hashedPassword(password);
 
@@ -15,13 +16,42 @@ async function createUserIntoDb(payload: any) {
     const { password: _password, ...userWithoutPassword } = result;
 
     return userWithoutPassword;
+};
+
+async function updateProfileIntoDb(payload: any) {
+    const { email, ...othersData } = payload;
+    let result;
+
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email
+        }
+    });
+
+    if (user.role === 'VENDOR') {
+        result = await prisma.vendor.upsert({
+            where: { email },
+            update: { ...othersData },
+            create: { email, ...othersData }
+        });
+
+    } else {
+        result = await prisma.profile.upsert({
+            where: { email },
+            update: { ...othersData },
+            create: { email, ...othersData }
+        });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    return {
+        user: { ...userWithoutPassword },
+        [user.role.toLocaleLowerCase()]: { ...result },
+    }
 }
 
 export const UserServices = {
-    createUserIntoDb
+    createUserIntoDb,
+    updateProfileIntoDb
 };
-
-async function updateProfile(payload) {
-
-}
 

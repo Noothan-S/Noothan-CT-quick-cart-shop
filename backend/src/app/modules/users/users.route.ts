@@ -7,6 +7,10 @@ const router: Router = Router();
 
 router.post('/',
     ValidationRequest(UserValidations.createUserValidationSchema),
-    UserControllers.createUser)
+    UserControllers.createUser);
+
+router.put('/',
+    // ValidationRequest(UserValidations.createUserValidationSchema),
+    UserControllers.updateProfile);
 
 export const UserRoutes = router;
