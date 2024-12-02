@@ -19,7 +19,7 @@ app.get('/', (_: Request, res: Response) => {
 });
 
 // application route
-app.use('/api', router);
+app.use('/api/v1', router);
 
 // global error catcher
 app.use(globalErrorHandler)
@@ -34,7 +34,7 @@ app.all('*', (_: Request, res: Response) => {
 });
 
 server = app.listen(config.port || 5000, () => {
-    console.log(`ChapterChain is listening on port ${config.port || 5000}`);
+    console.log(`QuickCart is listening on port ${config.port || 5000}`);
 });
 
 // async error handle
