@@ -17,6 +17,7 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   profile   Profile?
+  vendor    Vendor?
 
   @@map("users")
 }
@@ -37,6 +38,24 @@ model Profile {
   updatedAt DateTime @updatedAt
 
   @@map("profiles")
+}
+
+model Vendor {
+  id String @id @default(uuid())
+
+  email String @unique
+  user  User   @relation(fields: [email], references: [email])
+
+  name          String
+  phone         String?
+  address       String?
+  logo          String?
+  description   String
+  isBlackListed Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("vendors")
 }
 
 enum UserStatus {
