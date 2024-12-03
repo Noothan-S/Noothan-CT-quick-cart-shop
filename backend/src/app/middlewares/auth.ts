@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import config from "../config";
 
 function Auth(...roles: string[]) {
@@ -17,7 +17,7 @@ function Auth(...roles: string[]) {
 
         const extractToken = authHeader.slice(7);
 
-        jwt.verify(extractToken, config.jwt_secret as string, (err, decoded) => {
+        jwt.verify(extractToken, config.jwt_secret as Secret, (err, decoded) => {
             if (err) {
                 res.status(401).json({
                     success: false,

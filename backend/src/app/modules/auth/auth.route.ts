@@ -12,12 +12,17 @@ router.post('/login',
     AuthControllers.loginUser);
 
 router.patch('/change-password',
-    ValidationRequest(AuthValidations.changePasswordValidationSchema),
     Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
+    ValidationRequest(AuthValidations.changePasswordValidationSchema),
     AuthControllers.changePassword)
 
 router.post('/forgot-password',
     ValidationRequest(AuthValidations.forgotPasswordValidationSchema),
-    AuthControllers.forgotPassword)
+    AuthControllers.forgotPassword);
+
+router.patch('/reset-password',
+    Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
+    ValidationRequest(AuthValidations.resetPasswordValidationSchema),
+    AuthControllers.resetPassword)
 
 export const AuthRoutes = router;

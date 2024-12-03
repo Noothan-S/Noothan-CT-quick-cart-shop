@@ -29,10 +29,17 @@ const forgotPassword = catchAsync(async function (req: Request, res: Response) {
     const result = await AuthServices.forgotPasswordIntoDb(req.body.email);
 
     res.status(result.status).json(result);
-})
+});
+
+const resetPassword = catchAsync(async function (req: Request, res: Response) {
+    const result = await AuthServices.resetPasswordIntoDb(req.user, req.body);
+
+    res.status(result.status).json(result);
+});
 
 export const AuthControllers = {
     loginUser,
     changePassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }

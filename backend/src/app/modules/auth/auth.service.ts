@@ -168,10 +168,48 @@ async function forgotPasswordIntoDb(email: string): Promise<IServiceReturn> {
         message: 'Email Send. Check inbox with spam/junk',
         data: filteredUser(user)
     }
+};
+
+async function resetPasswordIntoDb(user: JwtPayload, payload: { newPassword: string }): Promise<IServiceReturn> {
+
+    const _user = await prisma.user.findUnique({
+        where: {
+            id: user.id,
+            isDeleted: false
+        }
+    });
+
+    if (!_user) {
+        return {
+            status: 404,
+            success: false,
+            message: 'user not longer exist',
+            data: null
+        }
+    }
+
+    const hashedPassword = await bcryptOperation.hashPassword(payload.newPassword);
+
+    await prisma.user.update({
+        where: {
+            id: user.id
+        },
+        data: {
+            password: hashedPassword
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: 'Account recovered successfully. Login with new password',
+        data: filteredUser(_user)
+    }
 }
 
 export const AuthServices = {
     loginUserFromDb,
     changePasswordIntoDb,
-    forgotPasswordIntoDb
+    forgotPasswordIntoDb,
+    resetPasswordIntoDb
 }
