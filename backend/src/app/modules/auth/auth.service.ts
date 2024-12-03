@@ -113,9 +113,22 @@ async function changePasswordIntoDb(user: JwtPayload, payload: IChangePassword):
         message: 'Password changed successfully',
         data: filteredUser(userDb)
     }
+};
+
+async function forgotPasswordIntoDb(email: string) {
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    });
+
+    console.log(user);
+
 }
 
 export const AuthServices = {
     loginUserFromDb,
-    changePasswordIntoDb
+    changePasswordIntoDb,
+    forgotPasswordIntoDb
 }

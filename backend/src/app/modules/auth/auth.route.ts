@@ -12,8 +12,12 @@ router.post('/login',
     AuthControllers.loginUser);
 
 router.patch('/change-password',
+    ValidationRequest(AuthValidations.changePasswordValidationSchema),
     Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
-    AuthControllers.changePassword
-)
+    AuthControllers.changePassword)
+
+router.patch('/forgot-password',
+    ValidationRequest(AuthValidations.forgotPasswordValidationSchema),
+    AuthControllers.forgotPassword)
 
 export const AuthRoutes = router;
