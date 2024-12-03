@@ -1,13 +1,13 @@
 import nodemailer from "nodemailer";
 import config from "../app/config";
 
-// Setup Nodemailer transporter
+// Setting up the Nodemailer transporter with Gmail as the email service
 const transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    service: 'Gmail', // Specifying Gmail as the service provider
     auth: {
-        user: config.node_mailer_sender_address,
-        pass: config.node_mailer_sender_app_password
+        user: config.node_mailer_sender_address, // Email address from the configuration
+        pass: config.node_mailer_sender_app_password // Application-specific password for authentication
     }
 });
 
-export default transporter
+export default transporter; 
