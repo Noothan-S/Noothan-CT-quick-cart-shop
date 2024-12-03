@@ -20,7 +20,15 @@ const updateProfile = catchAsync(async function (req: Request, res: Response) {
 const loginUser = catchAsync(async function (req: Request, res: Response) {
     const result = await UserServices.loginUserFromDb(req.body as ILogin)
 
-    res.status(result.status).json(result)
+    res.cookie("accessToken", result.data.accessToken, {
+        httpOnly: false,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
+    });
+
+    res.status(result.status).json(result);
 });
 
 export const UserControllers = {

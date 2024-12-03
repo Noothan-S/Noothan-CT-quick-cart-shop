@@ -1,4 +1,5 @@
 import { bcryptOperation } from "../../../utils/bcrypt";
+import { jwtOperation } from "../../../utils/jwt";
 import prisma from "../../constants/prisma_constructor"
 import AppError from "../../errors/app_error";
 import { IServiceReturn } from "../../interfaces/service_return_type";
@@ -92,6 +93,10 @@ async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
     const user = await prisma.user.findUniqueOrThrow({
         where: {
             email: payload.email
+        },
+        include: {
+            profile: true,
+            vendor: true
         }
     });
 
@@ -115,6 +120,27 @@ async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
         }
     };
 
+    const assignedToken = jwtOperation.generateToken(
+        {
+            email: user.email,
+            id: user.id,
+            role: user.role
+        }
+    );
+
+    const filteredUser = Object.fromEntries(
+        Object.entries(user).filter(([key, value]) => value !== null && key !== 'password')
+    );
+
+    return {
+        status: 200,
+        success: true,
+        message: 'User logged in successfully',
+        data: {
+            accessToken: assignedToken,
+            user: filteredUser
+        }
+    }
 }
 
 export const UserServices = {

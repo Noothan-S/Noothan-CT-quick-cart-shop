@@ -10,7 +10,7 @@ interface ITokenPayload {
 }
 
 function generateToken(payload: ITokenPayload) {
-    const result = jwt.sign(payload, config.jwt_secret as Secret, { expiresIn: '1h' });
+    const result = jwt.sign(payload, config.jwt_secret as Secret, { expiresIn: '7d' });
     return result
 };
 
