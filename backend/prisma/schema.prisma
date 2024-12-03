@@ -58,6 +58,14 @@ model Vendor {
   @@map("vendors")
 }
 
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum UserStatus {
   ACTIVE
   BLOCKED
