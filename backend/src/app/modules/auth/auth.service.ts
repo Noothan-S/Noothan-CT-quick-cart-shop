@@ -115,15 +115,31 @@ async function changePasswordIntoDb(user: JwtPayload, payload: IChangePassword):
     }
 };
 
-async function forgotPasswordIntoDb(email: string) {
+async function forgotPasswordIntoDb(email: string): Promise<IServiceReturn> {
 
     const user = await prisma.user.findUnique({
         where: {
-            email
+            email,
+            isDeleted: false
         }
     });
 
-    console.log(user);
+    if (!user) {
+        return {
+            status: 404,
+            success: false,
+            message: 'User not found with that email',
+            data: null
+        }
+    };
+
+    const assignedToken = jwtOperation.generateToken({
+        id: user.id,
+        email: user.email,
+        role: user.role
+    }, '30m');
+
+    console.log(assignedToken);
 
 }
 

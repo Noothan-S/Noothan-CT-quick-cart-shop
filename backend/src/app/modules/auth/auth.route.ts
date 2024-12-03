@@ -16,7 +16,7 @@ router.patch('/change-password',
     Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
     AuthControllers.changePassword)
 
-router.patch('/forgot-password',
+router.post('/forgot-password',
     ValidationRequest(AuthValidations.forgotPasswordValidationSchema),
     AuthControllers.forgotPassword)
 

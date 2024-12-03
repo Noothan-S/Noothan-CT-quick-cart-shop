@@ -9,8 +9,8 @@ interface ITokenPayload {
     role: UserRole
 }
 
-function generateToken(payload: ITokenPayload) {
-    const result = jwt.sign(payload, config.jwt_secret as Secret, { expiresIn: '7d' });
+function generateToken(payload: ITokenPayload, expiresIn: string = '7d') {
+    const result = jwt.sign(payload, config.jwt_secret as Secret, { expiresIn });
     return result
 };
 
