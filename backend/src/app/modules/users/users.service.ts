@@ -4,7 +4,7 @@ import { ICreateUser } from "./users.interface";
 
 async function createUserIntoDb(payload: ICreateUser) {
     const { password, ...othersData } = payload;
-    const hashedPassword = await bcryptOperation.hashedPassword(password);
+    const hashedPassword = await bcryptOperation.hashPassword(password);
 
     const result = await prisma.user.create({
         data: {
