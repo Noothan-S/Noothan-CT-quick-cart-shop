@@ -45,7 +45,8 @@ async function updateProfileIntoDb(payload: any): Promise<IServiceReturn> {
 
     const user = await prisma.user.findUnique({
         where: {
-            email
+            email,
+            isDeleted: false
         }
     });
 
