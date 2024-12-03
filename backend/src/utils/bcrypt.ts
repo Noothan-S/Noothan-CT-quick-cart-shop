@@ -19,7 +19,7 @@ async function comparePassword(plainPassword: string, hashedPassword: string): P
         return result;
 
     } catch (error) {
-        throw new AppError(401, 'Wrong password!');
+        throw new AppError(400, 'Failed to comparing password!');
     }
 }
 

@@ -14,23 +14,13 @@ const createUser = catchAsync(async function (req: Request, res: Response) {
 const updateProfile = catchAsync(async function (req: Request, res: Response) {
     const result = await UserServices.updateProfileIntoDb(req.body)
 
-    sendResponse(res, {
-        data: result,
-        message: "Operation successful",
-        statusCode: 200,
-        success: true
-    });
+    res.status(result.status).json(result)
 });
 
 const loginUser = catchAsync(async function (req: Request, res: Response) {
     const result = await UserServices.loginUserFromDb(req.body as ILogin)
 
-    sendResponse(res, {
-        data: result,
-        message: "User Logged in Successfully",
-        statusCode: 200,
-        success: true
-    });
+    res.status(result.status).json(result)
 });
 
 export const UserControllers = {

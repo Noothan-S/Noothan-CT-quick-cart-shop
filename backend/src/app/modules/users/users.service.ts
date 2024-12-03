@@ -87,17 +87,33 @@ async function updateProfileIntoDb(payload: any): Promise<IServiceReturn> {
     }
 };
 
-async function loginUserFromDb(payload: ILogin) {
+async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
 
-    // const user = await prisma.user.findUniqueOrThrow({
-    //     where: {
-    //         email: payload.email
-    //     }
-    // });
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: payload.email
+        }
+    });
 
-    // console.log(user);
+    if (!user) {
+        return {
+            status: 404,
+            success: false,
+            message: 'User not found with that id',
+            data: null
+        }
+    };
 
-    return new AppError(404, '434')
+    const isValidPassword = await bcryptOperation.comparePassword(payload.password, user.password);
+
+    if (!isValidPassword) {
+        return {
+            status: 401,
+            success: false,
+            message: 'Wrong Password',
+            data: null
+        }
+    };
 
 }
 
