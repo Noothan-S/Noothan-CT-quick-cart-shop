@@ -1,3 +1,4 @@
+export type TUpdateProfileOrVendor = IUpdateProfile | IUpdateVendor;
 
 export interface ICreateUser {
     email: string;
@@ -24,4 +25,5 @@ export interface IUpdateVendor {
     description: string;
 };
 
-export type TUpdateProfileOrVendor = IUpdateProfile | IUpdateVendor;
+
+
