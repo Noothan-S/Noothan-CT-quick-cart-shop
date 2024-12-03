@@ -7,6 +7,6 @@ export default {
     port: process.env.PORT,
     bcrypt_salt_round: process.env.BCRYPT_SALT_ROUND,
     jwt_secret: process.env.JWT_SECRET,
-    node_mailer_sender_address: '',
-    node_mailer_sender_app_password: ''
+    node_mailer_sender_address: process.env.NODE_MILER_SENDER_ADDRESS,
+    node_mailer_sender_app_password: process.env.NODE_MILER_SENDER_APP_PASSWORD
 }
