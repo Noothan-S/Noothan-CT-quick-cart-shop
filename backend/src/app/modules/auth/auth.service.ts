@@ -6,6 +6,9 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import { ILogin } from "../users/users.interface";
 import { IChangePassword } from "./auth.interface";
 import filteredUser from "../../../utils/filter_user";
+import transporter from "../../../utils/nodemailer_transporter";
+import config from "../../config";
+import resetPasswordEmailTemplate from "../../emails/reset_password";
 
 async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
 
@@ -121,6 +124,10 @@ async function forgotPasswordIntoDb(email: string): Promise<IServiceReturn> {
         where: {
             email,
             isDeleted: false
+        },
+        include: {
+            profile: true,
+            vendor: true
         }
     });
 
@@ -139,8 +146,28 @@ async function forgotPasswordIntoDb(email: string): Promise<IServiceReturn> {
         role: user.role
     }, '30m');
 
-    console.log(assignedToken);
+    const resetUrl = `${config.client_url}/auth/reset-password?token=${assignedToken}`
+    const sendEmail = await transporter.sendMail({
+        to: user.email,
+        subject: 'Rest your password - QuickCart',
+        html: resetPasswordEmailTemplate(resetUrl)
+    });
 
+    if (!sendEmail.accepted.length) {
+        return {
+            status: 400,
+            success: false,
+            message: 'Failed to send Email',
+            data: null
+        }
+    };
+
+    return {
+        status: 200,
+        success: true,
+        message: 'Email Send. Check inbox with spam/junk',
+        data: filteredUser(user)
+    }
 }
 
 export const AuthServices = {
