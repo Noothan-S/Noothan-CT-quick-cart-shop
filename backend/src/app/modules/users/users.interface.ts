@@ -25,5 +25,9 @@ export interface IUpdateVendor {
     description: string;
 };
 
+export interface ILogin {
+    email: string;
+    password: string;
+}
 
 
