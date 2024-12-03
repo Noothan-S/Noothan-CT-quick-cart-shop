@@ -1,3 +1,4 @@
+import { JwtPayload } from "jsonwebtoken";
 import { bcryptOperation } from "../../../utils/bcrypt";
 import { jwtOperation } from "../../../utils/jwt";
 import prisma from "../../constants/prisma_constructor";
@@ -57,8 +58,13 @@ async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
             user: filteredUser
         }
     }
+};
+
+async function changePasswordIntoDb(user: JwtPayload, payload: any) {
+    console.log(payload);
 }
 
 export const AuthServices = {
-    loginUserFromDb
+    loginUserFromDb,
+    changePasswordIntoDb
 }
