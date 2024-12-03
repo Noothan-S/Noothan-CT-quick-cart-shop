@@ -48,6 +48,12 @@ async function updateProfileIntoDb(payload: any) {
         user: { ...userWithoutPassword },
         [user.role.toLocaleLowerCase()]: { ...result },
     }
+};
+
+async function loginUserFromDb(payload) {
+
+
+
 }
 
 export const UserServices = {
