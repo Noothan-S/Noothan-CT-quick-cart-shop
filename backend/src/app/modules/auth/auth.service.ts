@@ -15,7 +15,7 @@ async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
     const user = await prisma.user.findUnique({
         where: {
             email: payload.email,
-            isDeleted: false
+            isDeleted: false,
         },
         include: {
             profile: true,

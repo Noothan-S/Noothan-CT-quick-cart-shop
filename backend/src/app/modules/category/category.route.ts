@@ -7,6 +7,9 @@ import { UserRole } from "@prisma/client";
 
 const router: Router = Router();
 
+router.get('/',
+    CategoryController.getCategories)
+
 router.post('/',
     Auth(UserRole.ADMIN),
     ValidationRequest(CategoryValidation.CategoryValidationSchema),

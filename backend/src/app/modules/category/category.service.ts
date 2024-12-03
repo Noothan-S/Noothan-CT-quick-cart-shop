@@ -2,6 +2,22 @@ import { Category } from "@prisma/client";
 import prisma from "../../constants/prisma_constructor";
 import { IServiceReturn } from "../../interfaces/service_return_type";
 
+async function getCategoriesFromDb(): Promise<IServiceReturn> {
+
+    const result = await prisma.category.findMany({
+        where: {
+            isDeleted: false
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: 'Categories retrieved successfully',
+        data: result
+    }
+}
+
 async function createCategoryIntoDb(payload: Category): Promise<IServiceReturn> {
     let result;
 
@@ -86,10 +102,11 @@ async function deleteCategoryFromDb(id: string): Promise<IServiceReturn> {
         message: 'Category deleted successfully',
         data: result
     }
-}
+};
 
 export const CategoryServices = {
     createCategoryIntoDb,
     updateCategoryIntoDb,
-    deleteCategoryFromDb
+    deleteCategoryFromDb,
+    getCategoriesFromDb
 }

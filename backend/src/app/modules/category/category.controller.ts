@@ -2,6 +2,12 @@ import { Request, Response } from "express";
 import catchAsync from "../../../utils/catch_async";
 import { CategoryServices } from "./category.service";
 
+const getCategories = catchAsync(async function (req: Request, res: Response) {
+    const result = await CategoryServices.getCategoriesFromDb()
+
+    res.status(result.status).json(result);
+});
+
 const createCategory = catchAsync(async function (req: Request, res: Response) {
     const result = await CategoryServices.createCategoryIntoDb(req.body)
 
@@ -23,5 +29,6 @@ const deleteCategory = catchAsync(async function (req: Request, res: Response) {
 export const CategoryController = {
     createCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    getCategories
 }
