@@ -17,4 +17,8 @@ router.patch('/:id',
     ValidationRequest(CategoryValidation.CategoryValidationSchema),
     CategoryController.updateCategory);
 
+router.delete('/:id',
+    Auth(UserRole.ADMIN),
+    CategoryController.deleteCategory);
+
 export const CategoryRoutes = router

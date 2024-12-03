@@ -64,9 +64,29 @@ async function updateCategoryIntoDb(id: string, payload: Partial<Category>): Pro
         data: result
     }
 
+};
+
+async function deleteCategoryFromDb(id: string): Promise<IServiceReturn> {
+
+    const result = await prisma.category.update({
+        where: {
+            id
+        },
+        data: {
+            isDeleted: true
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: 'Category deleted successfully',
+        data: result
+    }
 }
 
 export const CategoryServices = {
     createCategoryIntoDb,
-    updateCategoryIntoDb
+    updateCategoryIntoDb,
+    deleteCategoryFromDb
 }
