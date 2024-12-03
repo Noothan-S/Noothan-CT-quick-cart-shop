@@ -13,8 +13,4 @@ router.put('/',
     ValidationRequest(UserValidations.UpdateProfileOrVendorValidationSchema),
     UserControllers.updateProfile);
 
-router.post('/login',
-    ValidationRequest(UserValidations.UserLoginValidationSchema),
-    UserControllers.loginUser)
-
 export const UserRoutes = router;

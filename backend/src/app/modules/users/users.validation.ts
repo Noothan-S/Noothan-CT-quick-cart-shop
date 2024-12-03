@@ -37,15 +37,7 @@ const UpdateProfileOrVendorValidationSchema = z.object({
     body: z.union([UpdateProfileSchema, UpdateVendorSchema])
 });
 
-const UserLoginValidationSchema = z.object({
-    body: z.object({
-        email: z.string().email(),
-        password: z.string()
-    })
-})
-
 export const UserValidations = {
     CreateUserValidationSchema,
     UpdateProfileOrVendorValidationSchema,
-    UserLoginValidationSchema
 }
