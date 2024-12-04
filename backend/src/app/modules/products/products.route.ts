@@ -12,4 +12,9 @@ router.post('/',
     ValidationRequest(ProductValidations.createProductValidationSchema),
     ProductControllers.createProduct)
 
+router.patch('/:id',
+    Auth(UserRole.VENDOR),
+    ValidationRequest(ProductValidations.updateProductValidationSchema),
+    ProductControllers.updateProduct)
+
 export const ProductRoutes = router;

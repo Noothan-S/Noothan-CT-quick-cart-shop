@@ -7,7 +7,7 @@ async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>):
 
     const vendor = await prisma.vendor.findUnique({
         where: {
-            email: user.email
+            email: user.email,
         }
     });
 
@@ -19,6 +19,15 @@ async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>):
             data: null
         }
     };
+
+    if (vendor.isBlackListed) {
+        return {
+            status: 400,
+            success: false,
+            message: "Your Vendor is black listed. contact support support for more info",
+            data: null
+        }
+    }
 
     const category = await prisma.category.findUnique({
         where: {
@@ -57,6 +66,64 @@ async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>):
 
 };
 
+async function updateProductIntoDb(user: JwtPayload, id: string, payload: Partial<Product>): Promise<IServiceReturn> {
+
+    const product = await prisma.product.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        },
+        include: {
+            vendor: {
+                include: {
+                    user: true
+                }
+            }
+        }
+    });
+
+    if (!product) {
+        return {
+            status: 404,
+            success: false,
+            message: 'Product not found with that id',
+            data: null
+        }
+    }
+
+    if (product?.vendor.user.id !== user.id) {
+        return {
+            status: 401,
+            success: false,
+            message: "You cannot modify another vendor's product.",
+            data: null
+        }
+    }
+
+    const result = await prisma.product.update({
+        where: {
+            id
+        },
+        data: payload,
+        include: {
+            category: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: `${product.title} is successfully updated`,
+        data: result
+    }
+}
+
 export const ProductServices = {
-    createProductIntoDb
+    createProductIntoDb,
+    updateProductIntoDb
+
 }

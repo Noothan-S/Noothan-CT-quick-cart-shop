@@ -9,6 +9,13 @@ const createProduct = catchAsync(async function (req: Request, res: Response) {
     res.status(result.status).json(result);
 });
 
+const updateProduct = catchAsync(async function (req: Request, res: Response) {
+    const result = await ProductServices.updateProductIntoDb(req.user, req.params.id, req.body as Partial<Product>)
+
+    res.status(result.status).json(result);
+});
+
 export const ProductControllers = {
-    createProduct
+    createProduct,
+    updateProduct
 }
