@@ -23,11 +23,8 @@ model User {
 }
 
 model Profile {
-  id String @id @default(uuid())
-
-  email String @unique
-  user  User   @relation(fields: [email], references: [email])
-
+  id        String   @id @default(uuid())
+  email     String   @unique
   firstName String
   lastName  String
   phone     String?
@@ -37,33 +34,58 @@ model Profile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user User @relation(fields: [email], references: [email])
+
   @@map("profiles")
 }
 
 model Vendor {
-  id String @id @default(uuid())
-
-  email String @unique
-  user  User   @relation(fields: [email], references: [email])
-
+  id            String    @id @default(uuid())
+  email         String    @unique
   name          String
   phone         String?
   address       String?
   logo          String?
   description   String
-  isBlackListed Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isBlackListed Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  product       Product[]
+
+  user User @relation(fields: [email], references: [email])
 
   @@map("vendors")
 }
 
 model Category {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid())
+  name      String    @unique
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  product   Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  vendorId    String
+  categoryId  String
+  title       String
+  imgs        String[]
+  description String
+  price       Float
+  discount    Float
+  quantity    Int
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vendor   Vendor   @relation(fields: [vendorId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("products")
 }
 
 enum UserStatus {
