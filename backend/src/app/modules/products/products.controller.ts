@@ -15,7 +15,14 @@ const updateProduct = catchAsync(async function (req: Request, res: Response) {
     res.status(result.status).json(result);
 });
 
+const deleteProduct = catchAsync(async function (req: Request, res: Response) {
+    const result = await ProductServices.deleteProductFromDb(req.user, req.params.id)
+
+    res.status(result.status).json(result);
+});
+
 export const ProductControllers = {
     createProduct,
-    updateProduct
+    updateProduct,
+    deleteProduct
 }

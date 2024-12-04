@@ -1,4 +1,4 @@
-import { Product } from "@prisma/client";
+import { Product, UserRole } from "@prisma/client";
 import { IServiceReturn } from "../../interfaces/service_return_type";
 import prisma from "../../constants/prisma_constructor";
 import { JwtPayload } from "jsonwebtoken";
@@ -122,8 +122,69 @@ async function updateProductIntoDb(user: JwtPayload, id: string, payload: Partia
     }
 }
 
+async function deleteProductFromDb(user: JwtPayload, id: string): Promise<IServiceReturn> {
+
+    const product = await prisma.product.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        },
+        include: {
+            vendor: {
+                include: {
+                    user: true
+                }
+            }
+        }
+    });
+
+    if (!product) {
+        return {
+            status: 404,
+            success: false,
+            message: 'Product not found with that id',
+            data: null
+        }
+    }
+
+    if (product?.vendor.user.id !== user.id && user.role !== UserRole.ADMIN) {
+        return {
+            status: 401,
+            success: false,
+            message: "You cannot delete another vendor's product.",
+            data: null
+        }
+    }
+
+    const result = await prisma.product.update({
+        where: {
+            id
+        },
+        data: {
+            isDeleted: true
+        },
+        include: {
+            category: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: `${product.title} is successfully deleted`,
+        data: result
+    }
+}
+
+
+
 export const ProductServices = {
     createProductIntoDb,
-    updateProductIntoDb
+    updateProductIntoDb,
+    deleteProductFromDb
 
 }

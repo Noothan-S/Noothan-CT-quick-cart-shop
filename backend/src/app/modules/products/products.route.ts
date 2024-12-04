@@ -17,4 +17,8 @@ router.patch('/:id',
     ValidationRequest(ProductValidations.updateProductValidationSchema),
     ProductControllers.updateProduct)
 
+router.delete('/:id',
+    Auth(UserRole.VENDOR, UserRole.ADMIN),
+    ProductControllers.deleteProduct)
+
 export const ProductRoutes = router;
