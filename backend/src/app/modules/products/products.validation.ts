@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const createProductValidationSchema = z.object({
     body: z.object({
-        vendorId: z.string().uuid(),
         categoryId: z.string().uuid(),
         title: z.string().min(1, "Title is required"),
         imgs: z.array(z.string().min(1, "Image filename cannot be empty")),
