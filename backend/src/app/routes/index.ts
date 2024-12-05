@@ -4,6 +4,7 @@ import { AuthRoutes } from "../modules/auth/auth.route";
 import { CategoryRoutes } from "../modules/category/category.route";
 import { ProductRoutes } from "../modules/products/products.route";
 import { CouponRoutes } from "../modules/coupon/coupons.route";
+import { ReviewRoutes } from "../modules/reviews/reviews.route";
 
 
 const router: Router = Router()
@@ -28,6 +29,10 @@ const moduleRoutes = [
     {
         path: '/coupons',
         route: CouponRoutes
+    },
+    {
+        path: '/reviews',
+        route: ReviewRoutes
     },
 ];
 
