@@ -1,4 +1,4 @@
-import { Prisma, Product, UserRole } from "@prisma/client";
+import { Product, UserRole } from "@prisma/client";
 import { IServiceReturn } from "../../interfaces/service_return_type";
 import prisma from "../../constants/prisma_constructor";
 import { JwtPayload } from "jsonwebtoken";
@@ -8,7 +8,7 @@ import buildPrismaQuery from "../../../utils/build_prisma_query";
 async function getAllProductsFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
     const result = await buildPrismaQuery({
         model: 'product',
-        filters,
+        filters: { ...filters, isDeleted: false },
         pagination: options,
         include: { vendor: true }
     });
@@ -16,11 +16,37 @@ async function getAllProductsFromDb(options: IPaginationOptions, filters: any): 
     return {
         status: 200,
         success: true,
-        message: "products retrieved successfully",
+        message: "Products retrieved successfully",
         data: result
     }
 
 };
+
+async function getSingleProductFromDb(id: string): Promise<IServiceReturn> {
+
+    const result = await prisma.product.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+
+    if (!result) {
+        return {
+            status: 404,
+            success: false,
+            message: "Product not found with that id.",
+            data: null
+        }
+    };
+
+    return {
+        status: 200,
+        success: true,
+        message: "Product retrieved successfully",
+        data: result
+    }
+}
 
 async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>): Promise<IServiceReturn> {
 
@@ -203,6 +229,7 @@ export const ProductServices = {
     createProductIntoDb,
     updateProductIntoDb,
     deleteProductFromDb,
-    getAllProductsFromDb
+    getAllProductsFromDb,
+    getSingleProductFromDb
 
 }

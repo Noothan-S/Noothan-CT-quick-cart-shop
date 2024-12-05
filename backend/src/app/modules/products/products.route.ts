@@ -8,7 +8,10 @@ import ValidationRequest from "../../middlewares/zod_validation";
 const router: Router = Router();
 
 router.get('/',
-    ProductControllers.getAllProducts)
+    ProductControllers.getAllProducts);
+
+router.get('/:id',
+    ProductControllers.getSingleProduct);
 
 router.post('/',
     Auth(UserRole.VENDOR),

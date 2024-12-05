@@ -18,6 +18,7 @@ model User {
   updatedAt DateTime   @updatedAt
   profile   Profile?
   vendor    Vendor?
+  review    Review[]
 
   @@map("users")
 }
@@ -84,8 +85,33 @@ model Product {
 
   vendor   Vendor   @relation(fields: [vendorId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
+  coupon   Coupon[]
+  review   Review[]
 
   @@map("products")
+}
+
+model Coupon {
+  code       String
+  parentage  Float
+  expiryDate DateTime
+  productId  String
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@id([code, productId])
+  @@map("coupons")
+}
+
+model Review {
+  id          String @id @default(uuid())
+  productId   String
+  userId      String
+  description String
+  rating      Float
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 enum UserStatus {

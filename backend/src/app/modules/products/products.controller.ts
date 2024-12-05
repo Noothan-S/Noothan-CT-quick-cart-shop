@@ -7,8 +7,13 @@ import { ProductServices } from "./products.service";
 const getAllProducts = catchAsync(async function (req: Request, res: Response) {
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const filters = pick(req.query, []);
-
     const result = await ProductServices.getAllProductsFromDb(options, filters)
+
+    res.status(result.status).json(result);
+});
+
+const getSingleProduct = catchAsync(async function (req: Request, res: Response) {
+    const result = await ProductServices.getSingleProductFromDb(req.params.id)
 
     res.status(result.status).json(result);
 });
@@ -35,5 +40,6 @@ export const ProductControllers = {
     createProduct,
     updateProduct,
     deleteProduct,
-    getAllProducts
+    getAllProducts,
+    getSingleProduct
 }
