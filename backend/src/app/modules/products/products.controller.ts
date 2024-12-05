@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../utils/catch_async";
-import { ProductServices } from "./products.service";
 import { Product } from "@prisma/client";
 import pick from "../../../utils/pick";
+import { ProductServices } from "./products.service";
 
 const getAllProducts = catchAsync(async function (req: Request, res: Response) {
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);

@@ -5,10 +5,21 @@ import { JwtPayload } from "jsonwebtoken";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
 
-async function getAllProductsFromDb(options: IPaginationOptions, filters: any) {
-    const result = await buildPrismaQuery({ model: 'product', pagination: options, filters, });
+async function getAllProductsFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
+    const result = await buildPrismaQuery({
+        model: 'product',
+        filters,
+        pagination: options,
+        include: { vendor: true }
+    });
 
-    console.log(result);
+    return {
+        status: 200,
+        success: true,
+        message: "products retrieved successfully",
+        data: result
+    }
+
 };
 
 async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>): Promise<IServiceReturn> {

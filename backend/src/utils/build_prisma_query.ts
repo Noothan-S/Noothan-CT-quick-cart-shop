@@ -8,10 +8,11 @@ interface IQueryBuilderOptions {
     model: keyof PrismaClient;
     filters?: any;
     pagination: IPaginationOptions;
+    include?: Prisma.UserInclude;
 }
 
 const buildPrismaQuery = async (options: IQueryBuilderOptions) => {
-    const { model, filters = {}, pagination } = options;
+    const { model, filters = {}, pagination, include } = options;
     const { limit, page, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(pagination)
 
     const andConditions = Object.keys(filters).map(key => ({
@@ -25,6 +26,7 @@ const buildPrismaQuery = async (options: IQueryBuilderOptions) => {
         skip,
         take: limit,
         orderBy: sortBy ? { [sortBy]: sortOrder || 'asc' } : undefined,
+        include,
     };
 
     const result = await (prisma[model] as any).findMany(queryOptions);
