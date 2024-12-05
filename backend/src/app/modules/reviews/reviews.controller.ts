@@ -8,6 +8,13 @@ const createNewReview = catchAsync(async function (req: Request, res: Response) 
     res.status(result.status).json(result);
 });
 
+const updateReview = catchAsync(async function (req: Request, res: Response) {
+    const result = await ReviewServices.updateReviewIntoDb(req.user, req.params.id, req.body)
+
+    res.status(result.status).json(result);
+});
+
 export const ReviewControllers = {
-    createNewReview
+    createNewReview,
+    updateReview
 }

@@ -12,4 +12,9 @@ router.post('/',
     ValidationRequest(ReviewValidations.createReviewValidationSchema),
     ReviewControllers.createNewReview);
 
+router.patch('/:id',
+    Auth(UserRole.CUSTOMER, UserRole.ADMIN),
+    // ValidationRequest(ReviewValidations.createReviewValidationSchema),
+    ReviewControllers.updateReview);
+
 export const ReviewRoutes = router;
