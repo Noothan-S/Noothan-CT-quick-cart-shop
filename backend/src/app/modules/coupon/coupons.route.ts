@@ -8,11 +8,12 @@ import { CouponValidations } from "./coupons.validation";
 const router: Router = Router();
 
 router.get('/',
-    Auth(UserRole.VENDOR, UserRole.ADMIN,),
+    Auth(UserRole.VENDOR, UserRole.ADMIN),
     CouponControllers.getAllCoupon);
 
 router.get('/single',
     Auth(UserRole.VENDOR, UserRole.VENDOR, UserRole.CUSTOMER),
+    ValidationRequest(CouponValidations.deleteOrFetchSingleCouponValidationSchema),
     CouponControllers.getSingleCoupon);
 
 router.post('/',
@@ -22,6 +23,7 @@ router.post('/',
 
 router.patch('/',
     Auth(UserRole.VENDOR, UserRole.ADMIN),
+    ValidationRequest(CouponValidations.updateCouponValidationSchema),
     CouponControllers.updateCoupon);
 
 router.delete('/',
