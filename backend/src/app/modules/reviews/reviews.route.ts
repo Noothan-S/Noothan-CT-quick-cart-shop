@@ -7,6 +7,10 @@ import { ReviewValidations } from "./review.validation";
 
 const router: Router = Router();
 
+router.get('/',
+    Auth(UserRole.ADMIN, UserRole.VENDOR),
+    ReviewControllers.getAllReviews);
+
 router.post('/',
     Auth(UserRole.CUSTOMER),
     ValidationRequest(ReviewValidations.createReviewValidationSchema),

@@ -4,6 +4,45 @@ import prisma from "../../constants/prisma_constructor";
 import { IServiceReturn } from "../../interfaces/service_return_type";
 import { ReviewsConstants } from "./reviews.constant";
 
+async function getAllReviewsFromDb(user: JwtPayload): Promise<IServiceReturn> {
+    let whereCondition = undefined;
+
+    if (user.role === 'VENDOR') {
+        const vendor = await prisma.vendor.findUnique({
+            where: {
+                email: user.email
+            },
+            select: { id: true },
+        });
+
+        if (!vendor) {
+            return {
+                status: 404,
+                success: false,
+                message: "Vendor not found",
+                data: null,
+            };
+        }
+
+        whereCondition = { product: { vendorId: vendor.id } };
+    };
+
+    const result = await prisma.review.findMany({
+        where: {
+            isDeleted: false,
+            ...whereCondition
+        },
+        include: ReviewsConstants.reviewIncludeObj
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: "Reviews retrieve successfully",
+        data: result,
+    };
+}
+
 async function createNewReviewIntoDb(user: JwtPayload, payload: Partial<Review>): Promise<IServiceReturn> {
 
     const product = await prisma.product.findUnique({
@@ -24,7 +63,7 @@ async function createNewReviewIntoDb(user: JwtPayload, payload: Partial<Review>)
 
     const result = await prisma.review.create({
         data: ({ userId: user.id, ...payload } as Review),
-        include: ReviewsConstants.createReviewIncludeObj
+        include: ReviewsConstants.reviewIncludeObj
     });
 
     return {
@@ -75,7 +114,7 @@ async function updateReviewIntoDb(user: JwtPayload, id: string, payload: Partial
             id
         },
         data: payload,
-        include: ReviewsConstants.createReviewIncludeObj
+        include: ReviewsConstants.reviewIncludeObj
     });
 
     return {
@@ -118,7 +157,7 @@ async function deleteReviewFromDb(user: JwtPayload, id: string,): Promise<IServi
             id
         },
         data: { isDeleted: true },
-        include: ReviewsConstants.createReviewIncludeObj
+        include: ReviewsConstants.reviewIncludeObj
     });
 
     return {
@@ -129,9 +168,9 @@ async function deleteReviewFromDb(user: JwtPayload, id: string,): Promise<IServi
     }
 };
 
-
 export const ReviewServices = {
     createNewReviewIntoDb,
     updateReviewIntoDb,
-    deleteReviewFromDb
+    deleteReviewFromDb,
+    getAllReviewsFromDb
 }

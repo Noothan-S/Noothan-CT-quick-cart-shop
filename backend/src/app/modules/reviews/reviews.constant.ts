@@ -1,4 +1,4 @@
-const createReviewIncludeObj = {
+const reviewIncludeObj = {
     product: {
         include: {
             vendor: true,
@@ -21,5 +21,5 @@ const createReviewIncludeObj = {
 }
 
 export const ReviewsConstants = {
-    createReviewIncludeObj
+    reviewIncludeObj
 }
