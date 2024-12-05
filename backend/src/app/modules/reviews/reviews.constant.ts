@@ -9,6 +9,11 @@ const reviewIncludeObj = {
             },
             review: {
                 include: {
+                    vendorResponse: {
+                        include: {
+                            vendor: true
+                        }
+                    },
                     user: {
                         select: {
                             profile: true
