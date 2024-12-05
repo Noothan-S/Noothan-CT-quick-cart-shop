@@ -1,5 +1,10 @@
 const productIncludeObj = {
     vendor: true,
+    category: {
+        select: {
+            name: true
+        }
+    },
     review: {
         include: {
             user: {
@@ -16,6 +21,19 @@ const productIncludeObj = {
     }
 }
 
+const productCategoryIncludeObjForCoupon = {
+    product: {
+        include: {
+            category: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    }
+}
+
 export const ProductsConstants = {
-    productIncludeObj
+    productIncludeObj,
+    productCategoryIncludeObjForCoupon
 }
