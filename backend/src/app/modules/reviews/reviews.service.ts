@@ -2,6 +2,7 @@ import { Review } from "@prisma/client";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../constants/prisma_constructor";
 import { IServiceReturn } from "../../interfaces/service_return_type";
+import { ReviewsConstants } from "./reviews.constant";
 
 async function createNewReviewIntoDb(user: JwtPayload, payload: Partial<Review>): Promise<IServiceReturn> {
 
@@ -23,27 +24,7 @@ async function createNewReviewIntoDb(user: JwtPayload, payload: Partial<Review>)
 
     const result = await prisma.review.create({
         data: ({ userId: user.id, ...payload } as Review),
-        include: {
-            product: {
-                include: {
-                    vendor: true,
-                    category: {
-                        select: {
-                            name: true
-                        }
-                    },
-                    review: {
-                        include: {
-                            user: {
-                                select: {
-                                    profile: true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        include: ReviewsConstants.createReviewIncludeObj
     });
 
     return {
