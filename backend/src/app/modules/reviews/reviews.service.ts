@@ -81,12 +81,57 @@ async function updateReviewIntoDb(user: JwtPayload, id: string, payload: Partial
     return {
         status: 200,
         success: true,
-        message: "Review update successfully",
+        message: "Review updated successfully",
         data: result
     }
-}
+};
+
+async function deleteReviewFromDb(user: JwtPayload, id: string,): Promise<IServiceReturn> {
+
+    const review = await prisma.review.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+
+    if (!review) {
+        return {
+            status: 404,
+            success: false,
+            message: "Review not found with that id",
+            data: null
+        }
+    };
+
+    if (review.userId !== user.id && user.role !== UserRole.ADMIN) {
+        return {
+            status: 401,
+            success: false,
+            message: "Permission denied. You cannot some delete someone else's review",
+            data: null
+        }
+    };
+
+    const result = await prisma.review.update({
+        where: {
+            id
+        },
+        data: { isDeleted: true },
+        include: ReviewsConstants.createReviewIncludeObj
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: "Review deleted successfully",
+        data: result
+    }
+};
+
 
 export const ReviewServices = {
     createNewReviewIntoDb,
-    updateReviewIntoDb
+    updateReviewIntoDb,
+    deleteReviewFromDb
 }

@@ -14,7 +14,14 @@ const updateReview = catchAsync(async function (req: Request, res: Response) {
     res.status(result.status).json(result);
 });
 
+const deleteReview = catchAsync(async function (req: Request, res: Response) {
+    const result = await ReviewServices.deleteReviewFromDb(req.user, req.params.id)
+
+    res.status(result.status).json(result);
+});
+
 export const ReviewControllers = {
     createNewReview,
-    updateReview
+    updateReview,
+    deleteReview
 }
