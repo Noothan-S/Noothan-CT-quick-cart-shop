@@ -4,6 +4,42 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import { ProductsConstants } from "../products/products.constant";
 import { JwtPayload } from "jsonwebtoken";
 
+async function getAllCouponsFromDb(user: JwtPayload): Promise<IServiceReturn> {
+    let whereCondition = undefined;
+
+    if (user.role === 'VENDOR') {
+        const vendor = await prisma.vendor.findUnique({
+            where: {
+                email: user.email
+            },
+            select: { id: true },
+        });
+
+        if (!vendor) {
+            return {
+                status: 404,
+                success: false,
+                message: "Vendor not found",
+                data: null,
+            };
+        }
+
+        whereCondition = { product: { vendorId: vendor.id } };
+    }
+
+    const result = await prisma.coupon.findMany({
+        where: whereCondition,
+        include: ProductsConstants.productCategoryIncludeObjForCoupon
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: `Coupons retrieved successfully for ${user.role === UserRole.ADMIN ? 'Admin' : 'Vendor'}`,
+        data: result,
+    };
+}
+
 async function createNewCouponIntoDb(payload: Coupon): Promise<IServiceReturn> {
 
     const isExist = await prisma.coupon.findUnique({
@@ -186,5 +222,6 @@ async function deleteCouponFromDb(user: JwtPayload, payload: Partial<Coupon>): P
 export const CouponServices = {
     createNewCouponIntoDb,
     updateCouponIntoDb,
-    deleteCouponFromDb
+    deleteCouponFromDb,
+    getAllCouponsFromDb
 }
