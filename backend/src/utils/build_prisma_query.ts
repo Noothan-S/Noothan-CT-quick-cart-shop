@@ -1,0 +1,40 @@
+import { PrismaClient, Prisma } from '@prisma/client';
+import { paginationHelper } from './pagination_helper';
+import { IPaginationOptions } from '../app/interfaces/pagination';
+
+const prisma = new PrismaClient();
+
+interface IQueryBuilderOptions {
+    model: keyof PrismaClient;
+    filters?: any;
+    pagination: IPaginationOptions;
+}
+
+const buildPrismaQuery = async (options: IQueryBuilderOptions) => {
+    const { model, filters = {}, pagination } = options;
+    const { limit, page, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(pagination)
+
+    const andConditions = Object.keys(filters).map(key => ({
+        [key]: { equals: filters[key] },
+    }));
+
+    const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
+
+    const queryOptions: Prisma.UserFindManyArgs = {
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: sortBy ? { [sortBy]: sortOrder || 'asc' } : undefined,
+    };
+
+    const result = await (prisma[model] as any).findMany(queryOptions);
+    const total = await (prisma[model] as any).count({ where: whereConditions });
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+        meta: { total, totalPages, page, limit },
+        data: result,
+    };
+};
+
+export default buildPrismaQuery;

@@ -2,9 +2,13 @@ import { Request, Response } from "express";
 import catchAsync from "../../../utils/catch_async";
 import { ProductServices } from "./products.service";
 import { Product } from "@prisma/client";
+import pick from "../../../utils/pick";
 
 const getAllProducts = catchAsync(async function (req: Request, res: Response) {
-    const result = await ProductServices.getAllProductsFromDb()
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const filters = pick(req.query, []);
+
+    const result = await ProductServices.getAllProductsFromDb(options, filters)
 
     res.status(result.status).json(result);
 });

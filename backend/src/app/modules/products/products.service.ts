@@ -1,11 +1,15 @@
-import { Product, UserRole } from "@prisma/client";
+import { Prisma, Product, UserRole } from "@prisma/client";
 import { IServiceReturn } from "../../interfaces/service_return_type";
 import prisma from "../../constants/prisma_constructor";
 import { JwtPayload } from "jsonwebtoken";
+import { IPaginationOptions } from "../../interfaces/pagination";
+import buildPrismaQuery from "../../../utils/build_prisma_query";
 
-async function getAllProductsFromDb() {
+async function getAllProductsFromDb(options: IPaginationOptions, filters: any) {
+    const result = await buildPrismaQuery({ model: 'product', pagination: options, filters, });
 
-}
+    console.log(result);
+};
 
 async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>): Promise<IServiceReturn> {
 
