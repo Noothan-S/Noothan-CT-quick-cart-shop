@@ -7,6 +7,9 @@ import ValidationRequest from "../../middlewares/zod_validation";
 
 const router: Router = Router();
 
+router.get('/',
+    ProductControllers.getAllProducts)
+
 router.post('/',
     Auth(UserRole.VENDOR),
     ValidationRequest(ProductValidations.createProductValidationSchema),

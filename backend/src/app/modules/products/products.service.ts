@@ -3,6 +3,10 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import prisma from "../../constants/prisma_constructor";
 import { JwtPayload } from "jsonwebtoken";
 
+async function getAllProductsFromDb() {
+
+}
+
 async function createProductIntoDb(user: JwtPayload, payload: Partial<Product>): Promise<IServiceReturn> {
 
     const vendor = await prisma.vendor.findUnique({
@@ -178,13 +182,12 @@ async function deleteProductFromDb(user: JwtPayload, id: string): Promise<IServi
         message: `${product.title} is successfully deleted`,
         data: result
     }
-}
-
-
+};
 
 export const ProductServices = {
     createProductIntoDb,
     updateProductIntoDb,
-    deleteProductFromDb
+    deleteProductFromDb,
+    getAllProductsFromDb
 
 }

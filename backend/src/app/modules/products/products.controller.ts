@@ -3,6 +3,12 @@ import catchAsync from "../../../utils/catch_async";
 import { ProductServices } from "./products.service";
 import { Product } from "@prisma/client";
 
+const getAllProducts = catchAsync(async function (req: Request, res: Response) {
+    const result = await ProductServices.getAllProductsFromDb()
+
+    res.status(result.status).json(result);
+});
+
 const createProduct = catchAsync(async function (req: Request, res: Response) {
     const result = await ProductServices.createProductIntoDb(req.user, req.body as Product)
 
@@ -24,5 +30,6 @@ const deleteProduct = catchAsync(async function (req: Request, res: Response) {
 export const ProductControllers = {
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getAllProducts
 }
