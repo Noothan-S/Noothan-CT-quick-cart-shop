@@ -8,6 +8,13 @@ const createNewCoupon = catchAsync(async function (req: Request, res: Response) 
     res.status(result.status).json(result);
 });
 
+const updateCoupon = catchAsync(async function (req: Request, res: Response) {
+    const result = await CouponServices.updateCouponIntoDn(req.user, req.body)
+
+    res.status(result.status).json(result);
+});
+
 export const CouponControllers = {
-    createNewCoupon
+    createNewCoupon,
+    updateCoupon
 }

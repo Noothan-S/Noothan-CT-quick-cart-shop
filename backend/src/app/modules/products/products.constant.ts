@@ -24,6 +24,7 @@ const productIncludeObj = {
 const productCategoryIncludeObjForCoupon = {
     product: {
         include: {
+            vendor: true,
             category: {
                 select: {
                     name: true
