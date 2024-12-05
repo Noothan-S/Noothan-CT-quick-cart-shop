@@ -40,7 +40,7 @@ async function createNewCouponIntoDb(payload: Coupon): Promise<IServiceReturn> {
     }
 };
 
-async function updateCouponIntoDn(user: JwtPayload, payload: Partial<Coupon>): Promise<IServiceReturn> {
+async function updateCouponIntoDb(user: JwtPayload, payload: Partial<Coupon>): Promise<IServiceReturn> {
     if (payload.isDeleted) {
         return {
             status: 400,
@@ -63,7 +63,7 @@ async function updateCouponIntoDn(user: JwtPayload, payload: Partial<Coupon>): P
 
     if (!isExist) {
         return {
-            status: 400,
+            status: 404,
             success: false,
             message: 'Coupon not found with that productId and code',
             data: null
@@ -113,9 +113,78 @@ async function updateCouponIntoDn(user: JwtPayload, payload: Partial<Coupon>): P
         message: "Coupon updated successfully",
         data: result
     }
+};
+
+async function deleteCouponFromDb(user: JwtPayload, payload: Partial<Coupon>): Promise<IServiceReturn> {
+
+    const isExist = await prisma.coupon.findUnique({
+        where: {
+            code_productId: {
+                code: (payload.code as string),
+                productId: (payload.productId as string)
+            },
+            isDeleted: false
+        },
+        include: ProductsConstants.productCategoryIncludeObjForCoupon
+    });
+
+    if (!isExist) {
+        return {
+            status: 404,
+            success: false,
+            message: 'Coupon not found with that productId and code or already deleted',
+            data: null
+        }
+    };
+
+    const vendor = await prisma.vendor.findUnique({
+        where: {
+            email: user.email,
+            isBlackListed: false
+        }
+    });
+
+    if (!vendor) {
+        return {
+            status: 400,
+            success: false,
+            message: 'Coupon owner not exist or black listed',
+            data: null
+        }
+    }
+
+    if (isExist.product.vendor.id !== vendor.id && user.role !== UserRole.ADMIN) {
+        return {
+            status: 401,
+            success: false,
+            message: "You cannot update another vendor's coupon",
+            data: null
+        }
+    }
+
+    const result = await prisma.coupon.update({
+        where: {
+            code_productId: {
+                code: (payload.code as string),
+                productId: (payload.productId as string)
+            },
+        },
+        data: {
+            isDeleted: true
+        },
+        include: ProductsConstants.productCategoryIncludeObjForCoupon
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: "Coupon deleted successfully",
+        data: result
+    }
 }
 
 export const CouponServices = {
     createNewCouponIntoDb,
-    updateCouponIntoDn
+    updateCouponIntoDb,
+    deleteCouponFromDb
 }

@@ -13,4 +13,8 @@ router.patch('/',
     Auth(UserRole.VENDOR, UserRole.ADMIN),
     CouponControllers.updateCoupon);
 
+router.delete('/',
+    Auth(UserRole.VENDOR, UserRole.ADMIN),
+    CouponControllers.deleteCoupon);
+
 export const CouponRoutes = router;

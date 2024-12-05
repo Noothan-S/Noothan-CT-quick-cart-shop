@@ -9,12 +9,19 @@ const createNewCoupon = catchAsync(async function (req: Request, res: Response) 
 });
 
 const updateCoupon = catchAsync(async function (req: Request, res: Response) {
-    const result = await CouponServices.updateCouponIntoDn(req.user, req.body)
+    const result = await CouponServices.updateCouponIntoDb(req.user, req.body)
+
+    res.status(result.status).json(result);
+});
+
+const deleteCoupon = catchAsync(async function (req: Request, res: Response) {
+    const result = await CouponServices.deleteCouponFromDb(req.user, req.body)
 
     res.status(result.status).json(result);
 });
 
 export const CouponControllers = {
     createNewCoupon,
-    updateCoupon
+    updateCoupon,
+    deleteCoupon
 }
