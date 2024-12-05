@@ -6,6 +6,11 @@ const productIncludeObj = {
                 select: {
                     profile: true
                 }
+            },
+            vendorResponse: {
+                include: {
+                    vendor: true
+                }
             }
         }
     }
