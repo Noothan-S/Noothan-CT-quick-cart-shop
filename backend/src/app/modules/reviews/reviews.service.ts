@@ -35,7 +35,7 @@ async function createNewReviewIntoDb(user: JwtPayload, payload: Partial<Review>)
                     review: {
                         include: {
                             user: {
-                                include: {
+                                select: {
                                     profile: true
                                 }
                             }
