@@ -4,13 +4,14 @@ import prisma from "../../constants/prisma_constructor";
 import { JwtPayload } from "jsonwebtoken";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
+import { ProductsConstants } from "./products.constant";
 
 async function getAllProductsFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
     const result = await buildPrismaQuery({
         model: 'product',
         filters: { ...filters, isDeleted: false },
         pagination: options,
-        include: { vendor: true }
+        include: ProductsConstants.productIncludeObj
     });
 
     return {
@@ -27,8 +28,9 @@ async function getSingleProductFromDb(id: string): Promise<IServiceReturn> {
     const result = await prisma.product.findUnique({
         where: {
             id,
-            isDeleted: false
-        }
+            isDeleted: false,
+        },
+        include: ProductsConstants.productIncludeObj
     });
 
     if (!result) {
