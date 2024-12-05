@@ -28,7 +28,13 @@ async function getAllCouponsFromDb(user: JwtPayload): Promise<IServiceReturn> {
     }
 
     const result = await prisma.coupon.findMany({
-        where: whereCondition,
+        where: {
+            expiryDate: {
+                gt: new Date()
+            },
+            isDeleted: false,
+            ...whereCondition,
+        },
         include: ProductsConstants.productCategoryIncludeObjForCoupon
     });
 
@@ -39,6 +45,37 @@ async function getAllCouponsFromDb(user: JwtPayload): Promise<IServiceReturn> {
         data: result,
     };
 }
+
+async function getSingleCouponFromDb(payload: Partial<Coupon>): Promise<IServiceReturn> {
+    const result = await prisma.coupon.findFirst({
+        where: {
+            code: payload.code as string,
+            productId: payload.productId as string,
+            isDeleted: false,
+            expiryDate: {
+                gt: new Date()
+            }
+        },
+        include: ProductsConstants.productCategoryIncludeObjForCoupon
+    });
+
+    if (!result) {
+        return {
+            status: 404,
+            success: false,
+            message: "Coupon not found with that productId and code or already expired",
+            data: null
+        }
+    }
+
+    return {
+        status: 200,
+        success: false,
+        message: "Coupon retrieve successfully",
+        data: result
+    }
+}
+
 
 async function createNewCouponIntoDb(payload: Coupon): Promise<IServiceReturn> {
 
@@ -223,5 +260,6 @@ export const CouponServices = {
     createNewCouponIntoDb,
     updateCouponIntoDb,
     deleteCouponFromDb,
-    getAllCouponsFromDb
+    getAllCouponsFromDb,
+    getSingleCouponFromDb
 }

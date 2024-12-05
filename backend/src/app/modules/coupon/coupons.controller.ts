@@ -8,6 +8,12 @@ const getAllCoupon = catchAsync(async function (req: Request, res: Response) {
     res.status(result.status).json(result);
 });
 
+const getSingleCoupon = catchAsync(async function (req: Request, res: Response) {
+    const result = await CouponServices.getSingleCouponFromDb(req.body)
+
+    res.status(result.status).json(result);
+});
+
 const createNewCoupon = catchAsync(async function (req: Request, res: Response) {
     const result = await CouponServices.createNewCouponIntoDb(req.body)
 
@@ -30,5 +36,6 @@ export const CouponControllers = {
     createNewCoupon,
     updateCoupon,
     deleteCoupon,
-    getAllCoupon
+    getAllCoupon,
+    getSingleCoupon
 }
