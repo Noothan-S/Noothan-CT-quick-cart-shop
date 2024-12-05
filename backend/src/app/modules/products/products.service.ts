@@ -20,7 +20,6 @@ async function getAllProductsFromDb(options: IPaginationOptions, filters: any): 
         message: "Products retrieved successfully",
         data: result
     }
-
 };
 
 async function getSingleProductFromDb(id: string): Promise<IServiceReturn> {

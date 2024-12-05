@@ -52,8 +52,9 @@ model Vendor {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  user    User      @relation(fields: [email], references: [email])
-  product Product[]
+  user           User             @relation(fields: [email], references: [email])
+  product        Product[]
+  vendorResponse VendorResponse[]
 
   @@map("vendors")
 }
@@ -96,6 +97,8 @@ model Coupon {
   parentage  Float
   expiryDate DateTime
   productId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
 
@@ -104,14 +107,33 @@ model Coupon {
 }
 
 model Review {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   productId   String
   userId      String
   description String
   rating      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  user           User             @relation(fields: [userId], references: [id])
+  product        Product          @relation(fields: [productId], references: [id])
+  vendorResponse VendorResponse[]
+
+  @@map("reviews")
+}
+
+model VendorResponse {
+  id          String   @id @default(uuid())
+  reviewId    String
+  vendorId    String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+  review Review @relation(fields: [reviewId], references: [id])
+
+  @@map("vendor_response")
 }
 
 enum UserStatus {
