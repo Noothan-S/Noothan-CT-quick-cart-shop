@@ -61,9 +61,75 @@ async function responseNewReviewIntoDb(user: JwtPayload, id: string, payload: Pa
         message: "Successfully respond",
         data: result
     }
-
 };
 
+async function updateReviewResponseIntoDb(user: JwtPayload, id: string, payload: Partial<VendorResponse>) {
+
+    const response = await prisma.vendorResponse.findUnique({
+        where: {
+            id,
+            isDeleted: false
+        },
+        include: {
+            vendor: {
+                include: {
+                    user: {
+                        select: {
+                            id: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    // console.dir(review, { depth: null, colors: true });
+
+    if (!response) {
+        return {
+            status: 404,
+            success: false,
+            message: "response not found with that id",
+            data: null
+        }
+    };
+
+    if (response.vendor.isBlackListed) {
+        return {
+            status: 400,
+            success: false,
+            message: "Vendor back listed",
+            data: null
+        }
+    }
+
+    if (user.id !== response.vendor.user.id && user.role !== UserRole.ADMIN) {
+        return {
+            status: 401,
+            success: false,
+            message: "Permission denied. You cannot edit another vendor's review",
+            data: null
+        }
+    }
+
+    const result = await prisma.vendorResponse.update({
+        where: {
+            id
+        },
+        data: payload,
+        include: {
+            vendor: true
+        }
+    });
+
+    return {
+        status: 201,
+        success: true,
+        message: "Successfully edit response",
+        data: result
+    }
+}
+
 export const ReviewResponseServices = {
-    responseNewReviewIntoDb
+    responseNewReviewIntoDb,
+    updateReviewResponseIntoDb
 }

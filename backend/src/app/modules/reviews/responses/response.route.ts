@@ -10,4 +10,7 @@ router.use(Auth(UserRole.VENDOR, UserRole.ADMIN));
 router.post('/:id',
     ReviewResponseControllers.responseNewReview);
 
+router.patch('/:id',
+    ReviewResponseControllers.updateReviewResponse);
+
 export const ReviewResponseRoutes = router
