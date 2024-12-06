@@ -159,7 +159,7 @@ async function updateOrderStatusIntoDb(user: JwtPayload, orderId: string, payloa
         },
     });
 
-    return orderServiceReturn(undefined, result)
+    return orderServiceReturn(undefined, result);
 }
 
 export const OrderServices = {

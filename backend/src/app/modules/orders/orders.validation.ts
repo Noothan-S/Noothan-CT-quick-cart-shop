@@ -12,7 +12,7 @@ const paymentDataSchema = z.object({
     amount: z.number().positive(),
 });
 
-const createNewValidationSchema = z.object({
+const createNewOrderValidationSchema = z.object({
     body: z.object({
         vendorId: z.string().uuid(),
         items: z.array(itemSchema),
@@ -20,6 +20,15 @@ const createNewValidationSchema = z.object({
     })
 });
 
+const updateOrderStatusValidationSchema = z.object({
+    body: z.object({
+        status: z.enum(["PENDING", "PROCESSING", "DELIVERED", "CANCELLED"])
+    })
+})
+
+
+
 export const OrderValidations = {
-    createNewValidationSchema
+    createNewOrderValidationSchema,
+    updateOrderStatusValidationSchema
 }
