@@ -17,4 +17,9 @@ router.post('/',
     ValidationRequest(OrderValidations.createNewValidationSchema),
     orderControllers.createNewOrder);
 
+router.patch('/:id',
+    Auth(UserRole.VENDOR, UserRole.ADMIN),
+    // ValidationRequest(OrderValidations.createNewValidationSchema),
+    orderControllers.updateOrderStatus);
+
 export const OrderRoutes = router;

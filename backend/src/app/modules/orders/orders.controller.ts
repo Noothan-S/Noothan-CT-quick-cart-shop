@@ -17,7 +17,14 @@ const createNewOrder = catchAsync(async function (req: Request, res: Response) {
     res.status(result.status).json(result);
 });
 
+const updateOrderStatus = catchAsync(async function (req: Request, res: Response) {
+    const result = await OrderServices.updateOrderStatusIntoDb(req.user, req.params.id, req.body);
+
+    res.status(result.status).json(result);
+});
+
 export const orderControllers = {
     createNewOrder,
-    getAllOrders
+    getAllOrders,
+    updateOrderStatus
 }

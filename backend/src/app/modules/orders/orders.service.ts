@@ -4,8 +4,10 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import { ICreateOrderPayload } from "./orders.interface";
 import { OrderConstants } from "./order.constant";
 import { IPaginationOptions } from "../../interfaces/pagination";
-import { UserRole } from "@prisma/client";
+import { Order, OrderStatus, UserRole } from "@prisma/client";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
+import isValidUUID from "../../../utils/is_valid_uuid";
+import orderServiceReturn from "./orders.service_return";
 
 async function getAllOrdersFromDb(user: JwtPayload, options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
     let result;
@@ -128,7 +130,40 @@ async function createNewOrderIntoDb(user: JwtPayload, payload: ICreateOrderPaylo
     }
 };
 
+async function updateOrderStatusIntoDb(user: JwtPayload, orderId: string, payload: { status: OrderStatus }) {
+    if (!isValidUUID(orderId)) {
+        return orderServiceReturn('invalid_uuid');
+    }
+
+    const order = await prisma.order.findUnique({
+        where: {
+            id: orderId
+        },
+        include: OrderConstants.fetchOrderForUpdateStatus
+    });
+
+    if (!order) {
+        return orderServiceReturn('order_not_found')
+    };
+
+    if (user.id !== order.vendor.user.id && user.role !== UserRole.ADMIN) {
+        return orderServiceReturn('permission_denied')
+    };
+
+    const result = await prisma.order.update({
+        where: {
+            id: orderId,
+        },
+        data: {
+            status: payload.status
+        },
+    });
+
+    return orderServiceReturn(undefined, result)
+}
+
 export const OrderServices = {
     createNewOrderIntoDb,
-    getAllOrdersFromDb
+    getAllOrdersFromDb,
+    updateOrderStatusIntoDb
 }

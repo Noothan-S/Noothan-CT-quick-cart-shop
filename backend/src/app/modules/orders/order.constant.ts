@@ -42,9 +42,22 @@ const fetchOrdersAdmin = {
     vendor: true
 }
 
+const fetchOrderForUpdateStatus = {
+    vendor: {
+        include: {
+            user: {
+                select: {
+                    id: true
+                }
+            }
+        }
+    }
+}
+
 export const OrderConstants = {
     newOrderCreateIncludeObj,
     fetchOrdersForCustomer,
     fetchOrdersVendor,
-    fetchOrdersAdmin
+    fetchOrdersAdmin,
+    fetchOrderForUpdateStatus
 }
