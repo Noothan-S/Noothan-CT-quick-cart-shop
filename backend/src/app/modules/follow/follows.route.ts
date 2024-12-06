@@ -4,6 +4,9 @@ import Auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 const router: Router = Router();
 
+router.get('/:vendorId',
+    FollowControllers.getVendorFollowers);
+
 router.get('/',
     Auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.VENDOR),
     FollowControllers.getFollowersOrFollowings);

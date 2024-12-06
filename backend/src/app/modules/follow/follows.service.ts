@@ -57,6 +57,39 @@ async function getFollowersOrFollowingsFromDb(user: JwtPayload): Promise<IServic
         data: result
     }
 
+};
+
+async function getVendorFollowersFromDb(vendorId: string): Promise<IServiceReturn> {
+
+    if (!isValidUUID(vendorId)) {
+        return {
+            status: 400,
+            success: false,
+            message: 'Invalid VendorId Formate',
+            data: null
+        }
+    }
+
+    const result = await prisma.follow.findMany({
+        where: {
+            vendorId
+        },
+        include: {
+            user: {
+                select: {
+                    profile: true
+                }
+            }
+        }
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: 'Followers retrieved successfully',
+        data: result
+    }
+
 }
 
 async function createOrRemoveFollowIntoDb(user: JwtPayload, vendorId: string): Promise<IServiceReturn> {
@@ -116,5 +149,6 @@ async function createOrRemoveFollowIntoDb(user: JwtPayload, vendorId: string): P
 
 export const FollowServices = {
     createOrRemoveFollowIntoDb,
-    getFollowersOrFollowingsFromDb
+    getFollowersOrFollowingsFromDb,
+    getVendorFollowersFromDb
 }
