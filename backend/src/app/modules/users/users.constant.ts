@@ -1,7 +1,8 @@
 const fetchAllUsersIncludeObj = {
-    profile: true
+    profile: true,
 }
 
+
 export const UserConstants = {
-    fetchAllUsersIncludeObj
+    fetchAllUsersIncludeObj,
 }

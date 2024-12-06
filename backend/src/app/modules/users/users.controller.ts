@@ -4,13 +4,20 @@ import { UserServices } from "./users.service";
 import { ICreateUser, ILogin } from "./users.interface";
 import pick from "../../../utils/pick";
 
-const getAllUser = catchAsync(async function (req: Request, res: Response) {
+const getAllUsers = catchAsync(async function (req: Request, res: Response) {
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const filters = pick(req.query, []);
-    const result = await UserServices.getAllUserFromDb(options, filters)
+    const result = await UserServices.getAllUsersFromDb(options, filters)
 
     res.status(result.status).json(result)
+});
 
+const getAllVendors = catchAsync(async function (req: Request, res: Response) {
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const filters = pick(req.query, ['isBlackListed']);
+    const result = await UserServices.getAllVendorsFromDb(options, filters)
+
+    res.status(result.status).json(result)
 });
 
 const createUser = catchAsync(async function (req: Request, res: Response) {
@@ -29,5 +36,6 @@ const updateProfile = catchAsync(async function (req: Request, res: Response) {
 export const UserControllers = {
     createUser,
     updateProfile,
-    getAllUser
+    getAllUsers,
+    getAllVendors
 }

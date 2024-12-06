@@ -7,7 +7,7 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import { UserConstants } from "./users.constant";
 import { ICreateUser } from "./users.interface";
 
-async function getAllUserFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
+async function getAllUsersFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
     const result = await buildPrismaQuery({
         model: 'user',
         pagination: options,
@@ -18,6 +18,33 @@ async function getAllUserFromDb(options: IPaginationOptions, filters: any): Prom
             status: 'ACTIVE'
         },
         include: UserConstants.fetchAllUsersIncludeObj
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: "Users retrieved successfully",
+        data: result
+    }
+
+}
+async function getAllVendorsFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
+    const _filters: Filters = {};
+
+    type Filters = {
+        isBlackListed?: boolean;
+    };
+
+    if (filters.isBlackListed === 'true') {
+        _filters.isBlackListed = true;
+    } else if (filters.isBlackListed === 'false') {
+        _filters.isBlackListed = false;
+    }
+
+    const result = await buildPrismaQuery({
+        model: 'vendor',
+        pagination: options,
+        filters: _filters
     });
 
     return {
@@ -116,6 +143,7 @@ async function updateProfileIntoDb(payload: any): Promise<IServiceReturn> {
 export const UserServices = {
     createUserIntoDb,
     updateProfileIntoDb,
-    getAllUserFromDb
+    getAllUsersFromDb,
+    getAllVendorsFromDb
 };
 

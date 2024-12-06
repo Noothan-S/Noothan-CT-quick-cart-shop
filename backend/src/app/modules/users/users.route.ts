@@ -9,7 +9,11 @@ const router: Router = Router();
 
 router.get('/customers',
     Auth(UserRole.ADMIN),
-    UserControllers.getAllUser);
+    UserControllers.getAllUsers);
+
+router.get('/vendors',
+    Auth(UserRole.ADMIN),
+    UserControllers.getAllVendors);
 
 router.post('/',
     ValidationRequest(UserValidations.CreateUserValidationSchema),
