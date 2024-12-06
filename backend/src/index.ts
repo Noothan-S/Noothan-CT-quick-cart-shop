@@ -4,6 +4,7 @@ import { Server } from 'http';
 import router from './app/routes'; // Importing routes
 import config from './app/config'; // Importing configuration settings
 import globalErrorHandler from './app/middlewares/global_error_handler'; // Global error handling middleware
+import cookieParser from "cookie-parser";
 
 // Initialize the Express application
 const app: Application = express();
@@ -11,6 +12,9 @@ let server: Server;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+
+// Use cookie-parser middleware
+app.use(cookieParser());
 
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different origins
 app.use(cors());

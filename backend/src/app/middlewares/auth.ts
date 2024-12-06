@@ -2,11 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import config from "../config";
 
+
 function Auth(...roles: string[]) {
     return (req: Request, res: Response, next: NextFunction): void => {
         const authHeader = req.headers.authorization;
 
-        if (!authHeader || !authHeader.startsWith('Bearer')) {
+        const token = authHeader?.startsWith('Bearer')
+            ? authHeader.slice(7)
+            : req.cookies?.accessToken;
+
+        if (!token) {
             res.status(401).json({
                 success: false,
                 statusCode: 401,
@@ -15,9 +20,8 @@ function Auth(...roles: string[]) {
             return;
         }
 
-        const extractToken = authHeader.slice(7);
-
-        jwt.verify(extractToken, config.jwt_secret as Secret, (err, decoded) => {
+        // @ts-ignore
+        jwt.verify(token, config.jwt_secret as Secret, (err, decoded) => {
             if (err) {
                 res.status(401).json({
                     success: false,
