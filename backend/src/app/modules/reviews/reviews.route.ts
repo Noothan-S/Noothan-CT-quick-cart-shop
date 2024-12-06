@@ -4,6 +4,7 @@ import Auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 import ValidationRequest from "../../middlewares/zod_validation";
 import { ReviewValidations } from "./review.validation";
+import { ReviewResponseRoutes } from "./responses/response.route";
 
 const router: Router = Router();
 
@@ -24,5 +25,8 @@ router.patch('/:id',
 router.delete('/:id',
     Auth(UserRole.CUSTOMER, UserRole.ADMIN),
     ReviewControllers.deleteReview);
+
+// response
+router.use('/response', ReviewResponseRoutes)
 
 export const ReviewRoutes = router;
