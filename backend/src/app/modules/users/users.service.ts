@@ -1,7 +1,33 @@
+import { UserRole } from "@prisma/client";
 import { bcryptOperation } from "../../../utils/bcrypt";
+import buildPrismaQuery from "../../../utils/build_prisma_query";
 import prisma from "../../constants/prisma_constructor"
+import { IPaginationOptions } from "../../interfaces/pagination";
 import { IServiceReturn } from "../../interfaces/service_return_type";
+import { UserConstants } from "./users.constant";
 import { ICreateUser } from "./users.interface";
+
+async function getAllUserFromDb(options: IPaginationOptions, filters: any): Promise<IServiceReturn> {
+    const result = await buildPrismaQuery({
+        model: 'user',
+        pagination: options,
+        filters: {
+            ...filters,
+            role: UserRole.CUSTOMER,
+            isDeleted: false,
+            status: 'ACTIVE'
+        },
+        include: UserConstants.fetchAllUsersIncludeObj
+    });
+
+    return {
+        status: 200,
+        success: true,
+        message: "Users retrieved successfully",
+        data: result
+    }
+
+}
 
 async function createUserIntoDb(payload: ICreateUser): Promise<IServiceReturn> {
     const { password, ...othersData } = payload;
@@ -87,10 +113,9 @@ async function updateProfileIntoDb(payload: any): Promise<IServiceReturn> {
     }
 };
 
-
-
 export const UserServices = {
     createUserIntoDb,
     updateProfileIntoDb,
+    getAllUserFromDb
 };
 
