@@ -13,4 +13,7 @@ router.post('/:id',
 router.patch('/:id',
     ReviewResponseControllers.updateReviewResponse);
 
+router.delete('/:id',
+    ReviewResponseControllers.deleteReviewResponse);
+
 export const ReviewResponseRoutes = router
