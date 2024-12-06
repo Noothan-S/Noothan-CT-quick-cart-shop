@@ -24,7 +24,7 @@ function followServiceReturn(condition?: string, data?: any): IServiceReturn {
                 status: 200,
                 success: true,
                 message: 'Operation successful',
-                data: data
+                data: data || null
             };
     }
 }

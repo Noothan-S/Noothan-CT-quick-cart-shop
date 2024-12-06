@@ -8,6 +8,13 @@ const createNewFollow = catchAsync(async function (req: Request, res: Response) 
     res.status(result.status).json(result);
 });
 
+const getFollowersOrFollowings = catchAsync(async function (req: Request, res: Response) {
+    const result = await FollowServices.getFollowersOrFollowingsFromDb(req.user);
+
+    res.status(result.status).json(result);
+});
+
 export const FollowControllers = {
-    createNewFollow
+    createNewFollow,
+    getFollowersOrFollowings
 }
