@@ -19,6 +19,7 @@ model User {
   profile   Profile?
   vendor    Vendor?
   review    Review[]
+  following Follow[]
 
   @@map("users")
 }
@@ -55,6 +56,7 @@ model Vendor {
   user           User             @relation(fields: [email], references: [email])
   product        Product[]
   vendorResponse VendorResponse[]
+  follower       Follow[]
 
   @@map("vendors")
 }
@@ -137,6 +139,16 @@ model VendorResponse {
   review Review @relation(fields: [reviewId], references: [id])
 
   @@map("vendor_response")
+}
+
+model Follow {
+  userId   String
+  vendorId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+
+  @@id([userId, vendorId])
 }
 
 enum UserStatus {
