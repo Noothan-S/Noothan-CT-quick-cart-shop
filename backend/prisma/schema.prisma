@@ -151,6 +151,58 @@ model Follow {
   @@id([userId, vendorId])
 }
 
+model Order {
+  id            String        @id @default(uuid())
+  userId        String
+  vendorId      String
+  status        OrderStatus   @default(PENDING)
+  totalPrice    Float
+  paymentId     String?
+  paymentStatus PaymentStatus @default(UNPAID)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  items   OrderItem[]
+  payment Payment[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  productId String
+  orderId   String
+  quantity  Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  id          String @id @default(uuid())
+  txId        String
+  amount      Float
+  orderId     String
+  gatewayData String
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
+
 enum UserStatus {
   ACTIVE
   BLOCKED
