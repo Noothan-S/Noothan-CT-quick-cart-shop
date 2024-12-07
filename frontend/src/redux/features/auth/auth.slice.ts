@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { IAuthUser } from "../../../interfaces/user.slice.auth.type";
 
 interface TAuthState {
-    user: any;
+    user: IAuthUser | null;
     token: null | string
 }
 
