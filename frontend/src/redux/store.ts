@@ -5,13 +5,13 @@ import storage from 'redux-persist/lib/storage'
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
 
 const persistConfig = { key: 'auth', storage }
-const persistedReducer = persistReducer(persistConfig, authReducer)
+const persistedAuthReducer = persistReducer(persistConfig, authReducer)
 
 export const store = configureStore({
 
     reducer: {
         [baseApi.reducerPath]: baseApi.reducer,
-        auth: persistedReducer
+        auth: persistedAuthReducer
     },
 
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
