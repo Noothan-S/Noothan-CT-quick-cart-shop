@@ -7,10 +7,16 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidationSchema } from "../../validations/login_validation";
+import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/features/auth/auth.slice";
+import { encrypt } from "../../utils/text_encryption";
 
 type LoginFormInputs = z.infer<typeof loginValidationSchema>;
 
 const Login: FC = () => {
+  const [loginUser] = useLoginUserMutation();
+  const dispatch = useAppDispatch();
   const {
     control,
     handleSubmit,
@@ -19,8 +25,21 @@ const Login: FC = () => {
     resolver: zodResolver(loginValidationSchema),
   });
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (credential: LoginFormInputs) => {
+    const res = await loginUser(credential);
+
+    if (res.data.success) {
+      dispatch(
+        setUser({
+          token: encrypt(res.data?.data?.accessToken),
+          user: {
+            id: encrypt(res.data?.data?.user?.id),
+            email: encrypt(res.data?.data?.user?.email),
+            role: encrypt(res.data?.data?.user?.role),
+          },
+        })
+      );
+    }
   };
 
   return (
