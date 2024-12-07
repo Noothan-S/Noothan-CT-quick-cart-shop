@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ShoppingCart, User } from 'lucide-react';
+import Logo from '../constants/logo';
 
 export default function Header() {
     return (
         <header className="bg-white shadow-sm">
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                <Link to="/" className="text-2xl font-bold text-primary">Quick<span className='text-red-500'>Cart</span></Link>
+                <Logo />
                 <nav className="hidden md:flex space-x-8">
                     <Link to="/" className="text-gray-600 hover:text-primary">Home</Link>
                     <Link to="/categories" className="text-gray-600 hover:text-primary">Categories</Link>
@@ -16,7 +17,7 @@ export default function Header() {
                     <Link to="/cart" className="text-gray-600 hover:text-primary">
                         <ShoppingCart className="h-6 w-6" />
                     </Link>
-                    <Link to="/account" className="text-gray-600 hover:text-primary">
+                    <Link to="/auth/login" className="text-gray-600 hover:text-primary">
                         <User className="h-6 w-6" />
                     </Link>
                 </div>

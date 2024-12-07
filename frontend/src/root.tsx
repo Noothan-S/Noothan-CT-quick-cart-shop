@@ -5,13 +5,15 @@ import Footer from "./components/footer";
 
 const Root: FC = () => {
   return (
-    <>
+    <div className="bg-gray-50">
       <nav>
         <Header />
       </nav>
-      <Outlet />
+      <main className="min-h-screen">
+        <Outlet />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 
