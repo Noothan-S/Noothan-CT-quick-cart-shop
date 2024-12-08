@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import {
   MenuFoldOutlined,
@@ -9,7 +7,6 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, ConfigProvider, theme } from "antd";
-import { User } from "lucide-react";
 import { Link } from "react-router-dom";
 import navItems from "../../../constants/nav_items";
 
@@ -88,7 +85,7 @@ const Vendor: React.FC = () => {
                 {navItems.map((item) => (
                   <Link to={item.link}>{item.name}</Link>
                 ))}
-                <div className="dropdown dropdown-end">
+                <div className="dropdown dropdown-end mt-3">
                   <div
                     tabIndex={0}
                     role="button"

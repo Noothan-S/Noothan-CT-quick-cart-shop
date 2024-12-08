@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, User } from "lucide-react";
+import { User } from "lucide-react";
 import Logo from "../constants/logo";
 import navItems from "../constants/nav_items";
 import { Button } from "antd";
