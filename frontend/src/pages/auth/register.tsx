@@ -1,17 +1,17 @@
 import { FC, useState } from "react";
 import Logo from "../../constants/logo";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Eye, EyeClosed, Lock } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginValidationSchema } from "../../validations/login_validation";
 import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
 import { createUserValidationSchema } from "../../validations/user_create_validation";
+import { userCreationOptions } from "../../constants/user.create.role";
 
 type createUserFormInputs = z.infer<typeof createUserValidationSchema>;
 
@@ -26,7 +26,7 @@ const Register: FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<createUserFormInputs>({
-    // resolver: zodResolver(loginValidationSchema),
+    resolver: zodResolver(createUserValidationSchema),
   });
 
   const onSubmit = async (credential: createUserFormInputs) => {
@@ -61,6 +61,35 @@ const Register: FC = () => {
               className="space-y-4 md:space-y-6"
               onSubmit={handleSubmit(onSubmit)}
             >
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Join as
+                </label>
+                <Controller
+                  name="role"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      className="w-full"
+                      size="large"
+                      //   defaultValue="CUSTOMER"
+                      placeholder="Select account type"
+                      options={userCreationOptions}
+                    />
+                  )}
+                />
+
+                {errors.role && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.role.message}
+                  </p>
+                )}
+              </div>
+
               <div>
                 <label
                   htmlFor="email"
@@ -117,6 +146,11 @@ const Register: FC = () => {
                     />
                   )}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
               <div>
                 <label
