@@ -7,20 +7,26 @@ import { UserRole } from "@prisma/client";
 
 const router: Router = Router();
 
-router.get('/customers',
-    Auth(UserRole.ADMIN),
-    UserControllers.getAllUsers);
+router.get("/customers", Auth(UserRole.ADMIN), UserControllers.getAllUsers);
 
-router.get('/vendors',
-    Auth(UserRole.ADMIN),
-    UserControllers.getAllVendors);
+router.get(
+  "/me",
+  Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
+  UserControllers.getMyProfile
+);
 
-router.post('/',
-    ValidationRequest(UserValidations.CreateUserValidationSchema),
-    UserControllers.createUser);
+router.get("/vendors", Auth(UserRole.ADMIN), UserControllers.getAllVendors);
 
-router.put('/',
-    ValidationRequest(UserValidations.UpdateProfileOrVendorValidationSchema),
-    UserControllers.updateProfile);
+router.post(
+  "/",
+  ValidationRequest(UserValidations.CreateUserValidationSchema),
+  UserControllers.createUser
+);
+
+router.put(
+  "/",
+  ValidationRequest(UserValidations.UpdateProfileOrVendorValidationSchema),
+  UserControllers.updateProfile
+);
 
 export const UserRoutes = router;

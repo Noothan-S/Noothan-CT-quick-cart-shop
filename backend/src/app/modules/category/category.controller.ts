@@ -3,32 +3,35 @@ import catchAsync from "../../../utils/catch_async";
 import { CategoryServices } from "./category.service";
 
 const getCategories = catchAsync(async function (req: Request, res: Response) {
-    const result = await CategoryServices.getCategoriesFromDb()
+  const result = await CategoryServices.getCategoriesFromDb();
 
-    res.status(result.status).json(result);
+  res.status(result.status).json(result);
 });
 
 const createCategory = catchAsync(async function (req: Request, res: Response) {
-    const result = await CategoryServices.createCategoryIntoDb(req.body)
+  const result = await CategoryServices.createCategoryIntoDb(req.body);
 
-    res.status(result.status).json(result);
+  res.status(result.status).json(result);
 });
 
 const updateCategory = catchAsync(async function (req: Request, res: Response) {
-    const result = await CategoryServices.updateCategoryIntoDb(req.params.id, req.body)
+  const result = await CategoryServices.updateCategoryIntoDb(
+    req.params.id,
+    req.body
+  );
 
-    res.status(result.status).json(result);
+  res.status(result.status).json(result);
 });
 
 const deleteCategory = catchAsync(async function (req: Request, res: Response) {
-    const result = await CategoryServices.deleteCategoryFromDb(req.params.id)
+  const result = await CategoryServices.deleteCategoryFromDb(req.params.id);
 
-    res.status(result.status).json(result);
+  res.status(result.status).json(result);
 });
 
 export const CategoryController = {
-    createCategory,
-    updateCategory,
-    deleteCategory,
-    getCategories
-}
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  getCategories,
+};

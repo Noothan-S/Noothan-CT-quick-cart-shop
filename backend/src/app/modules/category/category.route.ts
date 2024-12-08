@@ -7,21 +7,22 @@ import { UserRole } from "@prisma/client";
 
 const router: Router = Router();
 
-router.get('/',
-    CategoryController.getCategories)
+router.get("/", CategoryController.getCategories);
 
-router.post('/',
-    Auth(UserRole.ADMIN),
-    ValidationRequest(CategoryValidation.CategoryValidationSchema),
-    CategoryController.createCategory);
+router.post(
+  "/",
+  Auth(UserRole.ADMIN),
+  ValidationRequest(CategoryValidation.CategoryValidationSchema),
+  CategoryController.createCategory
+);
 
-router.patch('/:id',
-    Auth(UserRole.ADMIN),
-    ValidationRequest(CategoryValidation.CategoryValidationSchema),
-    CategoryController.updateCategory);
+router.patch(
+  "/:id",
+  Auth(UserRole.ADMIN),
+  ValidationRequest(CategoryValidation.CategoryValidationSchema),
+  CategoryController.updateCategory
+);
 
-router.delete('/:id',
-    Auth(UserRole.ADMIN),
-    CategoryController.deleteCategory);
+router.delete("/:id", Auth(UserRole.ADMIN), CategoryController.deleteCategory);
 
-export const CategoryRoutes = router
+export const CategoryRoutes = router;

@@ -63,7 +63,6 @@ async function getAllOrdersFromDb(user: JwtPayload, options: IPaginationOptions,
         message: "Orders retrieved successfully",
         data: result
     }
-
 }
 
 async function createNewOrderIntoDb(user: JwtPayload, payload: ICreateOrderPayload): Promise<IServiceReturn> {
