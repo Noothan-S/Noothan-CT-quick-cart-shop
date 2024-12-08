@@ -32,11 +32,9 @@ const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
     const res = await updateUser(additionalPayload);
 
     if (res?.data?.success) {
-      setTimeout(() => {
-        toast.info("Please login your account");
-        navigate("/auth/login");
-        metadata.setIsPassed(false);
-      }, 500);
+      toast.success("Account registered. Please login your account");
+      navigate("/auth/login");
+      metadata.setIsPassed(false);
     }
   };
 

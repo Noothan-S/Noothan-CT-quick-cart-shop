@@ -12,6 +12,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 type LoginFormInputs = z.infer<typeof loginValidationSchema>;
 
@@ -32,6 +33,7 @@ const Login: FC = () => {
     const res = await loginUser(credential);
 
     if (res?.data?.success) {
+      toast.success(`${res.data?.data?.user?.role} logged in success`);
       dispatch(
         setUser({
           token: encrypt(res.data?.data?.accessToken),

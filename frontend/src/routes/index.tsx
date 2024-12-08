@@ -4,6 +4,7 @@ import Home from "../pages/home";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Vendor from "../pages/bashboard/vendor";
+import AddProduct from "../pages/bashboard/vendor/add_product";
 
 export const router = createBrowserRouter([
   {
@@ -27,5 +28,11 @@ export const router = createBrowserRouter([
   {
     path: "dashboard/vendor",
     element: <Vendor />,
+    children: [
+      {
+        path: "add-product",
+        element: <AddProduct />,
+      },
+    ],
   },
 ]);

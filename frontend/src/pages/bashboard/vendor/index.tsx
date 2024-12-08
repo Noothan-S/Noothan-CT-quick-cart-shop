@@ -3,12 +3,12 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
-  UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, ConfigProvider, theme } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import navItems from "../../../constants/nav_items";
+import { ShoppingBasket } from "lucide-react";
 
 const { Header, Sider, Content } = Layout;
 
@@ -46,8 +46,8 @@ const Vendor: React.FC = () => {
             items={[
               {
                 key: "1",
-                icon: <UserOutlined />,
-                label: "nav 1",
+                icon: <ShoppingBasket />,
+                label: "Add Product",
               },
               {
                 key: "2",
@@ -129,7 +129,7 @@ const Vendor: React.FC = () => {
               overflow: "auto",
             }}
           >
-            Content
+            <Outlet />
           </Content>
         </Layout>
       </Layout>
