@@ -18,16 +18,17 @@ import { InboxOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Dragger from "antd/es/upload/Dragger";
+import { toast } from "sonner";
+import uploadImageToImgBb from "../../../utils/upload_image";
 
 type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
 const AddProduct: FC = () => {
   const { data: categories, isLoading } = useGetCategoriesQuery();
   const [createNewProduct] = useCreateNewProductMutation();
+  const [isGlobalLoading, setIsGlobalLoading] = useState<boolean>(false);
 
   // State for uploaded images
   const [images, setImages] = useState<File[]>([]);
-
-  console.log(images);
 
   const handleUploadChange = (info: any) => {
     const fileList = info.fileList
@@ -65,7 +66,20 @@ const AddProduct: FC = () => {
   ): Promise<void> {
     // const res = await createNewProduct(data);
 
-    console.log(data);
+    if (!images.length) {
+      toast.error("Select one image");
+      return;
+    }
+    setIsGlobalLoading(true);
+    const imgBbResponse = await uploadImageToImgBb(images);
+    const payload = { ...data, imgs: imgBbResponse.urls };
+
+    const res = await createNewProduct(payload);
+
+    if (res.data.success) {
+      setIsGlobalLoading(false);
+      toast.success("Product published");
+    }
   }
 
   return (
@@ -298,6 +312,7 @@ const AddProduct: FC = () => {
                 </Dragger>
               </div>
               <Button
+                loading={isGlobalLoading}
                 htmlType="submit"
                 className="w-full"
                 size="large"
