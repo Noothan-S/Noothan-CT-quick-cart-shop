@@ -3,12 +3,11 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, ConfigProvider, theme } from "antd";
 import { Link, Outlet } from "react-router-dom";
 import navItems from "../../../constants/nav_items";
-import { ShoppingBasket } from "lucide-react";
+import { ShoppingBasket, SquareChartGantt } from "lucide-react";
 
 const { Header, Sider, Content } = Layout;
 
@@ -36,6 +35,7 @@ const Vendor: React.FC = () => {
             position: "fixed",
             left: 0,
             top: 0,
+            paddingTop: 20,
             bottom: 0,
           }}
         >
@@ -47,17 +47,17 @@ const Vendor: React.FC = () => {
               {
                 key: "1",
                 icon: <ShoppingBasket />,
-                label: "Add Product",
+                label: <Link to="add-product">Add Product</Link>,
               },
               {
                 key: "2",
-                icon: <VideoCameraOutlined />,
-                label: "nav 2",
+                icon: <SquareChartGantt />,
+                label: <Link to="products">All Products</Link>,
               },
               {
                 key: "3",
                 icon: <UploadOutlined />,
-                label: "nav 3",
+                label: <Link to="/uploads">Uploads</Link>,
               },
             ]}
           />

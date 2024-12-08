@@ -5,6 +5,7 @@ import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Vendor from "../pages/bashboard/vendor";
 import AddProduct from "../pages/bashboard/vendor/add_product";
+import AllProduct from "../pages/bashboard/vendor/all_products";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "add-product",
         element: <AddProduct />,
+      },
+      {
+        path: "products",
+        element: <AllProduct />,
       },
     ],
   },

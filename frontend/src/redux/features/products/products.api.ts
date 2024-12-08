@@ -1,19 +1,16 @@
+import { TApiResponse } from "../../../interfaces/api_response.types";
 import { baseApi } from "../../api/base_api";
-import {
-  GetCategoriesResponse,
-  Category,
-} from "../../../interfaces/api_response.types";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<Category[], void>({
+    getCategories: builder.query({
       query: () => ({
         url: "/category",
         method: "GET",
       }),
 
-      transformResponse: (response: GetCategoriesResponse) => response.data,
-      providesTags: ["Categories"],
+      transformResponse: (response: TApiResponse) => response.data,
+      providesTags: ["categories"],
     }),
 
     createNewProduct: builder.mutation({

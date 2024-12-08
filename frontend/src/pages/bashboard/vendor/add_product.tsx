@@ -3,7 +3,7 @@ import {
   useCreateNewProductMutation,
   useGetCategoriesQuery,
 } from "../../../redux/features/products/products.api";
-import { Button, Input, Select, message, Upload, UploadProps } from "antd";
+import { Button, Input, Select } from "antd";
 import { createProductValidationSchema } from "../../../validations/product.create.validation";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -23,7 +23,8 @@ import uploadImageToImgBb from "../../../utils/upload_image";
 
 type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
 const AddProduct: FC = () => {
-  const { data: categories, isLoading } = useGetCategoriesQuery();
+  const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
+
   const [createNewProduct] = useCreateNewProductMutation();
   const [isGlobalLoading, setIsGlobalLoading] = useState<boolean>(false);
 
@@ -64,8 +65,6 @@ const AddProduct: FC = () => {
   async function handleCreateNewProduct(
     data: createUserFormInputs
   ): Promise<void> {
-    // const res = await createNewProduct(data);
-
     if (!images.length) {
       toast.error("Select one image");
       return;

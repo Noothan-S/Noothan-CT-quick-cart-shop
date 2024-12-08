@@ -35,6 +35,7 @@ const baseQueryWithAdditionalFeatures: BaseQueryFn<
   }
 
   if (result.error) {
+    // @ts-expect-error: message will sometime maybe undefined
     const errorMessage = result.error.data?.message || "An error occurred.";
     toast.error(errorMessage);
   }
@@ -45,6 +46,6 @@ const baseQueryWithAdditionalFeatures: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithAdditionalFeatures,
-  tagTypes: ["Categories"],
+  tagTypes: ["categories", "profile"],
   endpoints: () => ({}),
 });
