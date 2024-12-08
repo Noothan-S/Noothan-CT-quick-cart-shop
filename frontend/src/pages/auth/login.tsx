@@ -1,8 +1,8 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import Logo from "../../constants/logo";
 import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Eye, Lock } from "lucide-react";
+import { Eye, EyeClosed, Lock } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,8 @@ type LoginFormInputs = z.infer<typeof loginValidationSchema>;
 const Login: FC = () => {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
+  const [showPass, setShowPass] = useState<boolean>(false);
+
   const {
     control,
     handleSubmit,
@@ -28,7 +30,7 @@ const Login: FC = () => {
   const onSubmit = async (credential: LoginFormInputs) => {
     const res = await loginUser(credential);
 
-    if (res.data.success) {
+    if (res?.data?.success) {
       dispatch(
         setUser({
           token: encrypt(res.data?.data?.accessToken),
@@ -97,10 +99,17 @@ const Login: FC = () => {
                     <Input
                       {...field}
                       size="large"
-                      type="password"
+                      type={showPass ? "text" : "password"}
                       placeholder="Enter your password"
                       prefix={<Lock size={16} />}
-                      suffix={<Eye />}
+                      suffix={
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => setShowPass(!showPass)}
+                        >
+                          {showPass ? <EyeClosed /> : <Eye />}
+                        </div>
+                      }
                     />
                   )}
                 />
