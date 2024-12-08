@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createUserValidationSchema } from "../../../validations/user_create_validation";
 import { userCreationOptions } from "../../../constants/user.create.role";
 import { useCreateUserMutation } from "../../../redux/features/auth/auth.api";
+import { Link } from "react-router-dom";
 
 interface ICreateUserProps {
   setIsPassed: React.Dispatch<
@@ -201,13 +202,13 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                 Next
               </Button>
               <p className="text-sm font-light text-gray-500">
-                Don’t have an account yet?{" "}
-                <a
-                  href="#"
+                Already registered{" "}
+                <Link
+                  to={"/auth/login"}
                   className="font-medium text-primary-600 hover:underline"
                 >
-                  Sign up
-                </a>
+                  Sign in
+                </Link>
               </p>
             </form>
           </div>

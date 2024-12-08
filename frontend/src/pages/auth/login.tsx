@@ -11,6 +11,7 @@ import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
+import { Link } from "react-router-dom";
 
 type LoginFormInputs = z.infer<typeof loginValidationSchema>;
 
@@ -154,12 +155,12 @@ const Login: FC = () => {
               </Button>
               <p className="text-sm font-light text-gray-500">
                 Don’t have an account yet?{" "}
-                <a
-                  href="#"
+                <Link
+                  to={"/auth/register"}
                   className="font-medium text-primary-600 hover:underline"
                 >
                   Sign up
-                </a>
+                </Link>
               </p>
             </form>
           </div>
