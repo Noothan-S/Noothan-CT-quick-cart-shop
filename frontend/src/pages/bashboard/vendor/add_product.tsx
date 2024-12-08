@@ -9,14 +9,14 @@ import {
   BrickWall,
   ChartBarStacked,
   DollarSign,
-  LetterText,
   Percent,
 } from "lucide-react";
 import TextArea from "antd/es/input/TextArea";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
 const AddProduct: FC = () => {
-  const { data: categories, isLoading, error } = useGetCategoriesQuery();
+  const { data: categories, isLoading } = useGetCategoriesQuery();
 
   const categoriesOptions = categories?.map((item) => ({
     value: item.id,
@@ -27,7 +27,9 @@ const AddProduct: FC = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<createUserFormInputs>();
+  } = useForm<createUserFormInputs>({
+    resolver: zodResolver(createProductValidationSchema),
+  });
 
   async function handleCreateNewProduct(
     data: createUserFormInputs
@@ -43,7 +45,10 @@ const AddProduct: FC = () => {
         </h1>
         <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-screen-md xl:tp-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <form className="space-y-4 md:space-y-6">
+            <form
+              onSubmit={handleSubmit(handleCreateNewProduct)}
+              className="space-y-4 md:space-y-6"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {/* title */}
                 <div className="md:col-span-2">
@@ -88,10 +93,14 @@ const AddProduct: FC = () => {
                     control={control}
                     render={({ field }) => (
                       <Input
+                        type="number"
                         {...field}
                         size="large"
                         placeholder="eg. 200.43"
                         prefix={<DollarSign size={16} />}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
                       />
                     )}
                   />
@@ -117,10 +126,14 @@ const AddProduct: FC = () => {
                     control={control}
                     render={({ field }) => (
                       <Input
+                        type="number"
                         {...field}
                         size="large"
                         placeholder="eg. 4"
                         prefix={<Percent size={16} />}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
                       />
                     )}
                   />
@@ -146,10 +159,14 @@ const AddProduct: FC = () => {
                     control={control}
                     render={({ field }) => (
                       <Input
+                        type="number"
                         {...field}
                         size="large"
                         placeholder="eg. 200"
                         prefix={<BrickWall size={16} />}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value, 10) || 0)
+                        }
                       />
                     )}
                   />
@@ -221,9 +238,9 @@ const AddProduct: FC = () => {
                     )}
                   />
 
-                  {errors.quantity && (
+                  {errors.description && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.quantity.message}{" "}
+                      {errors.description.message}{" "}
                     </p>
                   )}
                 </div>
