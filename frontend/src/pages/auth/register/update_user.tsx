@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import Logo from "../../../constants/logo";
 import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -30,7 +30,7 @@ const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
     const additionalPayload = { ...userData, email: metadata.email };
     const res = await updateUser(additionalPayload);
 
-    if (res.data.success) {
+    if (res?.data?.success) {
       setTimeout(() => {
         toast.info("Please login your account");
         navigate("/auth/login");

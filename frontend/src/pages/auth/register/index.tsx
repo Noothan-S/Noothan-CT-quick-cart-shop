@@ -19,20 +19,18 @@ const Register = () => {
       ) : isPassed.role === "CUSTOMER" ? (
         <UpdateUser
           metadata={{
-            email: "nazmulofficial@outlook.com",
+            email: isPassed.email,
             setIsPassed: setIsPassed,
           }}
         />
       ) : (
-        <UpdateVendor />
+        <UpdateVendor
+          metadata={{
+            email: isPassed.email,
+            setIsPassed: setIsPassed,
+          }}
+        />
       )}
-
-      {/* <UpdateUser
-        metadata={{
-          email: "nazmulofficial@outlook.com",
-          setIsPassed: setIsPassed,
-        }}
-      /> */}
     </div>
   );
 };

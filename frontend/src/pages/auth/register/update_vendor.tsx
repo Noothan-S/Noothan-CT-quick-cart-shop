@@ -1,37 +1,50 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import Logo from "../../../constants/logo";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Eye, EyeClosed, Lock } from "lucide-react";
+import { LocateIcon, Phone } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createUserValidationSchema } from "../../../validations/user_create_validation";
-import { userCreationOptions } from "../../../constants/user.create.role";
+import { useNavigate } from "react-router-dom";
+import { IUpdateUserProps } from "../../../interfaces/update.user.props.type";
+import { updateVendorValidationSchema } from "../../../validations/update_vendor_validation";
+import TextArea from "antd/es/input/TextArea";
+import { useUpdateUserMutation } from "../../../redux/features/auth/auth.api";
+import { toast } from "sonner";
 
-type createUserFormInputs = z.infer<typeof createUserValidationSchema>;
+type updateVendorFormInputs = z.infer<typeof updateVendorValidationSchema>;
 
-const UpdateVendor: FC = () => {
-  const [showPass, setShowPass] = useState<boolean>(false);
-  const [showPass2, setShowPass2] = useState<boolean>(false);
+const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
+  const [updateUser] = useUpdateUserMutation();
+  const navigate = useNavigate();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<createUserFormInputs>({
-    resolver: zodResolver(createUserValidationSchema),
+  } = useForm<updateVendorFormInputs>({
+    resolver: zodResolver(updateVendorValidationSchema),
   });
 
-  const onSubmit = async (credential: createUserFormInputs) => {
-    // console.log(credential);
+  const onSubmit = async (vendorData: updateVendorFormInputs) => {
+    const additionalPayload = { ...vendorData, email: metadata.email };
+    const res = await updateUser(additionalPayload);
+
+    if (res?.data?.success) {
+      setTimeout(() => {
+        toast.info("Please login your account");
+        navigate("/auth/login");
+        metadata.setIsPassed(false);
+      }, 500);
+    }
   };
 
   return (
-    <section className="bg-gray-50">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gray-50 w-full">
+      <div className="flex w-full flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <Logo />
-        <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:tp-0">
+        <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-screen-sm xl:tp-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Update your Vendor
@@ -40,132 +53,122 @@ const UpdateVendor: FC = () => {
               className="space-y-4 md:space-y-6"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Join as
-                </label>
-                <Controller
-                  name="role"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      className="w-full"
-                      size="large"
-                      //   defaultValue="CUSTOMER"
-                      placeholder="Select account type"
-                      options={userCreationOptions}
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {/* first name */}
+                <div className="md:col-span-2">
+                  <label
+                    htmlFor="firstName"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Vendor Name
+                    <span className="text-red-600"> *</span>
+                  </label>
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="eg. Sheikh Hub"
+                        prefix={<UserOutlined />}
+                      />
+                    )}
+                  />
+
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.name.message}
+                    </p>
                   )}
-                />
+                </div>
 
-                {errors.role && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.role.message}
-                  </p>
-                )}
-              </div>
+                {/* phn */}
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Contact number
+                  </label>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="+8801712345678"
+                        prefix={<Phone size={16} />}
+                      />
+                    )}
+                  />
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Your email
-                </label>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type="email"
-                      placeholder="Enter your email"
-                      prefix={<UserOutlined />}
-                    />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.phone.message}
+                    </p>
                   )}
-                />
+                </div>
 
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Password
-                </label>
+                {/* address */}
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Address
+                  </label>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="Rangpur, Bangladesh"
+                        prefix={<LocateIcon size={16} />}
+                      />
+                    )}
+                  />
 
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type={showPass ? "text" : "password"}
-                      placeholder="Enter your password"
-                      prefix={<Lock size={16} />}
-                      suffix={
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => setShowPass(!showPass)}
-                        >
-                          {showPass ? <EyeClosed /> : <Eye />}
-                        </div>
-                      }
-                    />
+                  {errors.address && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.address.message}
+                    </p>
                   )}
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Confirm Password
-                </label>
+                </div>
+                {/* des */}
+                <div className="md:col-span-2">
+                  <label
+                    htmlFor="description"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Description
+                    <span className="text-red-600"> *</span>
+                  </label>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <TextArea
+                        {...field}
+                        rows={7}
+                        placeholder="maxLength is 200"
+                        maxLength={200}
+                      />
+                    )}
+                  />
 
-                <Controller
-                  name="confirmPassword"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type={showPass2 ? "text" : "password"}
-                      placeholder="Enter your password"
-                      prefix={<Lock size={16} />}
-                      suffix={
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => setShowPass2(!showPass2)}
-                        >
-                          {showPass2 ? <EyeClosed /> : <Eye />}
-                        </div>
-                      }
-                    />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.description.message}
+                    </p>
                   )}
-                />
-
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
+                </div>
               </div>
               <Button
                 htmlType="submit"
@@ -174,17 +177,8 @@ const UpdateVendor: FC = () => {
                 variant="solid"
                 color="danger"
               >
-                Sign in
+                Submit
               </Button>
-              <p className="text-sm font-light text-gray-500">
-                Don’t have an account yet?{" "}
-                <a
-                  href="#"
-                  className="font-medium text-primary-600 hover:underline"
-                >
-                  Sign up
-                </a>
-              </p>
             </form>
           </div>
         </div>
@@ -193,4 +187,4 @@ const UpdateVendor: FC = () => {
   );
 };
 
-export default UpdateVendor;
+export default UpdateUser;
