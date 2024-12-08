@@ -19,6 +19,8 @@ const fetchMeIncludeObj = {
           name: true,
         },
       },
+      orderItem: true,
+      review: true,
     },
   },
 };

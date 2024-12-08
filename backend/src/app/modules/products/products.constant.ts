@@ -1,40 +1,39 @@
 const productIncludeObj = {
-    vendor: true,
-    category: {
-        select: {
-            name: true
-        }
+  category: {
+    select: {
+      name: true,
+      id: true,
     },
-    review: {
-        include: {
-            user: {
-                select: {
-                    profile: true
-                }
-            },
-            vendorResponse: {
-                include: {
-                    vendor: true
-                }
-            }
-        }
-    }
-}
+  },
+  coupon: true,
+  vendor: true,
+  review: {
+    include: {
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+      vendorResponse: true,
+    },
+  },
+  orderItem: true,
+};
 
 const productCategoryIncludeObjForCoupon = {
-    product: {
-        include: {
-            vendor: true,
-            category: {
-                select: {
-                    name: true
-                }
-            }
-        }
-    }
-}
+  product: {
+    include: {
+      vendor: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+};
 
 export const ProductsConstants = {
-    productIncludeObj,
-    productCategoryIncludeObjForCoupon
-}
+  productIncludeObj,
+  productCategoryIncludeObjForCoupon,
+};
