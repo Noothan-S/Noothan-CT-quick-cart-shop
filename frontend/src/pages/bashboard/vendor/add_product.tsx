@@ -1,6 +1,9 @@
-import { FC } from "react";
-import { useGetCategoriesQuery } from "../../../redux/features/products/products.api";
-import { Button, Input, Select } from "antd";
+import { FC, useState } from "react";
+import {
+  useCreateNewProductMutation,
+  useGetCategoriesQuery,
+} from "../../../redux/features/products/products.api";
+import { Button, Input, Select, message, Upload, UploadProps } from "antd";
 import { createProductValidationSchema } from "../../../validations/product.create.validation";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -11,12 +14,38 @@ import {
   DollarSign,
   Percent,
 } from "lucide-react";
+import { InboxOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Dragger from "antd/es/upload/Dragger";
 
 type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
 const AddProduct: FC = () => {
   const { data: categories, isLoading } = useGetCategoriesQuery();
+  const [createNewProduct] = useCreateNewProductMutation();
+
+  // State for uploaded images
+  const [images, setImages] = useState<File[]>([]);
+
+  console.log(images);
+
+  const handleUploadChange = (info: any) => {
+    const fileList = info.fileList
+      .map((file: any) => file.originFileObj)
+      .filter(Boolean);
+    setImages(fileList);
+  };
+
+  const props = {
+    name: "file",
+    multiple: true,
+    onChange: handleUploadChange,
+    onDrop(e: React.DragEvent<HTMLDivElement>) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      setImages((prev) => [...prev, ...droppedFiles]);
+      console.log("Dropped files:", droppedFiles);
+    },
+  };
 
   const categoriesOptions = categories?.map((item) => ({
     value: item.id,
@@ -34,6 +63,8 @@ const AddProduct: FC = () => {
   async function handleCreateNewProduct(
     data: createUserFormInputs
   ): Promise<void> {
+    // const res = await createNewProduct(data);
+
     console.log(data);
   }
 
@@ -49,7 +80,7 @@ const AddProduct: FC = () => {
               onSubmit={handleSubmit(handleCreateNewProduct)}
               className="space-y-4 md:space-y-6"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
                 {/* title */}
                 <div className="md:col-span-2">
                   <label
@@ -244,6 +275,27 @@ const AddProduct: FC = () => {
                     </p>
                   )}
                 </div>
+              </div>
+              {/* img */}
+              <div className="col-span-2">
+                <label
+                  htmlFor="img"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Images
+                  <span className="text-red-600"> *</span>
+                </label>
+                <Dragger {...props} className="">
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">
+                    Click or drag image to this area to upload
+                  </p>
+                  <p className="ant-upload-hint">
+                    Support for a single or bulk upload.
+                  </p>
+                </Dragger>
               </div>
               <Button
                 htmlType="submit"

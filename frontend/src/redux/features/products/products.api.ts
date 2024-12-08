@@ -15,7 +15,16 @@ const productApi = baseApi.injectEndpoints({
       transformResponse: (response: GetCategoriesResponse) => response.data,
       providesTags: ["Categories"],
     }),
+
+    createNewProduct: builder.mutation({
+      query: (data) => ({
+        url: "/products",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetCategoriesQuery } = productApi;
+export const { useGetCategoriesQuery, useCreateNewProductMutation } =
+  productApi;
