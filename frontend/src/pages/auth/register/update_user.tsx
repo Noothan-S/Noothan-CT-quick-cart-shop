@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 import Logo from "../../../constants/logo";
 import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -7,10 +7,17 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateProfileValidationSchema } from "../../../validations/update_Profile_validation";
+import { useUpdateUserMutation } from "../../../redux/features/auth/auth.api";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { IUpdateUserProps } from "../../../interfaces/update.user.props.type";
 
 type updateUserFormInputs = z.infer<typeof updateProfileValidationSchema>;
 
-const UpdateUser: FC = () => {
+const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
+  const [updateUser] = useUpdateUserMutation();
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
@@ -20,9 +27,16 @@ const UpdateUser: FC = () => {
   });
 
   const onSubmit = async (userData: updateUserFormInputs) => {
-    // console.log(credential);
+    const additionalPayload = { ...userData, email: metadata.email };
+    const res = await updateUser(additionalPayload);
 
-    console.log(userData);
+    if (res.data.success) {
+      setTimeout(() => {
+        toast.info("Please login your account");
+        navigate("/auth/login");
+        metadata.setIsPassed(false);
+      }, 500);
+    }
   };
 
   return (

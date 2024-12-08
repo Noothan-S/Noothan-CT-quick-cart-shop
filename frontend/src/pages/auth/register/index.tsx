@@ -14,14 +14,25 @@ const Register = () => {
 
   return (
     <div>
-      {/* {!isPassed ? (
+      {!isPassed ? (
         <CreateUser setIsPassed={setIsPassed} />
       ) : isPassed.role === "CUSTOMER" ? (
-        <UpdateUser />
+        <UpdateUser
+          metadata={{
+            email: "nazmulofficial@outlook.com",
+            setIsPassed: setIsPassed,
+          }}
+        />
       ) : (
         <UpdateVendor />
-      )} */}
-      <UpdateUser />
+      )}
+
+      {/* <UpdateUser
+        metadata={{
+          email: "nazmulofficial@outlook.com",
+          setIsPassed: setIsPassed,
+        }}
+      /> */}
     </div>
   );
 };
