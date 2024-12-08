@@ -1,21 +1,21 @@
 import { FC, useState } from "react";
-import Logo from "../../constants/logo";
+import Logo from "../../../constants/logo";
 import { Button, Input, Select } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Eye, EyeClosed, Lock } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
-import { useAppDispatch } from "../../redux/hooks";
-import { setUser } from "../../redux/features/auth/auth.slice";
-import { encrypt } from "../../utils/text_encryption";
-import { createUserValidationSchema } from "../../validations/user_create_validation";
-import { userCreationOptions } from "../../constants/user.create.role";
+import { useLoginUserMutation } from "../../../redux/features/auth/auth.api";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setUser } from "../../../redux/features/auth/auth.slice";
+import { encrypt } from "../../../utils/text_encryption";
+import { createUserValidationSchema } from "../../../validations/user_create_validation";
+import { userCreationOptions } from "../../../constants/user.create.role";
 
 type createUserFormInputs = z.infer<typeof createUserValidationSchema>;
 
-const Register: FC = () => {
+const UpdateUser: FC = () => {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const [showPass, setShowPass] = useState<boolean>(false);
@@ -214,4 +214,4 @@ const Register: FC = () => {
   );
 };
 
-export default Register;
+export default UpdateUser;
