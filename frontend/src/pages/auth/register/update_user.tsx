@@ -1,192 +1,161 @@
 import { FC, useState } from "react";
 import Logo from "../../../constants/logo";
-import { Button, Input, Select } from "antd";
+import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Eye, EyeClosed, Lock } from "lucide-react";
+import { LocateIcon, Phone } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginUserMutation } from "../../../redux/features/auth/auth.api";
-import { useAppDispatch } from "../../../redux/hooks";
-import { setUser } from "../../../redux/features/auth/auth.slice";
-import { encrypt } from "../../../utils/text_encryption";
-import { createUserValidationSchema } from "../../../validations/user_create_validation";
-import { userCreationOptions } from "../../../constants/user.create.role";
+import { updateProfileValidationSchema } from "../../../validations/update_Profile_validation";
 
-type createUserFormInputs = z.infer<typeof createUserValidationSchema>;
+type updateUserFormInputs = z.infer<typeof updateProfileValidationSchema>;
 
 const UpdateUser: FC = () => {
-  const [loginUser] = useLoginUserMutation();
-  const dispatch = useAppDispatch();
-  const [showPass, setShowPass] = useState<boolean>(false);
-  const [showPass2, setShowPass2] = useState<boolean>(false);
-
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<createUserFormInputs>({
-    resolver: zodResolver(createUserValidationSchema),
+  } = useForm<updateUserFormInputs>({
+    resolver: zodResolver(updateProfileValidationSchema),
   });
 
-  const onSubmit = async (credential: createUserFormInputs) => {
-    // const res = await loginUser(credential);
+  const onSubmit = async (userData: updateUserFormInputs) => {
+    // console.log(credential);
 
-    console.log(credential);
-
-    // if (res?.data?.success) {
-    //   dispatch(
-    //     setUser({
-    //       token: encrypt(res.data?.data?.accessToken),
-    //       user: {
-    //         id: encrypt(res.data?.data?.user?.id),
-    //         email: encrypt(res.data?.data?.user?.email),
-    //         role: encrypt(res.data?.data?.user?.role),
-    //       },
-    //     })
-    //   );
-    // }
+    console.log(userData);
   };
 
   return (
-    <section className="bg-gray-50">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gray-50 w-full">
+      <div className="flex w-full flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <Logo />
-        <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:tp-0">
+        <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-screen-sm xl:tp-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Sign in to your account
+              Update your profile
             </h1>
             <form
               className="space-y-4 md:space-y-6"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Join as
-                </label>
-                <Controller
-                  name="role"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      className="w-full"
-                      size="large"
-                      //   defaultValue="CUSTOMER"
-                      placeholder="Select account type"
-                      options={userCreationOptions}
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {/* first name */}
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    First name
+                    <span className="text-red-600"> *</span>
+                  </label>
+                  <Controller
+                    name="firstName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="Mohammad"
+                        prefix={<UserOutlined />}
+                      />
+                    )}
+                  />
+
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.firstName.message}
+                    </p>
                   )}
-                />
+                </div>
 
-                {errors.role && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.role.message}
-                  </p>
-                )}
-              </div>
+                {/* last name */}
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Last name
+                    <span className="text-red-600"> *</span>
+                  </label>
+                  <Controller
+                    name="lastName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="Nazmul"
+                        prefix={<UserOutlined />}
+                      />
+                    )}
+                  />
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Your email
-                </label>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type="email"
-                      placeholder="Enter your email"
-                      prefix={<UserOutlined />}
-                    />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.lastName.message}
+                    </p>
                   )}
-                />
+                </div>
 
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Password
-                </label>
+                {/* phn */}
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Contact number
+                  </label>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="+8801712345678"
+                        prefix={<Phone size={16} />}
+                      />
+                    )}
+                  />
 
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type={showPass ? "text" : "password"}
-                      placeholder="Enter your password"
-                      prefix={<Lock size={16} />}
-                      suffix={
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => setShowPass(!showPass)}
-                        >
-                          {showPass ? <EyeClosed /> : <Eye />}
-                        </div>
-                      }
-                    />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.phone.message}
+                    </p>
                   )}
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Confirm Password
-                </label>
+                </div>
 
-                <Controller
-                  name="confirmPassword"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      size="large"
-                      type={showPass2 ? "text" : "password"}
-                      placeholder="Enter your password"
-                      prefix={<Lock size={16} />}
-                      suffix={
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => setShowPass2(!showPass2)}
-                        >
-                          {showPass2 ? <EyeClosed /> : <Eye />}
-                        </div>
-                      }
-                    />
+                {/* address */}
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Address
+                  </label>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        size="large"
+                        type="text"
+                        placeholder="Rangpur, Bangladesh"
+                        prefix={<LocateIcon size={16} />}
+                      />
+                    )}
+                  />
+
+                  {errors.address && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.address.message}
+                    </p>
                   )}
-                />
-
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
+                </div>
               </div>
               <Button
                 htmlType="submit"
@@ -195,17 +164,8 @@ const UpdateUser: FC = () => {
                 variant="solid"
                 color="danger"
               >
-                Sign in
+                Submit
               </Button>
-              <p className="text-sm font-light text-gray-500">
-                Don’t have an account yet?{" "}
-                <a
-                  href="#"
-                  className="font-medium text-primary-600 hover:underline"
-                >
-                  Sign up
-                </a>
-              </p>
             </form>
           </div>
         </div>

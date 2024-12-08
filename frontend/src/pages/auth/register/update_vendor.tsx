@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import Logo from "../../../constants/logo";
 import { Button, Input, Select } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -8,24 +8,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createUserValidationSchema } from "../../../validations/user_create_validation";
 import { userCreationOptions } from "../../../constants/user.create.role";
-import { useCreateUserMutation } from "../../../redux/features/auth/auth.api";
-
-interface ICreateUserProps {
-  setIsPassed: React.Dispatch<
-    React.SetStateAction<
-      | {
-          email: string;
-          role: "CUSTOMER" | "VENDOR";
-        }
-      | false
-    >
-  >;
-}
 
 type createUserFormInputs = z.infer<typeof createUserValidationSchema>;
-const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
-  const [createUser] = useCreateUserMutation();
 
+const UpdateVendor: FC = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const [showPass2, setShowPass2] = useState<boolean>(false);
 
@@ -38,17 +24,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
   });
 
   const onSubmit = async (credential: createUserFormInputs) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...actualCredential } = credential;
-
-    const res = await createUser(actualCredential);
-
-    if (res?.data?.success) {
-      setIsPassed({
-        email: res.data.data.email,
-        role: credential?.role,
-      });
-    }
+    // console.log(credential);
   };
 
   return (
@@ -58,7 +34,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
         <div className="w-full !mt-5 bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:tp-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Sign in to your account
+              Update your Vendor
             </h1>
             <form
               className="space-y-4 md:space-y-6"
@@ -80,7 +56,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                       className="w-full"
                       size="large"
                       //   defaultValue="CUSTOMER"
-                      placeholder="Customer"
+                      placeholder="Select account type"
                       options={userCreationOptions}
                     />
                   )}
@@ -108,7 +84,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                       {...field}
                       size="large"
                       type="email"
-                      placeholder="sheikh@example.com"
+                      placeholder="Enter your email"
                       prefix={<UserOutlined />}
                     />
                   )}
@@ -136,7 +112,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                       {...field}
                       size="large"
                       type={showPass ? "text" : "password"}
-                      placeholder="········"
+                      placeholder="Enter your password"
                       prefix={<Lock size={16} />}
                       suffix={
                         <div
@@ -171,7 +147,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                       {...field}
                       size="large"
                       type={showPass2 ? "text" : "password"}
-                      placeholder="········"
+                      placeholder="Enter your password"
                       prefix={<Lock size={16} />}
                       suffix={
                         <div
@@ -198,7 +174,7 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
                 variant="solid"
                 color="danger"
               >
-                Next
+                Sign in
               </Button>
               <p className="text-sm font-light text-gray-500">
                 Don’t have an account yet?{" "}
@@ -217,4 +193,4 @@ const CreateUser: FC<ICreateUserProps> = ({ setIsPassed }) => {
   );
 };
 
-export default CreateUser;
+export default UpdateVendor;
