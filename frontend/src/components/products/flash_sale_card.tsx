@@ -1,14 +1,20 @@
-const FlashSaleCard = ({ title }) => {
+import { FC } from "react";
+import { IProduct } from "../../interfaces/api.products.res.type";
+import { Button } from "antd";
+
+const FlashSaleCard: FC<IProduct> = ({ title, imgs, price, avgRating }) => {
   console.log(title);
   return (
-    <section className="p-5 py-10 bg-purple-50 text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
-      {/* <img src={imageSrc} alt={title} /> */}
+    <section className="p-5 py-10 bg-red-50 rounded-md text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
+      <img src={imgs[0]} alt={title} />
       <div className="space-x-1 flex justify-center mt-10">
         {[...Array(5)].map((_, index) => (
           <svg
             key={index}
             className={`w-4 h-4 mx-px fill-current ${
-              index < 1 ? "text-orange-600" : "text-gray-300"
+              index < parseInt(String(avgRating))
+                ? "text-orange-600"
+                : "text-gray-300"
             }`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 14 14"
@@ -17,12 +23,12 @@ const FlashSaleCard = ({ title }) => {
           </svg>
         ))}
       </div>
-      <h1 className="text-3xl my-5">rereerr</h1>
-      <p className="mb-5">rrerer</p>
-      <h2 className="font-semibold mb-5">2000</h2>
-      <button className="p-2 px-6 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+      <h1 className="text-2xl my-5">{title}</h1>
+      {/* <p className="mb-5">{description.slice(0, 240)}</p> */}
+      <h2 className="font-semibold  text-3xl items-center mb-5">${price}</h2>
+      <Button variant="solid" color="danger" size="large">
         Add To Cart
-      </button>
+      </Button>
     </section>
   );
 };

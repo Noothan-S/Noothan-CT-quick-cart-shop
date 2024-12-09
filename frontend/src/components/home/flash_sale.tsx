@@ -3,48 +3,10 @@ import { Link } from "react-router-dom"; // Use this if React Router is availabl
 import { ArrowRight } from "lucide-react";
 import FlashSaleCard from "../products/flash_sale_card";
 import { useGetAllProductsQuery } from "../../redux/features/products/products.api";
-
-interface FlashSaleItem {
-  id: number;
-  name: string;
-  originalPrice: number;
-  salePrice: number;
-  image: string;
-}
-
-const flashSaleItems: FlashSaleItem[] = [
-  {
-    id: 1,
-    name: "Wireless Noise-Cancelling Headphones",
-    originalPrice: 299.99,
-    salePrice: 199.99,
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    id: 2,
-    name: "Smart Home Security Camera",
-    originalPrice: 149.99,
-    salePrice: 89.99,
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    id: 3,
-    name: "Fitness Tracker Watch",
-    originalPrice: 99.99,
-    salePrice: 69.99,
-    image: "/placeholder.svg?height=200&width=200",
-  },
-  {
-    id: 4,
-    name: "Fitness Tracker Watch",
-    originalPrice: 99.99,
-    salePrice: 69.99,
-    image: "/placeholder.svg?height=200&width=200",
-  },
-];
+import { IProduct } from "../../interfaces/api.products.res.type";
 
 export default function FlashSale() {
-  const { data } = useGetAllProductsQuery({});
+  const { data } = useGetAllProductsQuery({ limit: 3 });
 
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
 
@@ -75,7 +37,7 @@ export default function FlashSale() {
           </div>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
-          {data?.data.data.map((item) => (
+          {data?.data.data.map((item: IProduct) => (
             <FlashSaleCard {...item} />
           ))}
         </div>
