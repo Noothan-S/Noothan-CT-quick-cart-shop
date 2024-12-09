@@ -6,8 +6,8 @@ import Register from "../pages/auth/register";
 import Vendor from "../pages/bashboard/vendor";
 import AddProduct from "../pages/bashboard/vendor/add_product";
 import AllProduct from "../pages/bashboard/vendor/all_products";
-import Shop from "../pages/shop";
 import ItemDetails from "../pages/shop/items/item_details";
+import Products from "../pages/shop";
 
 export const router = createBrowserRouter([
   {
@@ -27,11 +27,11 @@ export const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/shop",
-        element: <Shop />,
+        path: "/products",
+        element: <Products />,
       },
       {
-        path: "/shop/item/:id",
+        path: "/products/item/:id",
         element: <ItemDetails />,
       },
     ],

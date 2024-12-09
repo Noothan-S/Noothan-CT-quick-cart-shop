@@ -17,7 +17,7 @@ const ProductCard: React.FC<IProduct> = ({
   return (
     <div className="max-w-sm w-full transform duration-500 hover:-translate-y-2 bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Fixed Image Section */}
-      <Link to={`/shop/item/${id}`}>
+      <Link to={`/products/item/${id}`}>
         <div className="h-64 w-full bg-gray-100">
           <img className="object-cover h-64 w-full" src={imgs[0]} alt={title} />
         </div>
