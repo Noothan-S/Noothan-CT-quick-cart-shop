@@ -6,7 +6,7 @@ import { ProductServices } from "./products.service";
 
 const getAllProducts = catchAsync(async function (req: Request, res: Response) {
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const filters = pick(req.query, ["vendorId", "searchTerm"]);
+  const filters = pick(req.query, ["vendorId", "searchTerm", "categoryId"]);
   const result = await ProductServices.getAllProductsFromDb(options, filters);
 
   res.status(result.status).json(result);
