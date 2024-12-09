@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import {
   useCreateNewProductMutation,
   useGetCategoriesQuery,
-} from "../../../redux/features/products/products.api";
+} from "../../../redux/features/categories/categories.api";
 import { Button, Input, Select } from "antd";
 import { createProductValidationSchema } from "../../../validations/product.create.validation";
 import { z } from "zod";
