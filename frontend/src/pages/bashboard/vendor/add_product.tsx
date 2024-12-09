@@ -49,10 +49,12 @@ const AddProduct: FC = () => {
     },
   };
 
-  const categoriesOptions = categories?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
+  const categoriesOptions = categories?.map(
+    (item: Record<string, unknown>) => ({
+      value: item.id,
+      label: item.name,
+    })
+  );
 
   const {
     control,

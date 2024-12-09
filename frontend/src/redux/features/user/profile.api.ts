@@ -4,22 +4,25 @@ import { baseApi } from "../../api/base_api";
 const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMyProfile: builder.query({
-      query: (args) => {
+      query: (args: Record<string, string>) => {
         const params = new URLSearchParams();
 
-        if (args) {
-          args.forEach((arg: Record<string, string>) =>
-            params.append(arg.key, arg.value)
-          );
-        }
+        Object.entries(args).forEach(([key, value]) => {
+          params.append(key, value);
+        });
+
         return {
           url: "/users/me",
           method: "GET",
           params,
         };
       },
-
-      transformResponse: (response: TApiResponse) => response.data,
+      transformResponse: (response: TApiResponse) => {
+        if (!response || !response.data) {
+          throw new Error("Invalid response structure");
+        }
+        return response.data;
+      },
       providesTags: ["profile"],
     }),
   }),
