@@ -1,4 +1,5 @@
-const FlashSaleCard = () => {
+const FlashSaleCard = ({ title }) => {
+  console.log(title);
   return (
     <section className="p-5 py-10 bg-purple-50 text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
       {/* <img src={imageSrc} alt={title} /> */}

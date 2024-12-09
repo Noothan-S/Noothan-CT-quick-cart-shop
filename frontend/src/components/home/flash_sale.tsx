@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Use this if React Router is available
 import { ArrowRight } from "lucide-react";
 import FlashSaleCard from "../products/flash_sale_card";
+import { useGetAllProductsQuery } from "../../redux/features/products/products.api";
 
 interface FlashSaleItem {
   id: number;
@@ -43,6 +44,8 @@ const flashSaleItems: FlashSaleItem[] = [
 ];
 
 export default function FlashSale() {
+  const { data } = useGetAllProductsQuery({});
+
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
 
   useEffect(() => {
@@ -72,8 +75,8 @@ export default function FlashSale() {
           </div>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
-          {flashSaleItems.map((item) => (
-            <FlashSaleCard />
+          {data?.data.data.map((item) => (
+            <FlashSaleCard {...item} />
           ))}
         </div>
         <div className="mt-8 text-center">
