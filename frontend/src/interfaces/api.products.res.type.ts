@@ -11,29 +11,58 @@ export interface IProduct {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
-  category: Category;
+  category: ICategory;
   coupon: any[];
-  vendor: Vendor;
-  review: any[];
-  orderItem: any[];
   avgRating: number;
   totalSale: number;
+  vendor: IVendor;
+  review: IReview[];
 }
 
-export interface Category {
+export interface ICategory {
   name: string;
   id: string;
 }
 
-export interface Vendor {
+export interface IVendor {
   id: string;
   email: string;
   name: string;
   phone: string;
   address: string;
-  logo: string;
+  logo: any;
   description: string;
   isBlackListed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IReview {
+  id: string;
+  productId: string;
+  userId: string;
+  description: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+  isDeleted: boolean;
+  user: IUser;
+  vendorResponse: any[];
+}
+
+export interface IUser {
+  profile: IProfile;
+}
+
+export interface IProfile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  img: any;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
