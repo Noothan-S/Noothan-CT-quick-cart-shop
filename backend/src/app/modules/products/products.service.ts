@@ -5,6 +5,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
 import { ProductsConstants } from "./products.constant";
+import calculateAvgRatingAndTotalSale from "../../../utils/calculate_avg_rating_sale";
 
 async function getAllProductsFromDb(
   options: IPaginationOptions,
@@ -47,7 +48,7 @@ async function getSingleProductFromDb(id: string): Promise<IServiceReturn> {
     status: 200,
     success: true,
     message: "Product retrieved successfully",
-    data: result,
+    data: calculateAvgRatingAndTotalSale(result),
   };
 }
 

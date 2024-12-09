@@ -17,7 +17,6 @@ const productIncludeObj = {
       vendorResponse: true,
     },
   },
-  orderItem: true,
 };
 
 const productCategoryIncludeObjForCoupon = {
