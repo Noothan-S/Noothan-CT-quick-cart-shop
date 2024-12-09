@@ -6,7 +6,7 @@ import { useGetAllProductsQuery } from "../../redux/features/products/products.a
 import { IProduct } from "../../interfaces/api.products.res.type";
 
 export default function FlashSale() {
-  const { data } = useGetAllProductsQuery({ limit: 3 });
+  const { data } = useGetAllProductsQuery({ limit: 3, sortOrder: "asc" });
 
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
 

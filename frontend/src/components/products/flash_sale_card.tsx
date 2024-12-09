@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { Button } from "antd";
-
 const FlashSaleCard: FC<IProduct> = ({ title, imgs, price, avgRating }) => {
   return (
     <section className="p-5 py-10 bg-red-50 rounded-md text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
