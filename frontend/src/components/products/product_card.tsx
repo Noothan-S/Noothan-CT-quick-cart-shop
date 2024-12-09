@@ -1,6 +1,7 @@
 import React from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
+import { Link } from "react-router-dom";
 
 const ProductCard: React.FC<IProduct> = ({
   imgs,
@@ -9,32 +10,35 @@ const ProductCard: React.FC<IProduct> = ({
   description,
   price,
   discount,
+  id,
 }) => {
   const calculatedPrice = calculateProductPriceForCard(price, discount);
 
   return (
-    <article className="max-w-sm w-full transform duration-500 hover:-translate-y-2 bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-sm w-full transform duration-500 hover:-translate-y-2 bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Fixed Image Section */}
-      <div className="h-64 w-full bg-gray-100">
-        <img className="object-cover h-64 w-full" src={imgs[0]} alt={title} />
-      </div>
-
-      {/* Product Info Section */}
-      <div className="flex flex-col gap-1 mt-4 px-4">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-        <span className="font-normal text-gray-600">
-          {description.slice(0, 40)} ...
-        </span>
-        <div className="flex gap-4">
-          <span className="font-semibold text-gray-800">
-            ${calculatedPrice.totalPrice}
-          </span>
-
-          {calculatedPrice.discountAmount > 0 && (
-            <span className="line-through text-gray-500">${price}</span>
-          )}
+      <Link to={`/shop/item/${id}`}>
+        <div className="h-64 w-full bg-gray-100">
+          <img className="object-cover h-64 w-full" src={imgs[0]} alt={title} />
         </div>
-      </div>
+
+        {/* Product Info Section */}
+        <div className="flex flex-col gap-1 mt-4 px-4">
+          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+          <span className="font-normal text-gray-600">
+            {description.slice(0, 40)} ...
+          </span>
+          <div className="flex gap-4">
+            <span className="font-semibold text-gray-800">
+              ${calculatedPrice.totalPrice}
+            </span>
+
+            {calculatedPrice.discountAmount > 0 && (
+              <span className="line-through text-gray-500">${price}</span>
+            )}
+          </div>
+        </div>
+      </Link>
 
       {/* Ratings Section */}
       <div className="flex px-4 mt-2">
@@ -74,7 +78,7 @@ const ProductCard: React.FC<IProduct> = ({
           </svg>
         </button>
       </div>
-    </article>
+    </div>
   );
 };
 

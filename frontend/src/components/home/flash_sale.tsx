@@ -6,7 +6,10 @@ import { useGetAllProductsQuery } from "../../redux/features/products/products.a
 import { IProduct } from "../../interfaces/api.products.res.type";
 
 export default function FlashSale() {
-  const { data } = useGetAllProductsQuery({ limit: 3, sortOrder: "asc" });
+  const { data: products } = useGetAllProductsQuery({
+    limit: 3,
+    sortOrder: "asc",
+  });
 
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
 
@@ -37,7 +40,7 @@ export default function FlashSale() {
           </div>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
-          {data?.data?.data?.map((item: IProduct) => (
+          {products?.data?.map((item: IProduct) => (
             <FlashSaleCard {...item} />
           ))}
         </div>

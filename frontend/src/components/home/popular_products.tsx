@@ -3,7 +3,7 @@ import { IProduct } from "../../interfaces/api.products.res.type";
 import ProductCard from "../products/product_card";
 
 export default function PopularProducts() {
-  const { data } = useGetAllProductsQuery({ limit: 12 });
+  const { data: products } = useGetAllProductsQuery({ limit: 12 });
 
   return (
     <section className="py-16">
@@ -12,7 +12,7 @@ export default function PopularProducts() {
           Popular Products
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {data?.data?.data?.map((product: IProduct) => (
+          {products?.data?.map((product: IProduct) => (
             <ProductCard {...product} />
           ))}
         </div>
