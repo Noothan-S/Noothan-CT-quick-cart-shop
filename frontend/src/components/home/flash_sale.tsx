@@ -37,7 +37,7 @@ export default function FlashSale() {
           </div>
         </div>
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
-          {data?.data.data.map((item: IProduct) => (
+          {data?.data?.data?.map((item: IProduct) => (
             <FlashSaleCard {...item} />
           ))}
         </div>

@@ -1,72 +1,76 @@
 import React from "react";
+import { IProduct } from "../../interfaces/api.products.res.type";
+import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
 
-const ProductCard: React.FC = () => {
+const ProductCard: React.FC<IProduct> = ({
+  imgs,
+  title,
+  avgRating,
+  description,
+  price,
+  discount,
+}) => {
+  const calculatedPrice = calculateProductPriceForCard(price, discount);
+
   return (
-    <div className="relative m-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-      <a
-        className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl"
-        href="#"
-      >
-        <img
-          className="object-cover"
-          src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-          alt="product image"
-        />
-        <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">
-          39% OFF
+    <article className="max-w-sm w-full bg-white rounded-lg shadow-lg overflow-hidden">
+      <div>
+        <img className="object-cover h-64 w-full" src={imgs[0]} alt={title} />
+      </div>
+
+      <div className="flex flex-col gap-1 mt-4 px-4">
+        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <span className="font-normal text-gray-600">
+          {description.slice(0, 40)} ...
         </span>
-      </a>
-      <div className="mt-4 px-5 pb-5">
-        <a href="#">
-          <h5 className="text-xl tracking-tight text-slate-900">
-            Nike Air MX Super 2500 - Red
-          </h5>
-        </a>
-        <div className="mt-2 mb-5 flex items-center justify-between">
-          <p>
-            <span className="text-3xl font-bold text-slate-900">$449</span>
-            <span className="text-sm text-slate-900 line-through">$699</span>
-          </p>
-          <div className="flex items-center">
-            {[...Array(5)].map((_, index) => (
-              <svg
-                key={index}
-                aria-hidden="true"
-                className="h-5 w-5 text-yellow-300"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-              </svg>
-            ))}
-            <span className="mr-2 ml-3 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold">
-              5.0
-            </span>
-          </div>
+        <div className="flex gap-4">
+          <span className="font-semibold text-gray-800">
+            ${calculatedPrice.totalPrice}
+          </span>
+
+          {calculatedPrice.discountAmount > 0 && (
+            <span className=" line-through text-gray-500">${price}</span>
+          )}
         </div>
-        <a
-          href="#"
-          className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
-        >
+      </div>
+
+      <div className="flex px-4 mt-4">
+        {[...Array(5)].map((_, index) => (
           <svg
+            key={index}
+            className={`w-4 h-4 mx-px fill-current ${
+              index < parseInt(String(avgRating))
+                ? "text-orange-600"
+                : "text-gray-300"
+            }`}
             xmlns="http://www.w3.org/2000/svg"
-            className="mr-2 h-6 w-6"
+            viewBox="0 0 14 14"
+          >
+            <path d="M6.43 12l-2.36 1.64a1 1 0 0 1-1.53-1.11l.83-2.75a1 1 0 0 0-.35-1.09L.73 6.96a1 1 0 0 1 .59-1.8l2.87-.06a1 1 0 0 0 .92-.67l.95-2.71a1 1 0 0 1 1.88 0l.95 2.71c.13.4.5.66.92.67l2.87.06a1 1 0 0 1 .59 1.8l-2.3 1.73a1 1 0 0 0-.34 1.09l.83 2.75a1 1 0 0 1-1.53 1.1L7.57 12a1 1 0 0 0-1.14 0z" />
+          </svg>
+        ))}
+      </div>
+
+      <div className="mt-4 p-4 bg-red-50 border-t border-gray-200">
+        <button className="w-full flex justify-between items-center font-bold cursor-pointer hover:underline text-gray-800">
+          <span className="text-base">Add to Cart</span>
+          <svg
+            className="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2}
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
-          Add to cart
-        </a>
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 
