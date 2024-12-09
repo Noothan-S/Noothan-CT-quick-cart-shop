@@ -20,10 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Dragger from "antd/es/upload/Dragger";
 import { toast } from "sonner";
 import uploadImageToImgBb from "../../../utils/upload_image";
+import { useNavigate } from "react-router-dom";
 
 type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
 const AddProduct: FC = () => {
   const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
+  const navigate = useNavigate();
 
   const [createNewProduct] = useCreateNewProductMutation();
   const [isGlobalLoading, setIsGlobalLoading] = useState<boolean>(false);
@@ -59,6 +61,7 @@ const AddProduct: FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<createUserFormInputs>({
     resolver: zodResolver(createProductValidationSchema),
@@ -80,6 +83,8 @@ const AddProduct: FC = () => {
     if (res.data.success) {
       setIsGlobalLoading(false);
       toast.success("Product published");
+      reset();
+      navigate("/dashboard/vendor/products");
     }
   }
 
@@ -276,7 +281,7 @@ const AddProduct: FC = () => {
                       <TextArea
                         {...field}
                         showCount
-                        maxLength={500}
+                        maxLength={5000}
                         rows={10}
                         className="w-full"
                         placeholder="eg. This is brand new Iphone 14 pro max...."
