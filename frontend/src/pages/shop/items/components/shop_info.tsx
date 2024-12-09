@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Vendor } from "../../../../interfaces/api.products.res.type";
+import { IVendor } from "../../../../interfaces/api.products.res.type";
 
-const ShopInfo: FC<Vendor> = ({ name, id }) => {
+const ShopInfo: FC<IVendor> = ({ name, id }) => {
   return (
     <div className="mb-6">
       <p className="text-sm text-muted-foreground">

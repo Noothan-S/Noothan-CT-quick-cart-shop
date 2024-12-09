@@ -13,6 +13,7 @@ import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import UserRole from "../../constants/user_role";
 
 type LoginFormInputs = z.infer<typeof loginValidationSchema>;
 
@@ -31,19 +32,26 @@ const Login: FC = () => {
 
   const onSubmit = async (credential: LoginFormInputs) => {
     const res = await loginUser(credential);
-
+    const authUser = {
+      id: encrypt(res.data?.data?.user?.id),
+      email: encrypt(res.data?.data?.user?.email),
+      role: encrypt(res.data?.data?.user?.role),
+    };
     if (res?.data?.success) {
-      toast.success(`${res.data?.data?.user?.role} logged in success`);
       dispatch(
         setUser({
           token: encrypt(res.data?.data?.accessToken),
-          user: {
-            id: encrypt(res.data?.data?.user?.id),
-            email: encrypt(res.data?.data?.user?.email),
-            role: encrypt(res.data?.data?.user?.role),
-          },
+          user:
+            res.data?.data?.user?.role === UserRole.vendor
+              ? {
+                  ...authUser,
+                  vendor: encrypt(res.data?.data?.user?.vendor.id),
+                }
+              : authUser,
         })
       );
+
+      toast.success(`${res.data?.data?.user?.role} logged in success`);
     }
   };
 

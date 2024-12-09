@@ -10,6 +10,7 @@ import ProductDetails from "./components/product_details";
 import ShopInfo from "./components/shop_info";
 import AddToCart from "./components/add_to_cart";
 import RelatedProducts from "./components/related_products";
+import CustomerReview from "./components/customer_review";
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +28,12 @@ export default function ProductDetailsPage() {
     return <Loading />;
   }
 
+  const filteredRelatedProducts = relatedProducts?.data?.filter(
+    (product: IProduct) => product.id !== id
+  );
+
+  console.log(filteredRelatedProducts);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
@@ -37,8 +44,10 @@ export default function ProductDetailsPage() {
           <AddToCart {...product} />
         </div>
       </div>
-      <RelatedProducts products={relatedProducts.data} />
-      {/* <CustomerReviews reviews={product.reviews} rating={product.rating} /> */}
+      {filteredRelatedProducts.length > 0 && (
+        <RelatedProducts products={filteredRelatedProducts} />
+      )}
+      <CustomerReview reviews={product.review} rating={product.avgRating} />
     </div>
   );
 }
