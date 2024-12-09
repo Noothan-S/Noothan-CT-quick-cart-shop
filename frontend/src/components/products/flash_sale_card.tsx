@@ -1,7 +1,14 @@
 import { FC } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { Button } from "antd";
-const FlashSaleCard: FC<IProduct> = ({ title, imgs, price, avgRating }) => {
+import { ShoppingCart } from "lucide-react";
+const FlashSaleCard: FC<IProduct> = ({
+  title,
+  imgs,
+  price,
+  avgRating,
+  quantity,
+}) => {
   return (
     <section className="p-5 py-10 bg-red-50 rounded-md text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
       <img src={imgs[0]} alt={title} />
@@ -24,8 +31,13 @@ const FlashSaleCard: FC<IProduct> = ({ title, imgs, price, avgRating }) => {
       <h1 className="text-2xl my-5">{title}</h1>
       {/* <p className="mb-5">{description.slice(0, 240)}</p> */}
       <h2 className="font-semibold  text-3xl items-center mb-5">${price}</h2>
-      <Button variant="solid" color="danger" size="large">
-        Add To Cart
+      <Button
+        disabled={quantity < 1}
+        variant="solid"
+        size="large"
+        color="danger"
+      >
+        <ShoppingCart className="h-4 w-4" /> Add to Cart
       </Button>
     </section>
   );
