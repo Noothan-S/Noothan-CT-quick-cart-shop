@@ -46,7 +46,7 @@ const ProductCard: React.FC<IProduct> = ({
           <svg
             key={index}
             className={`w-4 h-4 mx-px fill-current ${
-              index < parseInt(String(avgRating))
+              index < parseFloat(String(avgRating))
                 ? "text-orange-600"
                 : "text-gray-300"
             }`}

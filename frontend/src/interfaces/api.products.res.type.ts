@@ -47,7 +47,17 @@ export interface IReview {
   updatedAt: string;
   isDeleted: boolean;
   user: IUser;
-  vendorResponse: any[];
+  vendorResponse: IVendorResponse[];
+}
+
+export interface IVendorResponse {
+  id: string;
+  reviewId: string;
+  vendorId: string;
+  description: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IUser {

@@ -20,6 +20,7 @@ export default function ProductDetailsPage() {
     useGetAllProductsQuery(
       {
         categoryId: product?.categoryId,
+        limit: 4,
       },
       { skip: !product?.categoryId }
     );
