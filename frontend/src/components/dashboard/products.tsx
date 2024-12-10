@@ -101,9 +101,10 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
       <Pagination
         align="end"
         pageSize={5}
+        current={meta.page}
         onChange={(val) => setCurrentPage(val)}
         showSizeChanger={false}
-        total={meta.totalPages}
+        total={meta.total}
       />
       {selectedItem && (
         <DuplicateProduct
