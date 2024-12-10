@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button, Col, Drawer, Input, Row, Select, Space } from "antd";
 import { IProduct } from "../../../interfaces/api.products.res.type";
 import { useGetCategoriesQuery } from "../../../redux/features/categories/categories.api";
@@ -7,7 +7,14 @@ import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InboxOutlined } from "@ant-design/icons";
-import { Baseline, BrickWall, DollarSign, Percent } from "lucide-react";
+import {
+  Baseline,
+  BrickWall,
+  DollarSign,
+  Paperclip,
+  Percent,
+  Trash,
+} from "lucide-react";
 import TextArea from "antd/es/input/TextArea";
 import Dragger from "antd/es/upload/Dragger";
 
@@ -16,22 +23,21 @@ interface IDuplicateProductProps {
   isDrawerOpen: boolean;
   setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
 }
-type createUserFormInputs = z.infer<typeof createProductValidationSchema>;
+type duplicateOrEditFormInputs = z.infer<typeof createProductValidationSchema>;
 
 const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   product,
   setIsDrawerOpen,
   isDrawerOpen,
 }) => {
-  console.log({ product });
   const {
     control,
     handleSubmit,
     reset,
 
     formState: { errors },
-  } = useForm<createUserFormInputs>({
-    resolver: zodResolver(createProductValidationSchema),
+  } = useForm<duplicateOrEditFormInputs>({
+    // resolver: zodResolver(createProductValidationSchema),
   });
 
   const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
@@ -42,9 +48,10 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
       label: item.name,
     })
   );
-
-  // State for uploaded images
   const [images, setImages] = useState<File[]>([]);
+  const [oldImages, setOldImages] = useState<string[] | undefined>(
+    product?.imgs
+  );
 
   const handleUploadChange = (info: any) => {
     const fileList = info.fileList
@@ -63,6 +70,18 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
     },
   };
 
+  function handleRemoveOldImg(url: string) {
+    setOldImages((prev) => prev?.filter((link) => link !== url));
+  }
+
+  async function handleEditOrDuplicateProduct(data: duplicateOrEditFormInputs) {
+    console.log(data);
+  }
+
+  useEffect(() => {
+    setOldImages(product?.imgs);
+  }, [product, isDrawerOpen]);
+
   return (
     <>
       <Drawer
@@ -78,7 +97,12 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
         extra={
           <Space>
             <Button onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button type="primary">Submit</Button>
+            <Button
+              type="primary"
+              onClick={handleSubmit(handleEditOrDuplicateProduct)}
+            >
+              Submit
+            </Button>
           </Space>
         }
       >
@@ -292,6 +316,15 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                   Support for a single or bulk upload.
                 </p>
               </Dragger>
+              {oldImages?.map((url) => (
+                <div className="flex justify-between mr-1 text-red-500">
+                  <div className="flex items-center gap-2.5">
+                    <Paperclip size={12} />
+                    <p>{url.split("/").slice(4).join("/")}</p>
+                  </div>
+                  <Trash onClick={() => handleRemoveOldImg(url)} size={14} />
+                </div>
+              ))}
             </Col>
           </Row>
         </form>
