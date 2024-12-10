@@ -1,6 +1,6 @@
 import { List, Pagination, Tooltip } from "antd";
 import { Copy, Edit, Trash } from "lucide-react";
-import { createElement, Dispatch, FC, SetStateAction } from "react";
+import { createElement, Dispatch, FC, SetStateAction, useState } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { Link } from "react-router-dom";
 import { IProductMeta } from "../../interfaces/api.response.type";
@@ -8,23 +8,12 @@ import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import UserRole from "../../constants/user_role";
+import DuplicateProduct from "./vendors/duplicate_product";
 
 interface IProductsProps {
   products: IProduct[];
   meta: IProductMeta;
   setCurrentPage: Dispatch<SetStateAction<number>>;
-}
-
-async function handleDuplicateProduct(id: string) {
-  console.log("dd");
-}
-
-async function handleEditProduct(id) {
-  console.log("eit");
-}
-
-async function handleDeleteProduct(id) {
-  console.log("delet");
 }
 
 interface IIconTextProps {
@@ -34,6 +23,21 @@ interface IIconTextProps {
 }
 const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   const user = useAppSelector(useCurrentUser);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<IProduct | null>(null);
+
+  async function handleDuplicateProduct(item: IProduct) {
+    setIsDrawerOpen(true);
+    setSelectedItem(item);
+  }
+
+  async function handleEditProduct(id: string) {
+    console.log("eit");
+  }
+
+  async function handleDeleteProduct(id: string) {
+    console.log("delet");
+  }
 
   const IconText = ({ icon, text, id }: IIconTextProps) => (
     <div
@@ -104,6 +108,11 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
         onChange={(val) => setCurrentPage(val)}
         showSizeChanger={false}
         total={meta.totalPages}
+      />
+      <DuplicateProduct
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        product={selectedItem}
       />
     </>
   );
