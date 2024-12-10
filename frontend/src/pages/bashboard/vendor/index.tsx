@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu, ConfigProvider, theme } from "antd";
 import { Link, Outlet } from "react-router-dom";
 import navItems from "../../../constants/nav_items";
-import { ShoppingBasket, SquareChartGantt } from "lucide-react";
+import { DashboardNavItems } from "../../../constants/dashboard_nav_items";
+import { useAppSelector } from "../../../redux/hooks";
+import { useCurrentUser } from "../../../redux/features/auth/auth.slice";
+import { decrypt } from "../../../utils/text_encryption";
 
 const { Header, Sider, Content } = Layout;
 
 const Vendor: React.FC = () => {
+  const user = useAppSelector(useCurrentUser);
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -43,23 +43,8 @@ const Vendor: React.FC = () => {
           <Menu
             mode="inline"
             defaultSelectedKeys={["1"]}
-            items={[
-              {
-                key: "1",
-                icon: <ShoppingBasket />,
-                label: <Link to="add-product">Add Product</Link>,
-              },
-              {
-                key: "2",
-                icon: <SquareChartGantt />,
-                label: <Link to="products">All Products</Link>,
-              },
-              {
-                key: "3",
-                icon: <UploadOutlined />,
-                label: <Link to="/uploads">Uploads</Link>,
-              },
-            ]}
+            // @ts-expect-error: sometime user will null
+            items={DashboardNavItems[decrypt(user?.role)]}
           />
         </Sider>
         <Layout

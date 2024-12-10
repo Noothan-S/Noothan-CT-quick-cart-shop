@@ -93,6 +93,7 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
                     />,
                   ]
                 : [
+                    <IconText icon={Edit} text="Edit" item={item} key="edit" />,
                     <IconText
                       icon={Trash}
                       text="Delete"
