@@ -24,6 +24,7 @@ import { useCreateNewProductMutation } from "../../../redux/features/products/pr
 interface IDuplicateProductProps {
   product: IProduct;
   isDrawerOpen: boolean;
+  actionType: "edit" | "duplicate";
   setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
 }
 type duplicateOrEditFormInputs = z.infer<typeof createProductValidationSchema>;
@@ -32,6 +33,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   product,
   setIsDrawerOpen,
   isDrawerOpen,
+  actionType,
 }) => {
   const [createNewProduct] = useCreateNewProductMutation();
   const [actionLoading, setActionLoading] = useState<boolean>(false);
@@ -97,18 +99,22 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
     const uploadNewImg = await uploadImageToImgBb(images);
     // [...new Set([...array1, ...array2])];
     const mergedImages = oldImages?.concat(uploadNewImg.urls as string[]);
-
     const payload = { ...data, imgs: mergedImages };
-    const res = await createNewProduct(payload);
 
-    if (res.data.success) {
-      toast.success("Product Duplicated");
-      setIsDrawerOpen(false);
-      setActionLoading(false);
-    } else {
-      toast.success("Something bad happened");
-      setIsDrawerOpen(false);
-      setActionLoading(false);
+    if (actionType === "duplicate") {
+      const res = await createNewProduct(payload);
+
+      if (res.data.success) {
+        toast.success("Product Duplicated");
+        setIsDrawerOpen(false);
+        setActionLoading(false);
+      } else {
+        toast.success("Something bad happened");
+        setIsDrawerOpen(false);
+        setActionLoading(false);
+      }
+    } else if (actionType === "edit") {
+      console.log(payload);
     }
   }
 
@@ -127,7 +133,9 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   return (
     <>
       <Drawer
-        title={`Duplicate ${product?.title}`}
+        title={`${actionType === "duplicate" ? "Duplicate" : "Edit"} ${
+          product?.title
+        }`}
         width={720}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
@@ -144,7 +152,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
               loading={actionLoading}
               onClick={handleSubmit(handleEditOrDuplicateProduct)}
             >
-              Submit
+              {actionType === "duplicate" ? "Duplicate" : "Edit"}
             </Button>
           </Space>
         }

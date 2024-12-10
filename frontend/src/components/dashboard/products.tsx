@@ -25,14 +25,20 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   const user = useAppSelector(useCurrentUser);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IProduct | null>(null);
+  const [actionType, setActionType] = useState<"edit" | "duplicate">(
+    "duplicate"
+  );
 
   async function handleDuplicateProduct(item: IProduct) {
+    setActionType("duplicate");
     setIsDrawerOpen(true);
     setSelectedItem(item);
   }
 
-  async function handleEditProduct(id: string) {
-    console.log("eit");
+  async function handleEditProduct(item: IProduct) {
+    setActionType("edit");
+    setIsDrawerOpen(true);
+    setSelectedItem(item);
   }
 
   async function handleDeleteProduct(id: string) {
@@ -45,7 +51,7 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
         text === "Copy"
           ? handleDuplicateProduct(item as IProduct)
           : text === "Edit"
-          ? handleEditProduct(item as string)
+          ? handleEditProduct(item as IProduct)
           : handleDeleteProduct(item as string)
       }
     >
@@ -108,6 +114,7 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
       />
       {selectedItem && (
         <DuplicateProduct
+          actionType={actionType}
           isDrawerOpen={isDrawerOpen}
           setIsDrawerOpen={setIsDrawerOpen}
           product={selectedItem}
