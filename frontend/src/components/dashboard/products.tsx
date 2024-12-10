@@ -19,7 +19,7 @@ interface IProductsProps {
 interface IIconTextProps {
   icon: React.FC;
   text: string;
-  id: string;
+  item: IProduct | string;
 }
 const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   const user = useAppSelector(useCurrentUser);
@@ -39,14 +39,14 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
     console.log("delet");
   }
 
-  const IconText = ({ icon, text, id }: IIconTextProps) => (
+  const IconText = ({ icon, text, item }: IIconTextProps) => (
     <div
       onClick={() =>
         text === "Copy"
-          ? handleDuplicateProduct(id)
+          ? handleDuplicateProduct(item as IProduct)
           : text === "Edit"
-          ? handleEditProduct(id)
-          : handleDeleteProduct(id)
+          ? handleEditProduct(item as string)
+          : handleDeleteProduct(item as string)
       }
     >
       <Tooltip className="cursor-pointer" title={text}>
@@ -67,22 +67,12 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
             actions={
               decrypt(user?.role) === UserRole.vendor
                 ? [
-                    <IconText
-                      icon={Copy}
-                      text="Copy"
-                      id={item.id}
-                      key="copy"
-                    />,
-                    <IconText
-                      icon={Edit}
-                      text="Edit"
-                      id={item.id}
-                      key="edit"
-                    />,
+                    <IconText icon={Copy} text="Copy" item={item} key="copy" />,
+                    <IconText icon={Edit} text="Edit" item={item} key="edit" />,
                     <IconText
                       icon={Trash}
                       text="Delete"
-                      id={item.id}
+                      item={item}
                       key="delete"
                     />,
                   ]
@@ -90,7 +80,7 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
                     <IconText
                       icon={Trash}
                       text="Delete"
-                      id={item.id}
+                      item={item.id}
                       key="delete"
                     />,
                   ]
