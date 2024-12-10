@@ -19,7 +19,10 @@ import TextArea from "antd/es/input/TextArea";
 import Dragger from "antd/es/upload/Dragger";
 import { toast } from "sonner";
 import uploadImageToImgBb from "../../../utils/upload_image";
-import { useCreateNewProductMutation } from "../../../redux/features/products/products.api";
+import {
+  useCreateNewProductMutation,
+  useUpdateProductMutation,
+} from "../../../redux/features/products/products.api";
 
 interface IDuplicateProductProps {
   product: IProduct;
@@ -36,6 +39,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   actionType,
 }) => {
   const [createNewProduct] = useCreateNewProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
   const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const {
@@ -104,7 +108,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
     if (actionType === "duplicate") {
       const res = await createNewProduct(payload);
 
-      if (res.data.success) {
+      if (res?.data?.success) {
         toast.success("Product Duplicated");
         setIsDrawerOpen(false);
         setActionLoading(false);
@@ -114,7 +118,17 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
         setActionLoading(false);
       }
     } else if (actionType === "edit") {
-      console.log(payload);
+      const res = await updateProduct({ id: product.id, data: payload });
+
+      if (res?.data?.success) {
+        toast.success("Product Edited");
+        setIsDrawerOpen(false);
+        setActionLoading(false);
+      } else {
+        toast.success("Something bad happened");
+        setIsDrawerOpen(false);
+        setActionLoading(false);
+      }
     }
   }
 

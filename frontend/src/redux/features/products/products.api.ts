@@ -1,3 +1,4 @@
+import { IProduct } from "../../../interfaces/api.products.res.type";
 import { TApiResponse } from "../../../interfaces/api_response.types";
 import { baseApi } from "../../api/base_api";
 
@@ -9,6 +10,16 @@ const productApi = baseApi.injectEndpoints({
         url: "/products",
         method: "POST",
         body: data,
+      }),
+      invalidatesTags: ["products"],
+    }),
+
+    // update product
+    updateProduct: builder.mutation({
+      query: (args: { data: Partial<IProduct>; id: string }) => ({
+        url: `/products/${args.id}`,
+        method: "PATCH",
+        body: args.data,
       }),
       invalidatesTags: ["products"],
     }),
@@ -57,4 +68,5 @@ export const {
   useGetAllProductsQuery,
   useGetSingleProductQuery,
   useCreateNewProductMutation,
+  useUpdateProductMutation,
 } = productApi;
