@@ -1,53 +1,52 @@
-import { List, Pagination } from "antd";
-import { Space } from "lucide-react";
-import { createElement } from "react";
+import { List, Pagination, Tooltip } from "antd";
+import { Copy, Edit, Trash } from "lucide-react";
+import { createElement, Dispatch, FC, SetStateAction } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
-import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { IProductMeta } from "../../interfaces/api.response.type";
 
-const Products = ({ products }: { products: IProduct[] }) => {
+interface IProductsProps {
+  products: IProduct[];
+  meta: IProductMeta;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+}
+
+const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
-    <Space>
+    <Tooltip className="cursor-pointer" title={text}>
       {createElement(icon)}
-      {text}
-    </Space>
+    </Tooltip>
   );
 
   return (
-    <div className="">
+    <>
       <List
         itemLayout="vertical"
         size="large"
         dataSource={products}
         renderItem={(item) => (
           <List.Item
-            key={item.title}
+            key={item.id}
             actions={[
-              <IconText
-                icon={StarOutlined}
-                text="156"
-                key="list-vertical-star-o"
-              />,
-              <IconText
-                icon={LikeOutlined}
-                text="156"
-                key="list-vertical-like-o"
-              />,
-              <IconText
-                icon={MessageOutlined}
-                text="2"
-                key="list-vertical-message"
-              />,
+              <IconText icon={Copy} text="Copy" key="copy" />,
+              <IconText icon={Edit} text="Edit" key="edit" />,
+              <IconText icon={Trash} text="Delete" key="delete" />,
             ]}
-            extra={<img width={172} alt="logo" src={item.imgs[0]} />}
+            extra={<img width={172} alt={item.title} src={item.imgs[0]} />}
           >
             <List.Item.Meta title={<Link to={"/"}>{item.title}</Link>} />
-            {item.description.slice(0, 400)}
+            {item.description.slice(0, 400)} ...
           </List.Item>
         )}
       />
-      <Pagination align="end" total={30} />
-    </div>
+      <Pagination
+        align="end"
+        pageSize={5}
+        onChange={(val) => setCurrentPage(val)}
+        showSizeChanger={false}
+        total={meta.totalPages}
+      />
+    </>
   );
 };
 
