@@ -12,16 +12,7 @@ const categoryApi = baseApi.injectEndpoints({
       transformResponse: (response: TApiResponse) => response.data,
       providesTags: ["categories"],
     }),
-
-    createNewProduct: builder.mutation({
-      query: (data) => ({
-        url: "/products",
-        method: "POST",
-        body: data,
-      }),
-    }),
   }),
 });
 
-export const { useGetCategoriesQuery, useCreateNewProductMutation } =
-  categoryApi;
+export const { useGetCategoriesQuery } = categoryApi;

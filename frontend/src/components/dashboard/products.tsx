@@ -87,7 +87,13 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
             }
             extra={<img width={172} alt={item.title} src={item.imgs[0]} />}
           >
-            <List.Item.Meta title={<Link to={"/"}>{item.title}</Link>} />
+            <List.Item.Meta
+              title={
+                <Link to={`/products/item/${item.id}`} target="_blank">
+                  {item.title}
+                </Link>
+              }
+            />
             {item.description.slice(0, 400)} ...
           </List.Item>
         )}

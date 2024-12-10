@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import TextArea from "antd/es/input/TextArea";
 import Dragger from "antd/es/upload/Dragger";
+import { toast } from "sonner";
+import uploadImageToImgBb from "../../../utils/upload_image";
+import { useCreateNewProductMutation } from "../../../redux/features/products/products.api";
 
 interface IDuplicateProductProps {
   product: IProduct;
@@ -30,7 +33,8 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   setIsDrawerOpen,
   isDrawerOpen,
 }) => {
-  const [updatedProduct, setUpdatedProduct] = useState<IProduct>(product);
+  const [createNewProduct] = useCreateNewProductMutation();
+  const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const {
     control,
@@ -40,12 +44,12 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   } = useForm<duplicateOrEditFormInputs>({
     resolver: zodResolver(createProductValidationSchema),
     defaultValues: {
-      title: updatedProduct.title || "",
-      price: updatedProduct.price || 0,
-      discount: updatedProduct.discount || 0,
-      quantity: updatedProduct.quantity || 0,
-      categoryId: updatedProduct.categoryId || undefined,
-      description: updatedProduct.description || "",
+      title: product.title || "",
+      price: product.price || 0,
+      discount: product.discount || 0,
+      quantity: product.quantity || 0,
+      categoryId: product.categoryId || undefined,
+      description: product.description || "",
     },
   });
 
@@ -59,7 +63,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   );
   const [images, setImages] = useState<File[]>([]);
   const [oldImages, setOldImages] = useState<string[] | undefined>(
-    updatedProduct?.imgs
+    product.imgs
   );
 
   const handleUploadChange = (info: any) => {
@@ -84,7 +88,28 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   }
 
   async function handleEditOrDuplicateProduct(data: duplicateOrEditFormInputs) {
-    console.log(data);
+    if (!oldImages?.length && !images.length) {
+      toast.error("Images cannot be empty");
+      return;
+    }
+    setActionLoading(true);
+
+    const uploadNewImg = await uploadImageToImgBb(images);
+    // [...new Set([...array1, ...array2])];
+    const mergedImages = oldImages?.concat(uploadNewImg.urls as string[]);
+
+    const payload = { ...data, imgs: mergedImages };
+    const res = await createNewProduct(payload);
+
+    if (res.data.success) {
+      toast.success("Product Duplicated");
+      setIsDrawerOpen(false);
+      setActionLoading(false);
+    } else {
+      toast.success("Something bad happened");
+      setIsDrawerOpen(false);
+      setActionLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -102,7 +127,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   return (
     <>
       <Drawer
-        title={`Duplicate ${updatedProduct?.title}`}
+        title={`Duplicate ${product?.title}`}
         width={720}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
@@ -116,6 +141,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
             <Button onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
             <Button
               type="primary"
+              loading={actionLoading}
               onClick={handleSubmit(handleEditOrDuplicateProduct)}
             >
               Submit
@@ -342,7 +368,11 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                     <Paperclip size={12} />
                     <p>{url.split("/").slice(4).join("/")}</p>
                   </div>
-                  <Trash onClick={() => handleRemoveOldImg(url)} size={14} />
+                  <Trash
+                    className="cursor-pointer"
+                    onClick={() => handleRemoveOldImg(url)}
+                    size={14}
+                  />
                 </div>
               ))}
             </Col>
