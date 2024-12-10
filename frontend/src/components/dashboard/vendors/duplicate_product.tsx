@@ -19,7 +19,7 @@ import TextArea from "antd/es/input/TextArea";
 import Dragger from "antd/es/upload/Dragger";
 
 interface IDuplicateProductProps {
-  product: IProduct | null;
+  product: IProduct;
   isDrawerOpen: boolean;
   setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -30,14 +30,23 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   setIsDrawerOpen,
   isDrawerOpen,
 }) => {
+  const [updatedProduct, setUpdatedProduct] = useState<IProduct>(product);
+
   const {
     control,
     handleSubmit,
     reset,
-
     formState: { errors },
   } = useForm<duplicateOrEditFormInputs>({
-    // resolver: zodResolver(createProductValidationSchema),
+    resolver: zodResolver(createProductValidationSchema),
+    defaultValues: {
+      title: updatedProduct.title || "",
+      price: updatedProduct.price || 0,
+      discount: updatedProduct.discount || 0,
+      quantity: updatedProduct.quantity || 0,
+      categoryId: updatedProduct.categoryId || undefined,
+      description: updatedProduct.description || "",
+    },
   });
 
   const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
@@ -50,7 +59,7 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   );
   const [images, setImages] = useState<File[]>([]);
   const [oldImages, setOldImages] = useState<string[] | undefined>(
-    product?.imgs
+    updatedProduct?.imgs
   );
 
   const handleUploadChange = (info: any) => {
@@ -79,13 +88,21 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
   }
 
   useEffect(() => {
+    reset({
+      title: product.title || "",
+      price: product.price || 0,
+      discount: product.discount || 0,
+      quantity: product.quantity || 0,
+      categoryId: product.categoryId || undefined,
+      description: product.description || "",
+    });
     setOldImages(product?.imgs);
-  }, [product, isDrawerOpen]);
+  }, [product, reset, isDrawerOpen]);
 
   return (
     <>
       <Drawer
-        title={`Duplicate ${product?.title}`}
+        title={`Duplicate ${updatedProduct?.title}`}
         width={720}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
@@ -122,7 +139,6 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                 render={({ field }) => (
                   <Input
                     {...field}
-                    defaultValue={product?.title}
                     size="large"
                     placeholder="eg. iPhone 14 pro max"
                     prefix={<Baseline size={16} />}
@@ -151,12 +167,14 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    defaultValue={product?.price}
                     type="number"
                     {...field}
                     size="large"
                     placeholder="eg. 200.43"
                     prefix={<DollarSign size={16} />}
+                    onChange={(e) =>
+                      field.onChange(parseFloat(e.target.value) || 0)
+                    }
                   />
                 )}
               />
@@ -180,12 +198,14 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    defaultValue={product?.discount}
                     type="number"
                     {...field}
                     size="large"
                     placeholder="eg. 4"
                     prefix={<Percent size={16} />}
+                    onChange={(e) =>
+                      field.onChange(parseFloat(e.target.value) || 0)
+                    }
                   />
                 )}
               />
@@ -213,10 +233,12 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                   <Input
                     type="number"
                     {...field}
-                    defaultValue={product?.quantity}
                     size="large"
                     placeholder="eg. 200"
                     prefix={<BrickWall size={16} />}
+                    onChange={(e) =>
+                      field.onChange(parseFloat(e.target.value) || 0)
+                    }
                   />
                 )}
               />
@@ -241,7 +263,6 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                 render={({ field }) => (
                   <Select
                     {...field}
-                    defaultValue={product?.categoryId}
                     showSearch
                     className="w-full"
                     size="large"
@@ -278,7 +299,6 @@ const DuplicateProduct: React.FC<IDuplicateProductProps> = ({
                 control={control}
                 render={({ field }) => (
                   <TextArea
-                    defaultValue={product?.description}
                     {...field}
                     showCount
                     maxLength={5000}

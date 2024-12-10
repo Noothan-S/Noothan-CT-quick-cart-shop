@@ -99,11 +99,13 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
         showSizeChanger={false}
         total={meta.totalPages}
       />
-      <DuplicateProduct
-        isDrawerOpen={isDrawerOpen}
-        setIsDrawerOpen={setIsDrawerOpen}
-        product={selectedItem}
-      />
+      {selectedItem && (
+        <DuplicateProduct
+          isDrawerOpen={isDrawerOpen}
+          setIsDrawerOpen={setIsDrawerOpen}
+          product={selectedItem}
+        />
+      )}
     </>
   );
 };
