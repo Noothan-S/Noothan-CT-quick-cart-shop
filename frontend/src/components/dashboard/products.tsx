@@ -9,6 +9,8 @@ import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import UserRole from "../../constants/user_role";
 import DuplicateProduct from "./vendors/duplicate_product";
+import { useDeleteProductMutation } from "../../redux/features/products/products.api";
+import { toast } from "sonner";
 
 interface IProductsProps {
   products: IProduct[];
@@ -23,6 +25,7 @@ interface IIconTextProps {
 }
 const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   const user = useAppSelector(useCurrentUser);
+  const [deleteProduct] = useDeleteProductMutation();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IProduct | null>(null);
   const [actionType, setActionType] = useState<"edit" | "duplicate">(
@@ -42,7 +45,14 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
   }
 
   async function handleDeleteProduct(id: string) {
-    console.log("delet");
+    const toastId = toast.loading("Loading...");
+    const res = await deleteProduct({ id });
+
+    if (res.data.success) {
+      toast.success("Product Deleted", { id: toastId });
+    } else {
+      toast.success("Something bad happened!", { id: toastId });
+    }
   }
 
   const IconText = ({ icon, text, item }: IIconTextProps) => (
@@ -78,7 +88,7 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
                     <IconText
                       icon={Trash}
                       text="Delete"
-                      item={item}
+                      item={item.id}
                       key="delete"
                     />,
                   ]

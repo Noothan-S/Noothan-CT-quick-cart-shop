@@ -15,7 +15,7 @@ const AllProduct: React.FC = () => {
     user?.vendor
       ? { vendorId: decrypt(user.vendor), limit: 5, page: currentPage }
       : {},
-    { skip: !user?.vendor }
+    { skip: !user }
   );
 
   if (isLoading) return <Loading />;
