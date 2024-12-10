@@ -4,6 +4,10 @@ import { createElement, Dispatch, FC, SetStateAction } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { Link } from "react-router-dom";
 import { IProductMeta } from "../../interfaces/api.response.type";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { decrypt } from "../../utils/text_encryption";
+import UserRole from "../../constants/user_role";
 
 interface IProductsProps {
   products: IProduct[];
@@ -11,11 +15,40 @@ interface IProductsProps {
   setCurrentPage: Dispatch<SetStateAction<number>>;
 }
 
+async function handleDuplicateProduct(id: string) {
+  console.log("dd");
+}
+
+async function handleEditProduct(id) {
+  console.log("eit");
+}
+
+async function handleDeleteProduct(id) {
+  console.log("delet");
+}
+
+interface IIconTextProps {
+  icon: React.FC;
+  text: string;
+  id: string;
+}
 const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
-  const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
-    <Tooltip className="cursor-pointer" title={text}>
-      {createElement(icon)}
-    </Tooltip>
+  const user = useAppSelector(useCurrentUser);
+
+  const IconText = ({ icon, text, id }: IIconTextProps) => (
+    <div
+      onClick={() =>
+        text === "Copy"
+          ? handleDuplicateProduct(id)
+          : text === "Edit"
+          ? handleEditProduct(id)
+          : handleDeleteProduct(id)
+      }
+    >
+      <Tooltip className="cursor-pointer" title={text}>
+        {createElement(icon)}
+      </Tooltip>
+    </div>
   );
 
   return (
@@ -27,11 +60,37 @@ const Products: FC<IProductsProps> = ({ products, meta, setCurrentPage }) => {
         renderItem={(item) => (
           <List.Item
             key={item.id}
-            actions={[
-              <IconText icon={Copy} text="Copy" key="copy" />,
-              <IconText icon={Edit} text="Edit" key="edit" />,
-              <IconText icon={Trash} text="Delete" key="delete" />,
-            ]}
+            actions={
+              decrypt(user?.role) === UserRole.vendor
+                ? [
+                    <IconText
+                      icon={Copy}
+                      text="Copy"
+                      id={item.id}
+                      key="copy"
+                    />,
+                    <IconText
+                      icon={Edit}
+                      text="Edit"
+                      id={item.id}
+                      key="edit"
+                    />,
+                    <IconText
+                      icon={Trash}
+                      text="Delete"
+                      id={item.id}
+                      key="delete"
+                    />,
+                  ]
+                : [
+                    <IconText
+                      icon={Trash}
+                      text="Delete"
+                      id={item.id}
+                      key="delete"
+                    />,
+                  ]
+            }
             extra={<img width={172} alt={item.title} src={item.imgs[0]} />}
           >
             <List.Item.Meta title={<Link to={"/"}>{item.title}</Link>} />

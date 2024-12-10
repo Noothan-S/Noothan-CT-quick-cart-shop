@@ -16,7 +16,10 @@ export function encrypt(text: string) {
 }
 
 // Decrypt function
-export function decrypt(cipherText: string) {
+export function decrypt(cipherText: string | undefined) {
+  if (!cipherText) {
+    throw new Error("encrypted text got undefined.");
+  }
   const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
