@@ -7,7 +7,7 @@ export const updateCouponValidationSchema = z.object({
   expiryDate: z.string().refine((date) => {
     const parsedDate = new Date(date);
     return !isNaN(parsedDate.getTime()) && parsedDate >= new Date();
-  }, "Expiry date must be a valid ISO 8601 date string and cannot be in the past."),
+  }, "Expiry date cannot be in the past."),
 });
 
 export const createCouponValidationSchema = z.object({
@@ -20,5 +20,5 @@ export const createCouponValidationSchema = z.object({
   expiryDate: z.string().refine((date) => {
     const parsedDate = new Date(date);
     return !isNaN(parsedDate.getTime()) && parsedDate >= new Date();
-  }, "Expiry date must be a valid ISO 8601 date string and cannot be in the past."),
+  }, "Expiry date cannot be in the past."),
 });

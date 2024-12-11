@@ -5,7 +5,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { updateCouponValidationSchema } from "../../validations/coupon.create.validation";
+import { updateCouponValidationSchema } from "../../validations/coupon.validation";
+import { useUpdateCouponMutation } from "../../redux/features/coupon/coupon.api";
+import { toast } from "sonner";
 
 type updateCouponFormInputs = z.infer<typeof updateCouponValidationSchema>;
 interface IEditCouponDrawerProps {
@@ -17,6 +19,7 @@ const EditCouponDrawer = ({
   coupon,
   setClickedCoupon,
 }: IEditCouponDrawerProps) => {
+  const [updateCoupon] = useUpdateCouponMutation();
   const {
     handleSubmit,
     control,
@@ -29,8 +32,25 @@ const EditCouponDrawer = ({
     },
   });
 
-  const onSubmit = (data: updateCouponFormInputs) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: updateCouponFormInputs) => {
+    try {
+      const payload = {
+        code: coupon.code,
+        productId: coupon.product.id,
+        ...data,
+      };
+
+      const res = await updateCoupon(payload).unwrap();
+
+      if (res.success) {
+        toast.success("Coupon successfully updated");
+        setClickedCoupon(null);
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      setClickedCoupon(null);
+      console.log("error when updating coupon", error);
+    }
   };
 
   return (
@@ -112,6 +132,11 @@ const EditCouponDrawer = ({
                   />
                 )}
               />
+              {errors.expiryDate && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.expiryDate.message}
+                </p>
+              )}
             </Col>
           </Row>
         </form>
