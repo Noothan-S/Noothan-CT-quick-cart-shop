@@ -1,4 +1,4 @@
-import { Table, Button, Space } from "antd";
+import { Table, Button, Space, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { formatPrice } from "../../utils/format-price";
@@ -8,9 +8,27 @@ import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import { Link } from "react-router-dom";
+import { useDeleteCouponMutation } from "../../redux/features/coupon/coupon.api";
+import { toast } from "sonner";
 
 const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
   const user = useAppSelector(useCurrentUser);
+  const [deleteCoupon] = useDeleteCouponMutation();
+
+  async function handleDeleteCoupon(props: {
+    productId: string;
+    code: string;
+  }) {
+    try {
+      const res = await deleteCoupon(props).unwrap();
+      if (res.success) {
+        toast.success(`${props.code} is successfully deleted. `);
+      }
+    } catch (error) {
+      toast.error("Something bad happened!");
+      console.log("Error to delete coupon", error);
+    }
+  }
 
   const columns: ColumnsType<ICoupon> = [
     {
@@ -63,9 +81,23 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="middle" className="mr-10">
           <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} danger />
+          <Popconfirm
+            title="Delete the coupon"
+            description="Are you sure to delete this coupon?"
+            onConfirm={() =>
+              handleDeleteCoupon({
+                productId: record.product.id,
+                code: record.code,
+              })
+            }
+            okType="danger"
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} danger />
+          </Popconfirm>
         </Space>
       ),
     },
