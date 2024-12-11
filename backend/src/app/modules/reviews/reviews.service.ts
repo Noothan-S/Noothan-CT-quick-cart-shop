@@ -2,7 +2,6 @@ import { Review, UserRole } from "@prisma/client";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../constants/prisma_constructor";
 import { IServiceReturn } from "../../interfaces/service_return_type";
-import { ReviewsConstants } from "./reviews.constant";
 
 async function getAllReviewsFromDb(user: JwtPayload): Promise<IServiceReturn> {
   let whereCondition = undefined;
@@ -32,7 +31,15 @@ async function getAllReviewsFromDb(user: JwtPayload): Promise<IServiceReturn> {
       isDeleted: false,
       ...whereCondition,
     },
-    include: ReviewsConstants.reviewIncludeObj,
+    include: {
+      product: true,
+      vendorResponse: true,
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+    },
   });
 
   return {
@@ -65,7 +72,15 @@ async function createNewReviewIntoDb(
 
   const result = await prisma.review.create({
     data: { userId: user.id, ...payload } as Review,
-    include: ReviewsConstants.reviewIncludeObj,
+    include: {
+      product: true,
+      vendorResponse: true,
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+    },
   });
 
   return {
@@ -120,7 +135,15 @@ async function updateReviewIntoDb(
       id,
     },
     data: payload,
-    include: ReviewsConstants.reviewIncludeObj,
+    include: {
+      product: true,
+      vendorResponse: true,
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+    },
   });
 
   return {
@@ -165,7 +188,15 @@ async function deleteReviewFromDb(
     where: {
       id,
     },
-    include: ReviewsConstants.reviewIncludeObj,
+    include: {
+      product: true,
+      vendorResponse: true,
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+    },
   });
 
   return {

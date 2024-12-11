@@ -7,27 +7,39 @@ import { CouponValidations } from "./coupons.validation";
 
 const router: Router = Router();
 
-router.get('/',
-    Auth(UserRole.VENDOR, UserRole.ADMIN),
-    CouponControllers.getAllCoupon);
+router.get(
+  "/",
+  Auth(UserRole.VENDOR, UserRole.ADMIN),
+  CouponControllers.getAllCoupon
+);
 
-router.get('/single',
-    Auth(UserRole.VENDOR, UserRole.VENDOR, UserRole.CUSTOMER),
-    ValidationRequest(CouponValidations.deleteOrFetchSingleCouponValidationSchema),
-    CouponControllers.getSingleCoupon);
+router.get(
+  "/single",
+  Auth(UserRole.VENDOR, UserRole.VENDOR, UserRole.CUSTOMER),
+  ValidationRequest(
+    CouponValidations.deleteOrFetchSingleCouponValidationSchema
+  ),
+  CouponControllers.getSingleCoupon
+);
 
-router.post('/',
-    Auth(UserRole.VENDOR),
-    ValidationRequest(CouponValidations.createCouponValidationSchema),
-    CouponControllers.createNewCoupon);
+router.post(
+  "/",
+  Auth(UserRole.VENDOR, UserRole.ADMIN),
+  ValidationRequest(CouponValidations.createCouponValidationSchema),
+  CouponControllers.createNewCoupon
+);
 
-router.patch('/',
-    Auth(UserRole.VENDOR, UserRole.ADMIN),
-    ValidationRequest(CouponValidations.updateCouponValidationSchema),
-    CouponControllers.updateCoupon);
+router.patch(
+  "/",
+  Auth(UserRole.VENDOR, UserRole.ADMIN),
+  ValidationRequest(CouponValidations.updateCouponValidationSchema),
+  CouponControllers.updateCoupon
+);
 
-router.delete('/',
-    Auth(UserRole.VENDOR, UserRole.ADMIN),
-    CouponControllers.deleteCoupon);
+router.delete(
+  "/",
+  Auth(UserRole.VENDOR, UserRole.ADMIN),
+  CouponControllers.deleteCoupon
+);
 
 export const CouponRoutes = router;
