@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Badge, Button, Descriptions, Space } from "antd";
+import { Table, Badge, Button, Descriptions, Space, Popover } from "antd";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
@@ -9,9 +9,37 @@ import {
   IOrderUserProfile,
   IVendorOrder,
 } from "../../../interfaces/api.order.res.type";
+import { handleUpdateOrderStatus } from "../../../utils/handle-order-status";
 
 const VendorOrderTable: React.FC<{ orders: IVendorOrder[] }> = ({ orders }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+
+  const content = (orderId: string) => (
+    <div className="flex gap-2">
+      <Button
+        size="small"
+        variant="solid"
+        color="danger"
+        onClick={() => handleUpdateOrderStatus(orderId, "CANCELLED")}
+      >
+        Cancel
+      </Button>
+      <Button
+        size="small"
+        type="primary"
+        onClick={() => handleUpdateOrderStatus(orderId, "PROCESSING")}
+      >
+        Processing
+      </Button>
+      <Button
+        size="small"
+        type="primary"
+        onClick={() => handleUpdateOrderStatus(orderId, "DELIVERED")}
+      >
+        Delivered
+      </Button>
+    </div>
+  );
 
   const toggleExpand = (record: IVendorOrder) => {
     setExpandedRowKeys((keys) =>
@@ -97,7 +125,15 @@ const VendorOrderTable: React.FC<{ orders: IVendorOrder[] }> = ({ orders }) => {
     {
       title: "Actions",
       key: "actions",
-      render: () => <Button size="small">Update Status</Button>,
+      render: (_, record: IVendorOrder) => (
+        <Popover
+          content={content(record.id)}
+          title="Update order status"
+          trigger="click"
+        >
+          <Button size="small">Update Status</Button>
+        </Popover>
+      ),
     },
   ];
 
