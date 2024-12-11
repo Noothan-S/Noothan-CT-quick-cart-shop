@@ -1,4 +1,4 @@
-import { ShoppingBasket, SquareChartGantt } from "lucide-react";
+import { ShoppingBag, ShoppingBasket, SquareChartGantt } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const VENDOR = [
@@ -11,6 +11,11 @@ const VENDOR = [
     key: "2",
     icon: <ShoppingBasket />,
     label: <Link to="add-product">Add Product</Link>,
+  },
+  {
+    key: "3",
+    icon: <ShoppingBag />,
+    label: <Link to="orders">Orders</Link>,
   },
 ];
 

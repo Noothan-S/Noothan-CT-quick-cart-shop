@@ -3,11 +3,14 @@ import Root from "../root";
 import Home from "../pages/home";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
-import Vendor from "../pages/bashboard/vendor";
-import AddProduct from "../pages/bashboard/vendor/add_product";
-import AllProduct from "../pages/bashboard/vendor/all_products";
+import Vendor from "../pages/dashboard/vendor";
+import AddProduct from "../pages/dashboard/vendor/add_product";
+import AllProduct from "../pages/dashboard/vendor/all_products";
 import ItemDetails from "../pages/shop/items/item_details";
 import Products from "../pages/shop";
+import RoleGard from "../utils/role_gard";
+import UserRole from "../constants/user_role";
+import VendorOrders from "../pages/dashboard/vendor/orders";
 
 export const router = createBrowserRouter([
   {
@@ -36,17 +39,31 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  // vendor
   {
     path: "dashboard/vendor",
-    element: <Vendor />,
+    element: (
+      <RoleGard role={UserRole.vendor}>
+        <Vendor />
+      </RoleGard>
+    ),
     children: [
+      {
+        index: true,
+        element: <AllProduct />,
+      },
+      {
+        path: "products",
+        element: <AllProduct />,
+      },
       {
         path: "add-product",
         element: <AddProduct />,
       },
       {
-        path: "products",
-        element: <AllProduct />,
+        path: "orders",
+        element: <VendorOrders />,
       },
     ],
   },
