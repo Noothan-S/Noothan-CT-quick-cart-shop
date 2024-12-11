@@ -25,6 +25,11 @@ const ADMIN = [
     icon: <SquareChartGantt />,
     label: <Link to="products">All Products</Link>,
   },
+  {
+    key: "2",
+    icon: <ShoppingBag />,
+    label: <Link to="orders">Orders</Link>,
+  },
 ];
 
 export const DashboardNavItems = {

@@ -11,6 +11,9 @@ import Products from "../pages/shop";
 import RoleGard from "../utils/role_gard";
 import UserRole from "../constants/user_role";
 import VendorOrders from "../pages/dashboard/vendor/orders";
+import Admin from "../pages/dashboard/admin";
+import AllProductAdmin from "../pages/dashboard/admin/all-products";
+import AdminOrders from "../pages/dashboard/admin/orders";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +67,30 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <VendorOrders />,
+      },
+    ],
+  },
+
+  // admin
+  {
+    path: "/dashboard/admin",
+    element: (
+      <RoleGard role={UserRole.admin}>
+        <Admin />
+      </RoleGard>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AllProductAdmin />,
+      },
+      {
+        path: "products",
+        element: <AllProductAdmin />,
+      },
+      {
+        path: "orders",
+        element: <AdminOrders />,
       },
     ],
   },
