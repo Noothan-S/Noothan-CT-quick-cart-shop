@@ -3,6 +3,7 @@ import { baseApi } from "../../api/base_api";
 
 const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // fetch all orders
     getAllOrders: builder.query({
       query: (args: Record<string, unknown>) => {
         const params = new URLSearchParams();
@@ -25,7 +26,20 @@ const orderApi = baseApi.injectEndpoints({
       },
       providesTags: ["orders"],
     }),
+
+    // update order status
+    updateOrderStatus: builder.mutation({
+      query: (args: {
+        orderId: string;
+        actionType: "PROCESSING" | "DELIVERED" | "CANCELLED";
+      }) => ({
+        url: `/orders/${args.orderId}`,
+        method: "PATCH",
+        body: { status: args.actionType },
+      }),
+      invalidatesTags: ["orders"],
+    }),
   }),
 });
 
-export const { useGetAllOrdersQuery } = orderApi;
+export const { useGetAllOrdersQuery, useUpdateOrderStatusMutation } = orderApi;

@@ -2,17 +2,35 @@
 
 import React, { useState } from "react";
 import { Table, Badge, Button, Descriptions, Space, Popover } from "antd";
-import { DownOutlined, RightOutlined } from "@ant-design/icons";
+import { DownOutlined, RightOutlined, ToTopOutlined } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
   IOrderItem,
   IOrderUserProfile,
   IVendorOrder,
 } from "../../../interfaces/api.order.res.type";
-import { handleUpdateOrderStatus } from "../../../utils/handle-order-status";
+import { useUpdateOrderStatusMutation } from "../../../redux/features/orders/order.api";
+import { toast } from "sonner";
 
 const VendorOrderTable: React.FC<{ orders: IVendorOrder[] }> = ({ orders }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+
+  async function handleUpdateStatus(
+    orderId: string,
+    actionType: "PROCESSING" | "DELIVERED" | "CANCELLED"
+  ) {
+    try {
+      const res = await updateOrderStatus({ actionType, orderId });
+
+      if (res.data.success) {
+        toast.success("Order status Updated");
+      }
+    } catch (error) {
+      toast.error("Error updating status");
+      console.error("Error updating status:", error);
+    }
+  }
 
   const content = (orderId: string) => (
     <div className="flex gap-2">
@@ -20,21 +38,21 @@ const VendorOrderTable: React.FC<{ orders: IVendorOrder[] }> = ({ orders }) => {
         size="small"
         variant="solid"
         color="danger"
-        onClick={() => handleUpdateOrderStatus(orderId, "CANCELLED")}
+        onClick={() => handleUpdateStatus(orderId, "CANCELLED")}
       >
         Cancel
       </Button>
       <Button
         size="small"
         type="primary"
-        onClick={() => handleUpdateOrderStatus(orderId, "PROCESSING")}
+        onClick={() => handleUpdateStatus(orderId, "PROCESSING")}
       >
         Processing
       </Button>
       <Button
         size="small"
         type="primary"
-        onClick={() => handleUpdateOrderStatus(orderId, "DELIVERED")}
+        onClick={() => handleUpdateStatus(orderId, "DELIVERED")}
       >
         Delivered
       </Button>
@@ -106,7 +124,15 @@ const VendorOrderTable: React.FC<{ orders: IVendorOrder[] }> = ({ orders }) => {
       key: "status",
       render: (status: string) => (
         <Badge
-          status={status === "PENDING" ? "processing" : "success"}
+          status={
+            status === "PENDING"
+              ? "warning"
+              : status === "CANCELLED"
+              ? "error"
+              : status === "DELIVERED"
+              ? "success"
+              : "processing"
+          }
           text={status}
         />
       ),
