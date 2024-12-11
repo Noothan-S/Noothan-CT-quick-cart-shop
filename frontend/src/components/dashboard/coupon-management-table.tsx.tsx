@@ -3,24 +3,10 @@ import { Table, Button, Space, Typography } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { formatPrice } from "../../utils/format-price";
+import { ICoupon } from "../../interfaces/api.res.coupon.type";
+import { IsoToDate } from "../../utils/iso_to_date";
 
-const { Title } = Typography;
-
-interface Coupon {
-  key: string;
-  code: string;
-  parentage: number;
-  expiryDate: string;
-  product: {
-    title: string;
-    price: number;
-    vendor: {
-      name: string;
-    };
-  };
-}
-
-const coupons: Coupon[] = [
+const coupons: ICoupon[] = [
   {
     key: "1",
     code: "SAVE150",
@@ -37,15 +23,7 @@ const coupons: Coupon[] = [
 ];
 
 const CouponManagementTable: React.FC = () => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const columns: ColumnsType<Coupon> = [
+  const columns: ColumnsType<ICoupon> = [
     {
       title: "Code",
       dataIndex: "code",
@@ -61,7 +39,7 @@ const CouponManagementTable: React.FC = () => {
       title: "Expiry Date",
       dataIndex: "expiryDate",
       key: "expiryDate",
-      render: (date: string) => formatDate(date),
+      render: (date: string) => IsoToDate(date),
     },
     {
       title: "Product",

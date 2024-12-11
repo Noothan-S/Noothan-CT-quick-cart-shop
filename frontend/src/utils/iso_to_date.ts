@@ -1,4 +1,7 @@
 export function IsoToDate(iso: string) {
-  const date = new Date(iso);
-  return date.toLocaleString();
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
