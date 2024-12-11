@@ -18,6 +18,12 @@ const couponApi = baseApi.injectEndpoints({
       providesTags: ["coupons"],
     }),
 
+    // updateCoupon: builder.mutation({
+    //     query: (args)=> ({
+    //         url: '/coupons',
+    //     })
+    // })
+
     // delete coupon
     deleteCoupon: builder.mutation({
       query: (args: { productId: string; code: string }) => ({
