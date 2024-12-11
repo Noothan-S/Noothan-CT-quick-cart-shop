@@ -145,7 +145,7 @@ async function updateProductIntoDb(
     };
   }
 
-  if (product?.vendor.user.id !== user.id) {
+  if (product?.vendor.user.id !== user.id && user.role !== UserRole.ADMIN) {
     return {
       status: 401,
       success: false,
