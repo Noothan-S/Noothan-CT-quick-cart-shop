@@ -58,7 +58,7 @@ const CustomerReview = ({
                 <CornerDownRight />
                 <div className="">
                   <p className="text-gray-700 text-sm">
-                    {IsoToDate(review.updatedAt)}
+                    {IsoToDate(res.createdAt)}
                   </p>
                   <p className="text-gray-700 ">{res.description}</p>
                 </div>

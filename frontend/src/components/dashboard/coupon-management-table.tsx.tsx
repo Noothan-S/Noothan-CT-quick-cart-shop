@@ -1,5 +1,4 @@
 import { Table, Button, Space, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { formatPrice } from "../../utils/format-price";
 import { ICoupon } from "../../interfaces/api.res.coupon.type";
@@ -85,10 +84,9 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
       key: "actions",
       render: (_, record) => (
         <Space size="middle" className="mr-10">
-          <Button
-            onClick={() => setClickedCoupon(record)}
-            icon={<EditOutlined />}
-          />
+          <Button size="small" onClick={() => setClickedCoupon(record)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Delete the coupon"
             description="Are you sure to delete this coupon?"
@@ -102,7 +100,9 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} danger />
+            <Button size="small" color="danger" variant="filled">
+              Delete
+            </Button>
           </Popconfirm>
         </Space>
       ),
