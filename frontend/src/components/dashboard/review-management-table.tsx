@@ -1,23 +1,19 @@
 import React, { useState } from "react";
-import { Table, Rate, Space, Button, Typography } from "antd";
+import { Table, Rate, Typography, Card, List } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { IReviewData } from "../../constants/review.table.type";
+import { IReviewResponse } from "../../interfaces/api.res.reviews.type";
 
 const { Text } = Typography;
 
 interface ReviewTableProps {
-  reviews: IReviewData[];
+  reviews: IReviewResponse[];
   userRole: "VENDOR" | "ADMIN";
 }
 
 const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
-  const [data, setData] = useState<IReviewData[]>(reviews);
+  console.log(reviews);
 
-  const handleDelete = (id: string) => {
-    setData(data.filter((item) => item.id !== id));
-  };
-
-  const columns: ColumnsType<IReviewData> = [
+  const columns: ColumnsType<IReviewResponse> = [
     {
       title: "Product",
       dataIndex: ["product", "title"],
@@ -31,16 +27,10 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
       render: (rating) => <Rate disabled defaultValue={rating} />,
     },
     {
-      title: "Review",
-      dataIndex: "description",
-      key: "description",
-      render: (text) => <Text ellipsis={{ tooltip: text }}>{text}</Text>,
-    },
-    {
       title: "Customer",
       key: "customer",
       render: (_, record) => (
-        <span>{`${record.user.profile.firstName} ${record.user.profile.lastName}`}</span>
+        <span>{`${record.user?.profile.firstName} ${record.user?.profile.lastName}`}</span>
       ),
     },
     {
@@ -48,20 +38,6 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button onClick={() => console.log("Respond to", record.id)}>
-            Respond
-          </Button>
-          <Button danger onClick={() => handleDelete(record.id)}>
-            Delete
-          </Button>
-        </Space>
-      ),
     },
   ];
 
@@ -73,11 +49,37 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
     });
   }
 
+  const expandedRowRender = (record: IReviewResponse) => (
+    <Card title="Review Details" style={{ margin: 16 }}>
+      <p>
+        <strong>Full Review:</strong> {record.description}
+      </p>
+      <List
+        header={<div>Vendor Responses</div>}
+        bordered
+        dataSource={record.vendorResponse}
+        renderItem={(item) => (
+          <List.Item>
+            <Text>{item.description}</Text>
+            <Text type="secondary">
+              {" "}
+              - {new Date(item.createdAt).toLocaleString()}
+            </Text>
+          </List.Item>
+        )}
+      />
+    </Card>
+  );
+
   return (
     <Table
       columns={columns}
-      dataSource={data}
+      dataSource={reviews}
       rowKey="id"
+      expandable={{
+        expandedRowRender,
+        rowExpandable: (record) => record.description !== "",
+      }}
       pagination={{ pageSize: 10 }}
     />
   );

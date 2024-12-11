@@ -3,6 +3,7 @@ import { baseApi } from "../../api/base_api";
 
 const reviewsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // retrieve all reviews
     getAllReviews: builder.query({
       query: () => ({
         url: "/reviews",
