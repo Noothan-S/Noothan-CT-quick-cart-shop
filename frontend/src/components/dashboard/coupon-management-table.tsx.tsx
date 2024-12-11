@@ -115,12 +115,15 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
       : columns
     : undefined;
 
-  console.log({ clickedCoupon });
-
   return (
     <>
       <Table columns={filteredColumns} dataSource={coupons} />
-      {/* <EditCouponDrawer /> */}
+      {clickedCoupon && (
+        <EditCouponDrawer
+          setClickedCoupon={setClickedCoupon}
+          coupon={clickedCoupon}
+        />
+      )}
     </>
   );
 };

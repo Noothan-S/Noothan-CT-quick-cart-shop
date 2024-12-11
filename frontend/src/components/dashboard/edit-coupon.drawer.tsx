@@ -1,18 +1,22 @@
-import React from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { Dispatch, SetStateAction } from "react";
 import { Button, Col, Drawer, Input, Row, Space } from "antd";
+import { ICoupon } from "../../interfaces/api.res.coupon.type";
 
-const EditCouponDrawer: React.FC = () => {
+interface IEditCouponDrawerProps {
+  coupon: ICoupon;
+  setClickedCoupon: Dispatch<SetStateAction<null | ICoupon>>;
+}
+const EditCouponDrawer = ({
+  coupon,
+  setClickedCoupon,
+}: IEditCouponDrawerProps) => {
   return (
     <>
-      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />}>
-        New account
-      </Button>
       <Drawer
-        title="Create a new account"
+        title={`Edit ${coupon.code}`}
         width={720}
-        onClose={onClose}
-        open={open}
+        onClose={() => setClickedCoupon(null)}
+        open={!!coupon}
         styles={{
           body: {
             paddingBottom: 80,
@@ -20,10 +24,8 @@ const EditCouponDrawer: React.FC = () => {
         }}
         extra={
           <Space>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button onClick={onClose} type="primary">
-              Submit
-            </Button>
+            <Button onClick={() => setClickedCoupon(null)}>Cancel</Button>
+            <Button type="primary">Submit</Button>
           </Space>
         }
       >
