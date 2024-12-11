@@ -4,7 +4,11 @@ import Loading from "../../../components/loading";
 import { useGetAllOrdersQuery } from "../../../redux/features/orders/order.api";
 
 const VendorOrders = () => {
-  const { data: orders, isLoading, isError } = useGetAllOrdersQuery({});
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useGetAllOrdersQuery({ limit: 1000000000000 });
 
   if (isLoading) return <Loading />;
   if (!orders.data.length)
