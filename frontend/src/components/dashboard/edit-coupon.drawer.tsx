@@ -17,11 +17,18 @@ import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import Loading from "../loading";
 import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { createOrUpdateCouponValidationSchema } from "../../validations/coupon.create.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+type updateCouponFormInputs = z.infer<
+  typeof createOrUpdateCouponValidationSchema
+>;
 interface IEditCouponDrawerProps {
   coupon: ICoupon;
   setClickedCoupon: Dispatch<SetStateAction<null | ICoupon>>;
 }
+
 const EditCouponDrawer = ({
   coupon,
   setClickedCoupon,
@@ -43,9 +50,19 @@ const EditCouponDrawer = ({
   const {
     handleSubmit,
     control,
-    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<updateCouponFormInputs>({
+    resolver: zodResolver(createOrUpdateCouponValidationSchema),
+    defaultValues: {
+      code: coupon.code,
+      parentage: coupon.parentage,
+      productId: coupon.product.id,
+    },
+  });
+
+  const onSubmit = (data: updateCouponFormInputs) => {
+    console.log("Form Data:", data);
+  };
 
   return (
     <>
@@ -64,7 +81,9 @@ const EditCouponDrawer = ({
         extra={
           <Space>
             <Button onClick={() => setClickedCoupon(null)}>Cancel</Button>
-            <Button type="primary">Submit</Button>
+            <Button type="primary" onClick={handleSubmit(onSubmit)}>
+              Submit
+            </Button>
           </Space>
         }
       >
@@ -73,18 +92,20 @@ const EditCouponDrawer = ({
         ) : isError ? (
           <Result status={"500"} />
         ) : (
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {" "}
+            {/* Attach the onSubmit handler */}
             <Row gutter={16} className="flex flex-col gap-3">
               <Col span={24}>
                 <label
-                  htmlFor="categoryId"
+                  htmlFor="product"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Product
                   <span className="text-red-600"> *</span>
                 </label>
                 <Controller
-                  name="product"
+                  name="productId"
                   control={control}
                   render={({ field }) => (
                     <Select
@@ -103,11 +124,12 @@ const EditCouponDrawer = ({
                     />
                   )}
                 />
-                {/* {errors.categoryId && (
+
+                {errors.productId && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
+                    {errors.productId.message}
                   </p>
-                )} */}
+                )}
               </Col>
 
               <Col span={24}>
@@ -131,11 +153,11 @@ const EditCouponDrawer = ({
                     />
                   )}
                 />
-                {/* {errors.categoryId && (
+                {errors.code && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
+                    {errors.code.message}
                   </p>
-                )} */}
+                )}
               </Col>
 
               <Col span={24}>
@@ -156,32 +178,33 @@ const EditCouponDrawer = ({
                       placeholder="eg. 10"
                       size="large"
                       onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value) || 0)
+                        field.onChange(parseInt(e.target.value) || 0)
                       }
                     />
                   )}
                 />
-                {/* {errors.categoryId && (
+                {errors.parentage && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
+                    {errors.parentage.message}
                   </p>
-                )} */}
+                )}
               </Col>
-              <Col span={24}>
+              {/* <Col span={24}>
                 <label
-                  htmlFor="parentage"
+                  htmlFor="expiryDate"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Expiry Date
                   <span className="text-red-600"> *</span>
                 </label>
-                <DatePicker className="w-full" size="large" />
-                {/* {errors.categoryId && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
-                  </p>
-                )} */}
-              </Col>
+                <Controller
+                  name="expiryDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker {...field} className="w-full" size="large" />
+                  )}
+                />
+              </Col> */}
             </Row>
           </form>
         )}
