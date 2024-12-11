@@ -1,4 +1,9 @@
-import { ShoppingBag, ShoppingBasket, SquareChartGantt } from "lucide-react";
+import {
+  Puzzle,
+  ShoppingBag,
+  ShoppingBasket,
+  SquareChartGantt,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const VENDOR = [
@@ -17,6 +22,11 @@ const VENDOR = [
     icon: <ShoppingBag />,
     label: <Link to="orders">Orders</Link>,
   },
+  {
+    key: "4",
+    icon: <Puzzle />,
+    label: <Link to="coupons">Coupons</Link>,
+  },
 ];
 
 const ADMIN = [
@@ -29,6 +39,11 @@ const ADMIN = [
     key: "2",
     icon: <ShoppingBag />,
     label: <Link to="orders">Orders</Link>,
+  },
+  {
+    key: "3",
+    icon: <Puzzle />,
+    label: <Link to="coupons">Coupons</Link>,
   },
 ];
 

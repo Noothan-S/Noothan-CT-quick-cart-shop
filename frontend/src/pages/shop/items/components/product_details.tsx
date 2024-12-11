@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { IProduct } from "../../../../interfaces/api.products.res.type";
 import { calculateProductPriceForCard } from "../../../../utils/calculate_price_card";
+import { formatPrice } from "../../../../utils/format-price";
 
 const ProductDetails: FC<IProduct> = ({
   title,
@@ -16,10 +17,10 @@ const ProductDetails: FC<IProduct> = ({
       <h1 className="text-3xl font-bold mb-2">{title}</h1>
       <div className="flex gap-4 items-center">
         <p className="text-3xl font-semibold mb-2">
-          ${calculatedPrice.totalPrice}
+          {formatPrice(calculatedPrice.totalPrice)}
         </p>
         <p className="text-2xl text-gray-400 line-through font-semibold mb-2">
-          ${price}
+          {formatPrice(price)}
         </p>
       </div>
       <p className="text-sm text-muted-foreground mb-4">

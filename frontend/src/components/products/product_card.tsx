@@ -2,6 +2,7 @@ import React from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
 import { Link } from "react-router-dom";
+import { formatPrice } from "../../utils/format-price";
 
 const ProductCard: React.FC<IProduct> = ({
   imgs,
@@ -30,11 +31,13 @@ const ProductCard: React.FC<IProduct> = ({
           </span>
           <div className="flex gap-4">
             <span className="font-semibold text-gray-800">
-              ${calculatedPrice.totalPrice}
+              {formatPrice(calculatedPrice.totalPrice)}
             </span>
 
             {calculatedPrice.discountAmount > 0 && (
-              <span className="line-through text-gray-500">${price}</span>
+              <span className="line-through text-gray-500">
+                {formatPrice(price)}
+              </span>
             )}
           </div>
         </div>

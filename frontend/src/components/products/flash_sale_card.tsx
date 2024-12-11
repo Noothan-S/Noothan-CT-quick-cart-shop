@@ -4,6 +4,7 @@ import { Button } from "antd";
 import { ShoppingCart } from "lucide-react";
 import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
 import { Link } from "react-router-dom";
+import { formatPrice } from "../../utils/format-price";
 const FlashSaleCard: FC<IProduct> = ({
   title,
   imgs,
@@ -37,7 +38,7 @@ const FlashSaleCard: FC<IProduct> = ({
         <h1 className="text-2xl my-5">{title}</h1>
         {/* <p className="mb-5">{description.slice(0, 240)}</p> */}
         <h2 className="font-semibold  text-3xl items-center mb-5">
-          ${calculatePrice.totalPrice}
+          {formatPrice(calculatePrice.totalPrice)}
         </h2>
       </Link>
       <Button
