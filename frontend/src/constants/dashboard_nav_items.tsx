@@ -3,6 +3,7 @@ import {
   ShoppingBag,
   ShoppingBasket,
   SquareChartGantt,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -27,6 +28,11 @@ const VENDOR = [
     icon: <Puzzle />,
     label: <Link to="coupons">Coupons</Link>,
   },
+  {
+    key: "5",
+    icon: <Star />,
+    label: <Link to="reviews">Reviews</Link>,
+  },
 ];
 
 const ADMIN = [
@@ -44,6 +50,11 @@ const ADMIN = [
     key: "3",
     icon: <Puzzle />,
     label: <Link to="coupons">Coupons</Link>,
+  },
+  {
+    key: "4",
+    icon: <Star />,
+    label: <Link to="reviews">Reviews</Link>,
   },
 ];
 
