@@ -14,7 +14,8 @@ import VendorOrders from "../pages/dashboard/vendor/orders";
 import Admin from "../pages/dashboard/admin";
 import AllProductAdmin from "../pages/dashboard/admin/all-products";
 import AdminOrders from "../pages/dashboard/admin/orders";
-import Coupons from "../pages/dashboard/vendor/coupons";
+import VendorCoupons from "../pages/dashboard/vendor/coupons";
+import AdminCoupons from "../pages/dashboard/admin/coupon";
 
 export const router = createBrowserRouter([
   {
@@ -71,7 +72,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "coupons",
-        element: <Coupons />,
+        element: <VendorCoupons />,
       },
     ],
   },
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <AdminOrders />,
+      },
+      {
+        path: "coupons",
+        element: <AdminCoupons />,
       },
     ],
   },
