@@ -10,10 +10,13 @@ import { decrypt } from "../../utils/text_encryption";
 import { Link } from "react-router-dom";
 import { useDeleteCouponMutation } from "../../redux/features/coupon/coupon.api";
 import { toast } from "sonner";
+import EditCouponDrawer from "./edit-coupon.drawer";
+import { useState } from "react";
 
 const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
   const user = useAppSelector(useCurrentUser);
   const [deleteCoupon] = useDeleteCouponMutation();
+  const [clickedCoupon, setClickedCoupon] = useState<ICoupon | null>(null);
 
   async function handleDeleteCoupon(props: {
     productId: string;
@@ -82,7 +85,10 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
       key: "actions",
       render: (_, record) => (
         <Space size="middle" className="mr-10">
-          <Button icon={<EditOutlined />} />
+          <Button
+            onClick={() => setClickedCoupon(record)}
+            icon={<EditOutlined />}
+          />
           <Popconfirm
             title="Delete the coupon"
             description="Are you sure to delete this coupon?"
@@ -109,7 +115,14 @@ const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
       : columns
     : undefined;
 
-  return <Table columns={filteredColumns} dataSource={coupons} />;
+  console.log({ clickedCoupon });
+
+  return (
+    <>
+      <Table columns={filteredColumns} dataSource={coupons} />
+      {/* <EditCouponDrawer /> */}
+    </>
+  );
 };
 
 export default CouponManagementTable;
