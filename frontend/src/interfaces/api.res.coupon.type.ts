@@ -6,6 +6,7 @@ export interface ICoupon {
   product: {
     title: string;
     price: number;
+    id: string;
     vendor: {
       name: string;
     };

@@ -1,4 +1,3 @@
-import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
@@ -8,24 +7,9 @@ import { IsoToDate } from "../../utils/iso_to_date";
 import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
+import { Link } from "react-router-dom";
 
-const coupons: ICoupon[] = [
-  {
-    key: "1",
-    code: "SAVE150",
-    parentage: 15,
-    expiryDate: "2024-12-31T23:59:59.000Z",
-    product: {
-      title: "Multipurpose Wooden Trolly",
-      price: 3000,
-      vendor: {
-        name: "Nazmul's Vendor",
-      },
-    },
-  },
-];
-
-const CouponManagementTable: React.FC = () => {
+const CouponManagementTable = ({ coupons }: { coupons: ICoupon[] }) => {
   const user = useAppSelector(useCurrentUser);
 
   const columns: ColumnsType<ICoupon> = [
@@ -50,6 +34,19 @@ const CouponManagementTable: React.FC = () => {
       title: "Product",
       dataIndex: ["product", "title"],
       key: "product",
+      render: (product) => {
+        const filteredProduct = coupons.find(
+          (coupon) => coupon.product.title === product
+        );
+        return (
+          <Link
+            to={`/products/item/${filteredProduct?.product.id}`}
+            target="_blank"
+          >
+            {product}
+          </Link>
+        );
+      },
     },
     {
       title: "Original Price",

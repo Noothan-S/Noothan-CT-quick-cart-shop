@@ -46,6 +46,6 @@ const baseQueryWithAdditionalFeatures: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithAdditionalFeatures,
-  tagTypes: ["categories", "profile", "products", "orders"],
+  tagTypes: ["categories", "profile", "products", "orders", "coupons"],
   endpoints: () => ({}),
 });
