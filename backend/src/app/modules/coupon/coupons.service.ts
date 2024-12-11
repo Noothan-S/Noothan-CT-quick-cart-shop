@@ -104,6 +104,9 @@ async function createNewCouponIntoDb(payload: Coupon): Promise<IServiceReturn> {
         productId: payload.productId,
       },
       isDeleted: false,
+      expiryDate: {
+        gt: new Date(),
+      },
     },
     include: ProductsConstants.productCategoryIncludeObjForCoupon,
   });
@@ -112,7 +115,7 @@ async function createNewCouponIntoDb(payload: Coupon): Promise<IServiceReturn> {
     return {
       status: 400,
       success: false,
-      message: "This Coupon code is already exist with that product id",
+      message: `${payload.code} is already exist`,
       data: isExist,
     };
   }
@@ -163,29 +166,31 @@ async function updateCouponIntoDb(
     };
   }
 
-  const vendor = await prisma.vendor.findUnique({
-    where: {
-      email: user.email,
-      isBlackListed: false,
-    },
-  });
+  if (user.role === UserRole.VENDOR) {
+    const vendor = await prisma.vendor.findUnique({
+      where: {
+        email: user.email,
+        isBlackListed: false,
+      },
+    });
 
-  if (!vendor) {
-    return {
-      status: 400,
-      success: false,
-      message: "Coupon owner not exist or black listed",
-      data: null,
-    };
-  }
+    if (!vendor) {
+      return {
+        status: 400,
+        success: false,
+        message: "Coupon owner not exist or black listed",
+        data: null,
+      };
+    }
 
-  if (isExist.product.vendor.id !== vendor.id && user.role !== UserRole.ADMIN) {
-    return {
-      status: 401,
-      success: false,
-      message: "You cannot update another vendor's coupon",
-      data: null,
-    };
+    if (isExist.product.vendor.id !== vendor.id) {
+      return {
+        status: 401,
+        success: false,
+        message: "You cannot update another vendor's coupon",
+        data: null,
+      };
+    }
   }
 
   const result = await prisma.coupon.update({
@@ -232,29 +237,31 @@ async function deleteCouponFromDb(
     };
   }
 
-  const vendor = await prisma.vendor.findUnique({
-    where: {
-      email: user.email,
-      isBlackListed: false,
-    },
-  });
+  if (user.role === UserRole.VENDOR) {
+    const vendor = await prisma.vendor.findUnique({
+      where: {
+        email: user.email,
+        isBlackListed: false,
+      },
+    });
 
-  if (!vendor) {
-    return {
-      status: 400,
-      success: false,
-      message: "Coupon owner not exist or black listed",
-      data: null,
-    };
-  }
+    if (!vendor) {
+      return {
+        status: 400,
+        success: false,
+        message: "Coupon owner not exist or black listed",
+        data: null,
+      };
+    }
 
-  if (isExist.product.vendor.id !== vendor.id && user.role !== UserRole.ADMIN) {
-    return {
-      status: 401,
-      success: false,
-      message: "You cannot update another vendor's coupon",
-      data: null,
-    };
+    if (isExist.product.vendor.id !== vendor.id) {
+      return {
+        status: 401,
+        success: false,
+        message: "You cannot update another vendor's coupon",
+        data: null,
+      };
+    }
   }
 
   const result = await prisma.coupon.update({
