@@ -20,6 +20,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { createCouponValidationSchema } from "../../validations/coupon.validation";
+import { useAssignNewCouponMutation } from "../../redux/features/coupon/coupon.api";
+import { toast } from "sonner";
 
 type updateCouponFormInputs = z.infer<typeof createCouponValidationSchema>;
 interface IEditCouponDrawerProps {
@@ -31,6 +33,7 @@ const AssignNewCouponDrawer = ({
   isOpenDrawer,
   setIsDrawerOpen,
 }: IEditCouponDrawerProps) => {
+  const [assignNewCoupon] = useAssignNewCouponMutation();
   const user = useAppSelector(useCurrentUser);
   const { data, isLoading, isError } = useGetAllProductsQuery(
     user?.vendor
@@ -48,13 +51,26 @@ const AssignNewCouponDrawer = ({
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<updateCouponFormInputs>({
     resolver: zodResolver(createCouponValidationSchema),
   });
 
-  const onSubmit = (data: updateCouponFormInputs) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: updateCouponFormInputs) => {
+    try {
+      const res = await assignNewCoupon(data).unwrap();
+      if (res.success) {
+        toast.success(`New Coupon successfully assigned`);
+        setIsDrawerOpen(false);
+        reset();
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      setIsDrawerOpen(false);
+      reset();
+      console.log("Error when assign new coupon", error);
+    }
   };
 
   return (

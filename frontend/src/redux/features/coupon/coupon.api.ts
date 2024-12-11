@@ -28,6 +28,16 @@ const couponApi = baseApi.injectEndpoints({
       invalidatesTags: ["coupons"],
     }),
 
+    // assign new coupon
+    assignNewCoupon: builder.mutation({
+      query: (args: any) => ({
+        url: "/coupons",
+        method: "POST",
+        body: args,
+      }),
+      invalidatesTags: ["coupons"],
+    }),
+
     // delete coupon
     deleteCoupon: builder.mutation({
       query: (args: { productId: string; code: string }) => ({
@@ -44,4 +54,5 @@ export const {
   useGetAllCouponsQuery,
   useDeleteCouponMutation,
   useUpdateCouponMutation,
+  useAssignNewCouponMutation,
 } = couponApi;
