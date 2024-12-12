@@ -37,7 +37,8 @@ const profileApi = baseApi.injectEndpoints({
 
         return {
           url: "/users/vendors",
-          method: "/",
+          method: "GET",
+          params,
         };
       },
       transformResponse: (response: TApiResponse) => {

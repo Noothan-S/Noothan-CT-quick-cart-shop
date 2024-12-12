@@ -1,35 +1,20 @@
-import React, { useState } from "react";
-import { Table, Button, message, Tag } from "antd";
+import React from "react";
+import { Table, Button, Tag, Empty, Result } from "antd";
 import { ColumnsType } from "antd/es/table";
-import dayjs from "dayjs";
 import { IVendors } from "../../../interfaces/api.res.vendors";
+import { useGetAllVendorsQuery } from "../../../redux/features/user/profile.api";
+import { IsoToDate } from "../../../utils/iso_to_date";
+import Loading from "../../../components/loading";
 
 const Vendors: React.FC = () => {
-  const [vendors, setVendors] = useState<IVendors[]>([
-    {
-      id: "d6f44113-514a-4e67-ae7f-fc48d07e1e33",
-      email: "vendor@example.com",
-      name: "Nazmul's Vendor",
-      phone: "+8801772757378",
-      address: "Dhaka",
-      logo: null,
-      description: "eewewewewewe",
-      isBlackListed: false,
-      createdAt: "2024-12-09T09:38:41.488Z",
-      updatedAt: "2024-12-09T09:38:41.488Z",
-    },
-  ]);
+  const {
+    data: vendors,
+    isLoading,
+    isError,
+  } = useGetAllVendorsQuery({ limit: 9000000000 });
 
   const handleBlockUnblock = (record: IVendors) => {
-    const updatedVendors = vendors.map((vendor) =>
-      vendor.id === record.id
-        ? { ...vendor, isBlackListed: !vendor.isBlackListed }
-        : vendor
-    );
-    setVendors(updatedVendors);
-    message.success(
-      `Vendor ${record.isBlackListed ? "unblocked" : "blocked"} successfully`
-    );
+    console.log(record);
   };
 
   const columns: ColumnsType<IVendors> = [
@@ -57,7 +42,7 @@ const Vendors: React.FC = () => {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text: string) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+      render: (text: string) => IsoToDate(text),
     },
     {
       title: "Status",
@@ -84,7 +69,12 @@ const Vendors: React.FC = () => {
     },
   ];
 
-  return <Table columns={columns} dataSource={vendors} rowKey="id" />;
+  if (isLoading) return <Loading />;
+  if (!vendors.data.length)
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+  if (isError) return <Result status={"500"} />;
+
+  return <Table columns={columns} dataSource={vendors.data} rowKey="id" />;
 };
 
 export default Vendors;
