@@ -5,6 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { responseReviewValidationSchema } from "../../validations/review.res.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useResponseReviewMutation } from "../../redux/features/reviews/reviews.api";
 
 interface IReviewResponseDrawerProps {
   reviewId: string;
@@ -19,6 +21,7 @@ const ReviewResponseDrawer: FC<IReviewResponseDrawerProps> = ({
   reviewId,
   setReviewId,
 }) => {
+  const [responseReview] = useResponseReviewMutation();
   const {
     handleSubmit,
     control,
@@ -29,7 +32,19 @@ const ReviewResponseDrawer: FC<IReviewResponseDrawerProps> = ({
   });
 
   async function handleNewResponse(data: TNewResponseFormFieldsValues) {
-    console.log(data);
+    try {
+      const res = await responseReview({ reviewId, ...data }).unwrap();
+      if (res.success) {
+        toast.success("Successfully respond");
+      }
+      setReviewId(null);
+      reset();
+    } catch (error) {
+      toast.error("Something bad happened!");
+      setReviewId(null);
+      reset();
+      console.log("Error when creating new response for review", error);
+    }
   }
 
   return (

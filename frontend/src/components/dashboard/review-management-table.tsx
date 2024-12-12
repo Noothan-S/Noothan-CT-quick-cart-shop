@@ -3,6 +3,7 @@ import { Table, Rate, Card, List, Button, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IReviewResponse } from "../../interfaces/api.res.reviews.type";
 import ReviewResponseDrawer from "./review-response-drawer";
+import { Link } from "react-router-dom";
 
 interface ReviewTableProps {
   reviews: IReviewResponse[];
@@ -19,7 +20,16 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
       title: "Product",
       dataIndex: ["product", "title"],
       key: "product",
-      render: (text) => <a>{text}</a>,
+      render: (title, record) => {
+        const filteredProduct = reviews.find(
+          (review: IReviewResponse) => review.product.id === record.product.id
+        );
+        return (
+          <Link to={`/products/item/${filteredProduct?.product.id}`}>
+            {title}
+          </Link>
+        );
+      },
     },
     {
       title: "Rating",

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useGetAllProductsQuery,
   useGetSingleProductQuery,
@@ -11,10 +11,13 @@ import ShopInfo from "./components/shop_info";
 import AddToCart from "./components/add_to_cart";
 import RelatedProducts from "./components/related_products";
 import CustomerReview from "./components/customer_review";
+import { Button, Result } from "antd";
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = useGetSingleProductQuery({ id: id as string });
+  const { data, isLoading, isError } = useGetSingleProductQuery({
+    id: id as string,
+  });
   const product: IProduct = data?.data;
   const { data: relatedProducts, isLoading: relatedLoading } =
     useGetAllProductsQuery(
@@ -28,6 +31,22 @@ export default function ProductDetailsPage() {
   if (isLoading || relatedLoading) {
     return <Loading />;
   }
+
+  if (isError)
+    return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="Sorry, the product you visited does not exist."
+        extra={
+          <Link to={"/"}>
+            <Button color="danger" variant="solid">
+              Back Home
+            </Button>
+          </Link>
+        }
+      />
+    );
 
   const filteredRelatedProducts = relatedProducts?.data?.filter(
     (product: IProduct) => product.id !== id
