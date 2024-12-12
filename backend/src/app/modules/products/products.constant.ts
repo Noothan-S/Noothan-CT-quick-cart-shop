@@ -8,13 +8,20 @@ const productIncludeObj = {
   coupon: true,
   vendor: true,
   review: {
+    where: {
+      isDeleted: false,
+    },
     include: {
       user: {
         select: {
           profile: true,
         },
       },
-      vendorResponse: true,
+      vendorResponse: {
+        where: {
+          isDeleted: false,
+        },
+      },
     },
   },
 };
