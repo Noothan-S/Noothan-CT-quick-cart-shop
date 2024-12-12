@@ -4,6 +4,8 @@ import type { ColumnsType } from "antd/es/table";
 import { IReviewResponse } from "../../interfaces/api.res.reviews.type";
 import ReviewResponseDrawer from "./review-response-drawer";
 import { Link } from "react-router-dom";
+import { IVendorResponse } from "../../interfaces/api.products.res.type";
+import ReviewResponseEditDrawer from "./response-edit.dawer";
 
 interface ReviewTableProps {
   reviews: IReviewResponse[];
@@ -14,6 +16,9 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
   const [clickedReviewForResponse, setClickedReviewForResponse] = useState<
     string | null
   >(null);
+
+  const [targetedResponseForEdit, setTargetedResponseForEdit] =
+    useState<IVendorResponse | null>(null);
 
   const columns: ColumnsType<IReviewResponse> = [
     {
@@ -87,7 +92,12 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
         renderItem={(item) => (
           <List.Item
             actions={[
-              <Button size="small">Edit</Button>,
+              <Button
+                onClick={() => setTargetedResponseForEdit(item)}
+                size="small"
+              >
+                Edit
+              </Button>,
               <Popconfirm
                 key="delete"
                 description="Are you sure to delete this response?"
@@ -128,6 +138,13 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
         <ReviewResponseDrawer
           reviewId={clickedReviewForResponse}
           setReviewId={setClickedReviewForResponse}
+        />
+      )}
+
+      {targetedResponseForEdit && (
+        <ReviewResponseEditDrawer
+          targetedResponse={targetedResponseForEdit}
+          setTargetedResponse={setTargetedResponseForEdit}
         />
       )}
     </>

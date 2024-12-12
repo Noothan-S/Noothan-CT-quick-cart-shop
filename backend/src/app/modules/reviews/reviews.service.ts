@@ -33,12 +33,19 @@ async function getAllReviewsFromDb(user: JwtPayload): Promise<IServiceReturn> {
     },
     include: {
       product: true,
-      vendorResponse: true,
+      vendorResponse: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
       user: {
         select: {
           profile: true,
         },
       },
+    },
+    orderBy: {
+      updatedAt: "desc",
     },
   });
 

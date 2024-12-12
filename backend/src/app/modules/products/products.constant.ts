@@ -1,4 +1,6 @@
-const productIncludeObj = {
+import { Prisma } from "@prisma/client";
+
+const productIncludeObj: Prisma.ProductInclude = {
   category: {
     select: {
       name: true,
@@ -11,6 +13,9 @@ const productIncludeObj = {
     where: {
       isDeleted: false,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       user: {
         select: {
@@ -20,6 +25,9 @@ const productIncludeObj = {
       vendorResponse: {
         where: {
           isDeleted: false,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },

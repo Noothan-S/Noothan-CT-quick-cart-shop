@@ -8,7 +8,7 @@ interface IQueryBuilderOptions {
   model: keyof PrismaClient;
   filters?: any;
   pagination: IPaginationOptions;
-  include?: Prisma.UserInclude;
+  include?: any;
 }
 
 const buildPrismaQuery = async (options: IQueryBuilderOptions) => {
