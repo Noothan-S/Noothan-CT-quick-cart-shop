@@ -4,6 +4,7 @@ import {
   ShoppingBasket,
   SquareChartGantt,
   Star,
+  Store,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -55,6 +56,11 @@ const ADMIN = [
     key: "4",
     icon: <Star />,
     label: <Link to="reviews">Reviews</Link>,
+  },
+  {
+    key: "5",
+    icon: <Store />,
+    label: <Link to="vendors">Vendors</Link>,
   },
 ];
 
