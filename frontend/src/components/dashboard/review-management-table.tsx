@@ -6,7 +6,10 @@ import ReviewResponseDrawer from "./review-response-drawer";
 import { Link } from "react-router-dom";
 import { IVendorResponse } from "../../interfaces/api.products.res.type";
 import ReviewResponseEditDrawer from "./response-edit.dawer";
-import { useDeleteReviewResponseMutation } from "../../redux/features/reviews/reviews.api";
+import {
+  useDeleteReviewMutation,
+  useDeleteReviewResponseMutation,
+} from "../../redux/features/reviews/reviews.api";
 import { toast } from "sonner";
 
 interface ReviewTableProps {
@@ -16,6 +19,7 @@ interface ReviewTableProps {
 
 const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
   const [deleteReviewResponse] = useDeleteReviewResponseMutation();
+  const [deleteReview] = useDeleteReviewMutation();
   const [clickedReviewForResponse, setClickedReviewForResponse] = useState<
     string | null
   >(null);
@@ -29,6 +33,18 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
     } catch (error) {
       toast.error("Something bad happened");
       console.log("Error when deleting review response", error);
+    }
+  }
+
+  async function handleDeleteReview(reviewId: string) {
+    try {
+      const res = await deleteReview({ reviewId }).unwrap();
+      if (res.success) {
+        toast.success("Review successfully deleted");
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      console.log("Error when deleting review", error);
     }
   }
 
@@ -77,14 +93,27 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <div className="">
+        <div className="flex gap-2">
           <Button
             size="small"
             onClick={() => setClickedReviewForResponse(record.id)}
           >
             Respond
           </Button>
-          {userRole === "ADMIN" && <Button danger>Delete</Button>}
+          {userRole === "ADMIN" && (
+            <Popconfirm
+              key="delete"
+              description="Are you sure to delete this review?"
+              title="Delete review"
+              onConfirm={() => handleDeleteReview(record.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button size="small" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          )}
         </div>
       ),
     },
