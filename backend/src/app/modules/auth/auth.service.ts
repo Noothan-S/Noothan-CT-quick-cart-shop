@@ -31,6 +31,15 @@ async function loginUserFromDb(payload: ILogin): Promise<IServiceReturn> {
     };
   }
 
+  if (user.status == "BLOCKED") {
+    return {
+      status: 400,
+      success: false,
+      message: "Account blocked",
+      data: null,
+    };
+  }
+
   const isValidPassword = await bcryptOperation.comparePassword(
     payload.password,
     user.password
