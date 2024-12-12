@@ -25,7 +25,30 @@ const profileApi = baseApi.injectEndpoints({
       },
       providesTags: ["profile"],
     }),
+
+    // fetch all vendors (admin)
+    getAllVendors: builder.query({
+      query: (args: Record<string, unknown>) => {
+        const params = new URLSearchParams();
+
+        Object.entries(args).forEach(([key, value]) => {
+          params.append(key, String(value));
+        });
+
+        return {
+          url: "/users/vendors",
+          method: "/",
+        };
+      },
+      transformResponse: (response: TApiResponse) => {
+        if (!response || !response.data) {
+          throw new Error("Invalid response structure");
+        }
+        return response.data;
+      },
+      providesTags: ["users"],
+    }),
   }),
 });
 
-export const { useGetMyProfileQuery } = profileApi;
+export const { useGetMyProfileQuery, useGetAllVendorsQuery } = profileApi;
