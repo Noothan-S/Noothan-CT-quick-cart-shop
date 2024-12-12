@@ -23,7 +23,9 @@ const AdminCoupons = () => {
           <Typography.Text>No Available Coupon Found</Typography.Text>
         }
       >
-        <Button type="primary">Create One</Button>
+        <Button onClick={() => setIsDrawerOpen(true)} type="primary">
+          Create One
+        </Button>
       </Empty>
     );
   }

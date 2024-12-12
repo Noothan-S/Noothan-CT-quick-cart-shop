@@ -1,4 +1,5 @@
 import {
+  ChartBarStacked,
   Puzzle,
   ShoppingBag,
   ShoppingBasket,
@@ -42,6 +43,11 @@ const ADMIN = [
     key: "1",
     icon: <SquareChartGantt />,
     label: <Link to="products">All Products</Link>,
+  },
+  {
+    key: "7",
+    icon: <ChartBarStacked />,
+    label: <Link to="categories">Categories</Link>,
   },
   {
     key: "2",
