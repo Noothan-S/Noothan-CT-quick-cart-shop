@@ -37,6 +37,15 @@ const reviewsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["reviews"],
     }),
+
+    // delete review response
+    deleteReviewResponse: builder.mutation({
+      query: (args: { responseId: string }) => ({
+        url: `/reviews/response/${args.responseId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["reviews"],
+    }),
   }),
 });
 
@@ -44,4 +53,5 @@ export const {
   useGetAllReviewsQuery,
   useResponseReviewMutation,
   useUpdateReviewResponseMutation,
+  useDeleteReviewResponseMutation,
 } = reviewsApi;

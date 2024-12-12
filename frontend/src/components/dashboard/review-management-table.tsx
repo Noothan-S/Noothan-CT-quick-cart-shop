@@ -6,6 +6,8 @@ import ReviewResponseDrawer from "./review-response-drawer";
 import { Link } from "react-router-dom";
 import { IVendorResponse } from "../../interfaces/api.products.res.type";
 import ReviewResponseEditDrawer from "./response-edit.dawer";
+import { useDeleteReviewResponseMutation } from "../../redux/features/reviews/reviews.api";
+import { toast } from "sonner";
 
 interface ReviewTableProps {
   reviews: IReviewResponse[];
@@ -13,9 +15,22 @@ interface ReviewTableProps {
 }
 
 const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
+  const [deleteReviewResponse] = useDeleteReviewResponseMutation();
   const [clickedReviewForResponse, setClickedReviewForResponse] = useState<
     string | null
   >(null);
+
+  async function handleDeleteReviewResponse(responseId: string) {
+    try {
+      const res = await deleteReviewResponse({ responseId }).unwrap();
+      if (res.success) {
+        toast.success("Response deleted!");
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      console.log("Error when deleting review response", error);
+    }
+  }
 
   const [targetedResponseForEdit, setTargetedResponseForEdit] =
     useState<IVendorResponse | null>(null);
@@ -30,7 +45,10 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
           (review: IReviewResponse) => review.product.id === record.product.id
         );
         return (
-          <Link to={`/products/item/${filteredProduct?.product.id}`}>
+          <Link
+            to={`/products/item/${filteredProduct?.product.id}`}
+            target="_blank"
+          >
             {title}
           </Link>
         );
@@ -102,7 +120,7 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
                 key="delete"
                 description="Are you sure to delete this response?"
                 title="Delete response"
-                onConfirm={() => console.log(record.id, item.id)}
+                onConfirm={() => handleDeleteReviewResponse(item.id)}
                 okText="Yes"
                 cancelText="No"
               >

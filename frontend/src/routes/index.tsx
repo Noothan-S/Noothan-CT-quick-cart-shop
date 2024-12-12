@@ -107,6 +107,10 @@ export const router = createBrowserRouter([
         path: "coupons",
         element: <AdminCoupons />,
       },
+      {
+        path: "reviews",
+        element: <VendorReviews />,
+      },
     ],
   },
 ]);
