@@ -1,4 +1,4 @@
-import { UserRole, UserStatus, Vendor } from "@prisma/client";
+import { Profile, UserRole, UserStatus, Vendor } from "@prisma/client";
 import { bcryptOperation } from "../../../utils/bcrypt";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
 import prisma from "../../constants/prisma_constructor";
@@ -51,6 +51,19 @@ async function blockUnblockUserIntoDb(payload: {
           email: payload.email,
         },
         data: actionPayloadForVendor,
+      });
+    }
+
+    if (user.role === UserRole.CUSTOMER) {
+      const actionPayloadForCustomer: Partial<Profile> = {
+        isDeleted: user.status === UserStatus.ACTIVE,
+      };
+
+      await prisma.profile.update({
+        where: {
+          email: payload.email,
+        },
+        data: actionPayloadForCustomer,
       });
     }
 
