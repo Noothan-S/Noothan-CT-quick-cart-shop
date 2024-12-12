@@ -2,6 +2,7 @@ import { Button, Col, Drawer, Input, Row, Space } from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useCreateNewCategoryMutation } from "../../../redux/features/categories/categories.api";
 
 interface ICreateNewCategoryDrawerProps {
   isDrawerOpen: boolean;
@@ -12,13 +13,28 @@ const CreateNewCategoryDrawer: FC<ICreateNewCategoryDrawerProps> = ({
   isDrawerOpen,
   setIsDrawerOpen,
 }) => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, reset } = useForm();
+  const [createNewCategory] = useCreateNewCategoryMutation();
 
   async function handleCreateNewCategory(data: any) {
     if (!data.name) {
       toast.info("Category name cannot empty!");
       setIsDrawerOpen(false);
       return;
+    }
+
+    try {
+      const res = await createNewCategory(data).unwrap();
+      if (res.success) {
+        toast.success(`${data.name} is successfully created`);
+        setIsDrawerOpen(false);
+        reset();
+      }
+    } catch (error) {
+      toast.error("Something bad happened!");
+      setIsDrawerOpen(false);
+      reset();
+      console.log("Error when creating new category!", error);
     }
   }
 

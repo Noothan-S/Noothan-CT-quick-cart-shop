@@ -1,10 +1,22 @@
 import React, { useState } from "react";
-import { Card, Button, Result, Empty, Typography, FloatButton } from "antd";
+import {
+  Card,
+  Button,
+  Result,
+  Empty,
+  Typography,
+  FloatButton,
+  Popconfirm,
+} from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useGetCategoriesQuery } from "../../../redux/features/categories/categories.api";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoriesQuery,
+} from "../../../redux/features/categories/categories.api";
 import Loading from "../../../components/loading";
 import { Plus } from "lucide-react";
 import CreateNewCategoryDrawer from "../../../components/dashboard/admin/create-new-category-drawer";
+import { toast } from "sonner";
 
 interface GridItem {
   id: string;
@@ -13,6 +25,7 @@ interface GridItem {
 
 const Categories: React.FC = () => {
   const { data: categories, isLoading, isError } = useGetCategoriesQuery({});
+  const [deleteCategory] = useDeleteCategoryMutation();
   const [isCreateNewCategoryDrawerOpen, setIsCreateNewCategoryDrawerOpen] =
     useState<boolean>(false);
 
@@ -23,8 +36,16 @@ const Categories: React.FC = () => {
     padding: "24px 12px",
   };
 
-  const handleDelete = (id: string) => {
-    console.log(id);
+  const handleDelete = async (categoryId: string) => {
+    try {
+      const res = await deleteCategory({ categoryId }).unwrap();
+      if (res.success) {
+        toast.success("Category successfully deleted");
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      console.log("Error when deleting category", error);
+    }
   };
 
   if (isLoading) return <Loading />;
@@ -56,18 +77,26 @@ const Categories: React.FC = () => {
         {categories.map((item: GridItem) => (
           <Card.Grid key={item.id} style={gridStyle}>
             {item.name}
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              style={{
-                position: "absolute",
-                top: "5px",
-                right: "5px",
-              }}
-              onClick={() => handleDelete(item.id)}
-              aria-label="Delete"
-            />
+
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this task?"
+              onConfirm={() => handleDelete(item.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                style={{
+                  position: "absolute",
+                  top: "5px",
+                  right: "5px",
+                }}
+                aria-label="Delete"
+              />
+            </Popconfirm>
           </Card.Grid>
         ))}
       </Card>
