@@ -1,17 +1,19 @@
 import React from "react";
 import { Table, Button, Tag, Empty, Result, Popconfirm } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { IVendors } from "../../../interfaces/api.res.vendors";
 import {
   useBlockUserMutation,
-  useGetAllVendorsQuery,
+  useGetAllCustomersQuery,
 } from "../../../redux/features/user/user.api";
 import { IsoToDate } from "../../../utils/iso_to_date";
 import Loading from "../../../components/loading";
 import { toast } from "sonner";
+import { IUserProfile } from "../../../interfaces/api.res.user.profile.type";
 
-const Vendors: React.FC = () => {
-  const { data: vendors, isLoading, isError } = useGetAllVendorsQuery({});
+const Customers: React.FC = () => {
+  const { data: customers, isLoading, isError } = useGetAllCustomersQuery({});
+
+  console.log(customers);
 
   const [blockUnblockUser] = useBlockUserMutation();
 
@@ -27,11 +29,11 @@ const Vendors: React.FC = () => {
     }
   };
 
-  const columns: ColumnsType<IVendors> = [
+  const columns: ColumnsType<IUserProfile> = [
     {
       title: "Name",
       dataIndex: "name",
-      key: "name",
+      render: (_, record) => `${record.firstName} ${record.lastName}`,
     },
     {
       title: "Email",
@@ -58,8 +60,8 @@ const Vendors: React.FC = () => {
       title: "Status",
       key: "status",
       render: (_, record) => (
-        <Tag color={record.isBlackListed ? "red" : "green"}>
-          {record.isBlackListed ? "Blacklisted" : "Active"}
+        <Tag color={record.isDeleted ? "red" : "green"}>
+          {record.isDeleted ? "Blocked" : "Active"}
         </Tag>
       ),
     },
@@ -70,7 +72,7 @@ const Vendors: React.FC = () => {
         <Popconfirm
           title="Critical Operation"
           description={`Are you sure to ${
-            record.isBlackListed ? "unblock" : "block"
+            record.isDeleted ? "unblock" : "block"
           } this vendor?`}
           onConfirm={() => handleBlockUnblock(record.email)}
           okText="Yes"
@@ -78,10 +80,10 @@ const Vendors: React.FC = () => {
         >
           <Button
             size="small"
-            type={record.isBlackListed ? "primary" : "default"}
-            danger={!record.isBlackListed}
+            type={record.isDeleted ? "primary" : "default"}
+            danger={!record.isDeleted}
           >
-            {record.isBlackListed ? "Unblock" : "Block"}
+            {record.isDeleted ? "Unblock" : "Block"}
           </Button>
         </Popconfirm>
       ),
@@ -89,11 +91,15 @@ const Vendors: React.FC = () => {
   ];
 
   if (isLoading) return <Loading />;
-  if (!vendors.data.length)
+  if (!customers.data.length)
     return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   if (isError) return <Result status={"500"} />;
 
-  return <Table columns={columns} dataSource={vendors.data} rowKey="id" />;
+  const profiles = customers.data
+    .filter((item: any) => item.profile !== null)
+    .map((customer: any) => customer.profile);
+
+  return <Table columns={columns} dataSource={profiles} rowKey="id" />;
 };
 
-export default Vendors;
+export default Customers;

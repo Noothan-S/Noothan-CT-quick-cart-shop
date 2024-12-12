@@ -31,6 +31,7 @@ const profileApi = baseApi.injectEndpoints({
     getAllVendors: builder.query({
       query: (args: Record<string, unknown>) => {
         const params = new URLSearchParams();
+        params.append("limit", "999");
 
         Object.entries(args).forEach(([key, value]) => {
           params.append(key, String(value));
@@ -38,6 +39,31 @@ const profileApi = baseApi.injectEndpoints({
 
         return {
           url: "/users/vendors",
+          method: "GET",
+          params,
+        };
+      },
+      transformResponse: (response: TApiResponse) => {
+        if (!response || !response.data) {
+          throw new Error("Invalid response structure");
+        }
+        return response.data;
+      },
+      providesTags: ["users"],
+    }),
+
+    // fetch all customers (admin)
+    getAllCustomers: builder.query({
+      query: (args: Record<string, unknown>) => {
+        const params = new URLSearchParams();
+        params.append("limit", "999");
+
+        Object.entries(args).forEach(([key, value]) => {
+          params.append(key, String(value));
+        });
+
+        return {
+          url: "/users/customers",
           method: "GET",
           params,
         };
@@ -66,4 +92,5 @@ export const {
   useGetMyProfileQuery,
   useGetAllVendorsQuery,
   useBlockUserMutation,
+  useGetAllCustomersQuery,
 } = profileApi;

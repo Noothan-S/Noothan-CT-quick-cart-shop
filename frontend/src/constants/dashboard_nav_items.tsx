@@ -5,6 +5,7 @@ import {
   SquareChartGantt,
   Star,
   Store,
+  UsersRound,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -61,6 +62,11 @@ const ADMIN = [
     key: "5",
     icon: <Store />,
     label: <Link to="vendors">Vendors</Link>,
+  },
+  {
+    key: "6",
+    icon: <UsersRound />,
+    label: <Link to="customers">Customers</Link>,
   },
 ];
 

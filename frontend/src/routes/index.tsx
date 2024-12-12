@@ -18,6 +18,7 @@ import VendorCoupons from "../pages/dashboard/vendor/coupons";
 import AdminCoupons from "../pages/dashboard/admin/coupon";
 import VendorReviews from "../pages/dashboard/vendor/reviews";
 import Vendors from "../pages/dashboard/admin/vendors";
+import Customers from "../pages/dashboard/admin/users";
 
 export const router = createBrowserRouter([
   {
@@ -115,6 +116,10 @@ export const router = createBrowserRouter([
       {
         path: "vendors",
         element: <Vendors />,
+      },
+      {
+        path: "customers",
+        element: <Customers />,
       },
     ],
   },
