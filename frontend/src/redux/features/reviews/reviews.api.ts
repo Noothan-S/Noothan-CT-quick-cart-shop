@@ -17,7 +17,17 @@ const reviewsApi = baseApi.injectEndpoints({
       },
       providesTags: ["reviews"],
     }),
+
+    // response reviews
+    responseReview: builder.mutation({
+      query: (args: { reviewId: string; description: string }) => ({
+        url: `/reviews/response/${args.reviewId}`,
+        method: "POST",
+        body: { description: args.description },
+      }),
+      invalidatesTags: ["reviews"],
+    }),
   }),
 });
 
-export const { useGetAllReviewsQuery } = reviewsApi;
+export const { useGetAllReviewsQuery, useResponseReviewMutation } = reviewsApi;
