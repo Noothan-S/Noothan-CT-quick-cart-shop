@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, Rate, Card, List, Button, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IReviewResponse } from "../../interfaces/api.res.reviews.type";
+import ReviewResponseDrawer from "./review-response-drawer";
 
 interface ReviewTableProps {
   reviews: IReviewResponse[];
@@ -9,7 +10,9 @@ interface ReviewTableProps {
 }
 
 const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
-  console.log(reviews);
+  const [clickedReviewForResponse, setClickedReviewForResponse] = useState<
+    string | null
+  >(null);
 
   const columns: ColumnsType<IReviewResponse> = [
     {
@@ -44,7 +47,7 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
         <div className="">
           <Button
             size="small"
-            onClick={() => console.log("Respond to", record.id)}
+            onClick={() => setClickedReviewForResponse(record.id)}
           >
             Respond
           </Button>
@@ -100,16 +103,24 @@ const ReviewTable: React.FC<ReviewTableProps> = ({ reviews, userRole }) => {
   );
 
   return (
-    <Table
-      columns={columns}
-      dataSource={reviews}
-      rowKey="id"
-      expandable={{
-        expandedRowRender,
-        rowExpandable: (record) => record.description !== "",
-      }}
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={reviews}
+        rowKey="id"
+        expandable={{
+          expandedRowRender,
+          rowExpandable: (record) => record.description !== "",
+        }}
+        pagination={{ pageSize: 10 }}
+      />
+      {clickedReviewForResponse && (
+        <ReviewResponseDrawer
+          reviewId={clickedReviewForResponse}
+          setReviewId={setClickedReviewForResponse}
+        />
+      )}
+    </>
   );
 };
 
