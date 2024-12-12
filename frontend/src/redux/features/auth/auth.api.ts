@@ -18,12 +18,21 @@ const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // update user after signup
     updateUser: builder.mutation({
       query: (data) => ({
         url: "/users",
         method: "PUT",
         body: data,
       }),
+    }),
+
+    getLoggedInUser: builder.query({
+      query: () => ({
+        url: "/users",
+        method: "GET",
+      }),
+      providesTags: ["users"],
     }),
   }),
 });
@@ -32,4 +41,5 @@ export const {
   useLoginUserMutation,
   useCreateUserMutation,
   useUpdateUserMutation,
+  useGetLoggedInUserQuery,
 } = authApi;

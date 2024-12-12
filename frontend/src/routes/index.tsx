@@ -20,6 +20,7 @@ import VendorReviews from "../pages/dashboard/vendor/reviews";
 import Vendors from "../pages/dashboard/admin/vendors";
 import Customers from "../pages/dashboard/admin/users";
 import Categories from "../pages/dashboard/admin/categories";
+import CheckUserStatus from "../utils/check-account-status";
 
 export const router = createBrowserRouter([
   {
@@ -54,7 +55,9 @@ export const router = createBrowserRouter([
     path: "dashboard/vendor",
     element: (
       <RoleGard role={UserRole.vendor}>
-        <Vendor />
+        <CheckUserStatus>
+          <Vendor />
+        </CheckUserStatus>
       </RoleGard>
     ),
     children: [
@@ -90,7 +93,9 @@ export const router = createBrowserRouter([
     path: "/dashboard/admin",
     element: (
       <RoleGard role={UserRole.admin}>
-        <Admin />
+        <CheckUserStatus>
+          <Admin />
+        </CheckUserStatus>
       </RoleGard>
     ),
     children: [
