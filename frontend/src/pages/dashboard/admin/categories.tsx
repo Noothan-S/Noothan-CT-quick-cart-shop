@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Button, Result, Empty, Typography, FloatButton } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useGetCategoriesQuery } from "../../../redux/features/categories/categories.api";
 import Loading from "../../../components/loading";
 import { Plus } from "lucide-react";
+import CreateNewCategoryDrawer from "../../../components/dashboard/admin/create-new-category-drawer";
 
 interface GridItem {
   id: string;
@@ -12,6 +13,8 @@ interface GridItem {
 
 const Categories: React.FC = () => {
   const { data: categories, isLoading, isError } = useGetCategoriesQuery({});
+  const [isCreateNewCategoryDrawerOpen, setIsCreateNewCategoryDrawerOpen] =
+    useState<boolean>(false);
 
   const gridStyle: React.CSSProperties = {
     width: "25%",
@@ -37,7 +40,12 @@ const Categories: React.FC = () => {
           <Typography.Text>No Available Categories found</Typography.Text>
         }
       >
-        <Button type="primary">Create One</Button>
+        <Button
+          type="primary"
+          onClick={() => setIsCreateNewCategoryDrawerOpen(true)}
+        >
+          Create One
+        </Button>
       </Empty>
     );
   }
@@ -63,7 +71,15 @@ const Categories: React.FC = () => {
           </Card.Grid>
         ))}
       </Card>
-      <FloatButton icon={<Plus />} tooltip={<div>Create new category</div>} />
+      <FloatButton
+        onClick={() => setIsCreateNewCategoryDrawerOpen(true)}
+        icon={<Plus />}
+        tooltip={<div>Create new category</div>}
+      />
+      <CreateNewCategoryDrawer
+        isDrawerOpen={isCreateNewCategoryDrawerOpen}
+        setIsDrawerOpen={setIsCreateNewCategoryDrawerOpen}
+      />
     </>
   );
 };

@@ -104,13 +104,6 @@ const AssignNewCouponDrawer = ({
             {/* Attach the onSubmit handler */}
             <Row gutter={16} className="flex flex-col gap-3">
               <Col span={24}>
-                <label
-                  htmlFor="product"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Product
-                  <span className="text-red-600"> *</span>
-                </label>
                 <Controller
                   name="productId"
                   control={control}
