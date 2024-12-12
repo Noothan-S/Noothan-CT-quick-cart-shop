@@ -17,6 +17,7 @@ const CreateNewCategoryDrawer: FC<ICreateNewCategoryDrawerProps> = ({
   async function handleCreateNewCategory(data: any) {
     if (!data.name) {
       toast.info("Category name cannot empty!");
+      setIsDrawerOpen(false);
       return;
     }
   }
