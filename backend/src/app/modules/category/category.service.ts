@@ -7,6 +7,9 @@ async function getCategoriesFromDb(): Promise<IServiceReturn> {
     where: {
       isDeleted: false,
     },
+    orderBy: {
+      updatedAt: "desc",
+    },
   });
 
   return {

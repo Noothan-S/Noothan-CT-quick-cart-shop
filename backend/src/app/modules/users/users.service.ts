@@ -138,8 +138,6 @@ async function getAllUsersFromDb(
     filters: {
       ...filters,
       role: UserRole.CUSTOMER,
-      isDeleted: false,
-      status: "ACTIVE",
     },
     include: UserConstants.fetchAllUsersIncludeObj,
   });
