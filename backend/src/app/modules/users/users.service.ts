@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus, Vendor } from "@prisma/client";
 import { bcryptOperation } from "../../../utils/bcrypt";
 import buildPrismaQuery from "../../../utils/build_prisma_query";
 import prisma from "../../constants/prisma_constructor";
@@ -7,6 +7,65 @@ import { IServiceReturn } from "../../interfaces/service_return_type";
 import { UserConstants } from "./users.constant";
 import { ICreateUser } from "./users.interface";
 import { JwtPayload } from "jsonwebtoken";
+
+async function blockUnblockUserIntoDb(payload: {
+  email: string;
+}): Promise<IServiceReturn> {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (!user) {
+    return {
+      status: 404,
+      success: false,
+      message: "user not found with that email",
+      data: null,
+    };
+  }
+
+  const actionPayloadForUser = {
+    status:
+      user.status === UserStatus.ACTIVE
+        ? UserStatus.BLOCKED
+        : UserStatus.ACTIVE,
+  };
+
+  const result = await prisma.$transaction(async (tx) => {
+    const blockOrUnblockUser = await prisma.user.update({
+      where: {
+        email: payload.email,
+      },
+      data: actionPayloadForUser,
+    });
+
+    if (user.role === UserRole.VENDOR) {
+      const actionPayloadForVendor: Partial<Vendor> = {
+        isBlackListed: user.status === UserStatus.ACTIVE,
+      };
+
+      await prisma.vendor.update({
+        where: {
+          email: payload.email,
+        },
+        data: actionPayloadForVendor,
+      });
+    }
+
+    return blockOrUnblockUser;
+  });
+
+  return {
+    status: 200,
+    success: true,
+    message: `User ${
+      user.status === "ACTIVE" ? "Blocked" : "unblocked"
+    } successfully`,
+    data: result,
+  };
+}
 
 async function getMyProfileFromDb(user: JwtPayload, options: any) {
   let result;
@@ -200,4 +259,5 @@ export const UserServices = {
   getAllUsersFromDb,
   getAllVendorsFromDb,
   getMyProfileFromDb,
+  blockUnblockUserIntoDb,
 };

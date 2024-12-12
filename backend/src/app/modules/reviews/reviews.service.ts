@@ -191,9 +191,12 @@ async function deleteReviewFromDb(
     };
   }
 
-  const result = await prisma.review.delete({
+  const result = await prisma.review.update({
     where: {
       id,
+    },
+    data: {
+      isDeleted: true,
     },
     include: {
       product: true,

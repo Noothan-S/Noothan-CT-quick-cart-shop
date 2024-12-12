@@ -7,15 +7,21 @@ import { UserRole } from "@prisma/client";
 
 const router: Router = Router();
 
+router.get("/vendors", Auth(UserRole.ADMIN), UserControllers.getAllVendors);
 router.get("/customers", Auth(UserRole.ADMIN), UserControllers.getAllUsers);
+
+router.patch(
+  "/block-unblock",
+  ValidationRequest(UserValidations.blockUnblockUserValidationSchema),
+  Auth(UserRole.ADMIN),
+  UserControllers.blockUnblockUser
+);
 
 router.get(
   "/me",
   Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
   UserControllers.getMyProfile
 );
-
-router.get("/vendors", Auth(UserRole.ADMIN), UserControllers.getAllVendors);
 
 router.post(
   "/",

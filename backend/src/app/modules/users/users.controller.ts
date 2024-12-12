@@ -4,6 +4,15 @@ import { UserServices } from "./users.service";
 import { ICreateUser, ILogin } from "./users.interface";
 import pick from "../../../utils/pick";
 
+const blockUnblockUser = catchAsync(async function (
+  req: Request,
+  res: Response
+) {
+  const result = await UserServices.blockUnblockUserIntoDb(req.body);
+
+  res.status(result.status).json(result);
+});
+
 const getAllUsers = catchAsync(async function (req: Request, res: Response) {
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   const filters = pick(req.query, []);
@@ -45,4 +54,5 @@ export const UserControllers = {
   getAllUsers,
   getAllVendors,
   getMyProfile,
+  blockUnblockUser,
 };
