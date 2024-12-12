@@ -3,6 +3,7 @@ import { baseApi } from "../../api/base_api";
 
 const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // get my profile
     getMyProfile: builder.query({
       query: (args: Record<string, string>) => {
         const params = new URLSearchParams();
@@ -49,7 +50,20 @@ const profileApi = baseApi.injectEndpoints({
       },
       providesTags: ["users"],
     }),
+
+    blockUser: builder.mutation({
+      query: (args: { email: string }) => ({
+        url: "/users/block-unblock",
+        method: "PATCH",
+        body: args,
+      }),
+      invalidatesTags: ["users"],
+    }),
   }),
 });
 
-export const { useGetMyProfileQuery, useGetAllVendorsQuery } = profileApi;
+export const {
+  useGetMyProfileQuery,
+  useGetAllVendorsQuery,
+  useBlockUserMutation,
+} = profileApi;

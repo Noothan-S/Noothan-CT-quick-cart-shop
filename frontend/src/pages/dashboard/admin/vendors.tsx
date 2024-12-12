@@ -1,10 +1,14 @@
 import React from "react";
-import { Table, Button, Tag, Empty, Result } from "antd";
+import { Table, Button, Tag, Empty, Result, Popconfirm } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { IVendors } from "../../../interfaces/api.res.vendors";
-import { useGetAllVendorsQuery } from "../../../redux/features/user/profile.api";
+import {
+  useBlockUserMutation,
+  useGetAllVendorsQuery,
+} from "../../../redux/features/user/user.api";
 import { IsoToDate } from "../../../utils/iso_to_date";
 import Loading from "../../../components/loading";
+import { toast } from "sonner";
 
 const Vendors: React.FC = () => {
   const {
@@ -13,8 +17,18 @@ const Vendors: React.FC = () => {
     isError,
   } = useGetAllVendorsQuery({ limit: 9000000000 });
 
-  const handleBlockUnblock = (record: IVendors) => {
-    console.log(record);
+  const [blockUnblockUser] = useBlockUserMutation();
+
+  const handleBlockUnblock = async (email: string) => {
+    try {
+      const res = await blockUnblockUser({ email }).unwrap();
+      if (res.success) {
+        toast.success("Operation Success");
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      console.log("Error when block/unblock user", error);
+    }
   };
 
   const columns: ColumnsType<IVendors> = [
@@ -57,14 +71,23 @@ const Vendors: React.FC = () => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button
-          size="small"
-          type={record.isBlackListed ? "primary" : "default"}
-          danger={!record.isBlackListed}
-          onClick={() => handleBlockUnblock(record)}
+        <Popconfirm
+          title="Critical Operation"
+          description={`Are you sure to ${
+            record.isBlackListed ? "unblock" : "block"
+          } this vendor?`}
+          onConfirm={() => handleBlockUnblock(record.email)}
+          okText="Yes"
+          cancelText="No"
         >
-          {record.isBlackListed ? "Unblock" : "Block"}
-        </Button>
+          <Button
+            size="small"
+            type={record.isBlackListed ? "primary" : "default"}
+            danger={!record.isBlackListed}
+          >
+            {record.isBlackListed ? "Unblock" : "Block"}
+          </Button>
+        </Popconfirm>
       ),
     },
   ];
