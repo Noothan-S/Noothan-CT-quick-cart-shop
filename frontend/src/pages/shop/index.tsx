@@ -1,5 +1,14 @@
 import { useState, useMemo } from "react";
-import { Layout, Input, Select, Slider, Typography, Button } from "antd";
+import {
+  Layout,
+  Input,
+  Select,
+  Slider,
+  Typography,
+  Button,
+  Result,
+  Pagination,
+} from "antd";
 import { SearchOutlined, MenuOutlined } from "@ant-design/icons";
 import { useGetAllProductsQuery } from "../../redux/features/products/products.api";
 import { IProduct } from "../../interfaces/api.products.res.type";
@@ -7,6 +16,7 @@ import ProductCard from "../../components/products/product_card";
 import { useLocation } from "react-router-dom";
 import { useGetCategoriesQuery } from "../../redux/features/categories/categories.api";
 import useDebounce from "../../hooks/debounce";
+import Loading from "../../components/loading";
 
 const { Header, Sider, Content } = Layout;
 const { Option } = Select;
@@ -24,6 +34,8 @@ export default function Products() {
   );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100 * 50]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState<number>(0);
+
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const { data: categories } = useGetCategoriesQuery(undefined);
@@ -35,12 +47,16 @@ export default function Products() {
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
       sortOrder,
+      page: currentPage,
+      limit: 16,
     } as {
       searchTerm: any;
       minPrice: number;
       maxPrice: number;
       sortOrder: "desc" | "asc";
       categoryId?: string | null;
+      page: number;
+      limit: number;
     };
 
     if (selectedCategory) {
@@ -48,9 +64,9 @@ export default function Products() {
     }
 
     return query;
-  }, [debouncedSearch, selectedCategory, priceRange, sortOrder]);
+  }, [debouncedSearch, selectedCategory, priceRange, sortOrder, currentPage]);
 
-  const { data: products } = useGetAllProductsQuery(queryParams);
+  const { data: products, isLoading } = useGetAllProductsQuery(queryParams);
 
   const categoriesOptions = categories
     ? categories.map((item: Record<string, unknown>) => ({
@@ -60,6 +76,14 @@ export default function Products() {
     : [];
 
   categoriesOptions.unshift({ value: "", label: "All Categories" });
+
+  console.log(products);
+
+  function handleClearFilter() {
+    setSearchTerm("");
+    setPriceRange([0, 100 * 50]);
+    setSelectedCategory("");
+  }
 
   const FilterOptions = () => (
     <>
@@ -127,11 +151,35 @@ export default function Products() {
           <FilterOptions />
         </Sider>
         <Content className="p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products?.data.map((product: IProduct) => (
-              <ProductCard {...product} key={product.id} />
-            ))}
-          </div>
+          {isLoading ? (
+            <Loading />
+          ) : !products.data.length ? (
+            <Result
+              status="404"
+              title="404"
+              subTitle="Sorry, the product you search does not exist."
+              extra={
+                <Button danger onClick={handleClearFilter}>
+                  Clear Filter
+                </Button>
+              }
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products?.data.map((product: IProduct) => (
+                <ProductCard {...product} key={product.id} />
+              ))}
+            </div>
+          )}
+
+          <Pagination
+            align="end"
+            pageSize={16}
+            current={products?.meta?.page}
+            onChange={(val) => setCurrentPage(val)}
+            showSizeChanger={false}
+            total={products?.meta.total}
+          />
         </Content>
       </Layout>
     </Layout>
