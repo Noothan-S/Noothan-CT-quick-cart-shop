@@ -3,8 +3,12 @@ import Loading from "../../components/loading";
 import { useGetMyProfileQuery } from "../../redux/features/user/user.api";
 import { Link } from "react-router-dom";
 import VendorProfile from "./components/vendor-profile";
+import CustomerProfile from "./components/customer-profile";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 
 const Profile = () => {
+  const user = useAppSelector(useCurrentUser);
   const { data: profile, isLoading, isError } = useGetMyProfileQuery({});
   if (isLoading) return <Loading />;
 
@@ -24,7 +28,13 @@ const Profile = () => {
       />
     );
 
-  return <VendorProfile vendor={profile} />;
+  if (user) {
+    if (user.role === "VENDOR") {
+      return <VendorProfile vendor={profile} />;
+    } else {
+      return <CustomerProfile customer={profile} />;
+    }
+  }
 };
 
 export default Profile;

@@ -12,31 +12,30 @@ import {
 } from "antd";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Camera } from "lucide-react";
-import { IVendorProfileData } from "../../../interfaces/api.res.vendor.profile.type";
 import { z } from "zod";
-import { updateVendorFromProfileValidationSchema } from "../../../validations/update_vendor_validation";
-import TextArea from "antd/es/input/TextArea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateProfileMutation } from "../../../redux/features/user/user.api";
 import { toast } from "sonner";
 import uploadImageToImgBb from "../../../utils/upload_image";
+import { ICustomerProfile } from "../../../interfaces/api.customer.profile.type";
+import { updateProfileFormProfileValidationSchema } from "../../../validations/update_Profile_validation";
 
 const { Title, Text } = Typography;
 
 type IEditVendorFormInputs = z.infer<
-  typeof updateVendorFromProfileValidationSchema
+  typeof updateProfileFormProfileValidationSchema
 >;
 
-export default function VendorProfile({
-  vendor,
+export default function CustomerProfile({
+  customer,
 }: {
-  vendor: IVendorProfileData;
+  customer: ICustomerProfile;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(
-    vendor.logo
+    customer.img
   );
-  const [updateVendor] = useUpdateProfileMutation();
+  const [updateCustomer] = useUpdateProfileMutation();
 
   const {
     control,
@@ -44,12 +43,12 @@ export default function VendorProfile({
     formState: { errors },
   } = useForm<IEditVendorFormInputs>({
     defaultValues: {
-      phone: vendor.phone,
-      address: vendor.address,
-      description: vendor.description,
-      name: vendor.name,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      phone: customer.phone,
+      address: customer.address,
     },
-    resolver: zodResolver(updateVendorFromProfileValidationSchema),
+    resolver: zodResolver(updateProfileFormProfileValidationSchema),
   });
 
   async function handleChangeProfilePicture(
@@ -80,12 +79,11 @@ export default function VendorProfile({
 
   const onSubmit = async (data: IEditVendorFormInputs) => {
     try {
-      const res = await updateVendor({
+      const res = await updateCustomer({
         ...data,
-        logo: profilePicture,
-        email: vendor.email,
+        img: profilePicture,
+        email: customer.email,
       }).unwrap();
-
       if (res.success) {
         toast.success("Vendor Profile successfully updated");
         setIsEditing(false);
@@ -112,8 +110,8 @@ export default function VendorProfile({
         }
       >
         <div className="flex items-center mb-4 relative">
-          <Avatar size={64} src={vendor.logo}>
-            {vendor.name.charAt(0)}
+          <Avatar size={64} src={customer.img}>
+            {customer.firstName.charAt(0)}
           </Avatar>
           {isEditing && (
             <label
@@ -131,36 +129,59 @@ export default function VendorProfile({
             onChange={handleChangeProfilePicture}
           />
           <div className="ml-4">
-            <Title level={2}>{vendor.name}</Title>
-            <Text type="secondary">{vendor.email}</Text>
+            <Title level={2}>
+              {customer.firstName} {customer.lastName}
+            </Title>
+            <Text type="secondary">{customer.email}</Text>
           </div>
         </div>
 
         <Form layout="vertical">
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Name">
+            <Descriptions.Item label="First Name">
               {isEditing ? (
                 <>
                   <Controller
-                    name="name"
+                    name="firstName"
                     control={control}
                     render={({ field }) => (
                       <Input
-                        placeholder="eg. Hurrreh Shop"
+                        placeholder="eg. Mohammad"
                         size="large"
                         {...field}
                       />
                     )}
                   />
 
-                  {errors.name && (
+                  {errors.firstName && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.firstName.message}
                     </p>
                   )}
                 </>
               ) : (
-                vendor.name
+                customer.firstName
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="Last Name">
+              {isEditing ? (
+                <>
+                  <Controller
+                    name="lastName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input placeholder="eg. Nazmul" size="large" {...field} />
+                    )}
+                  />
+
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.lastName.message}
+                    </p>
+                  )}
+                </>
+              ) : (
+                customer.lastName
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Address">
@@ -185,7 +206,7 @@ export default function VendorProfile({
                   )}
                 </>
               ) : (
-                vendor.address
+                customer.address
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Phone">
@@ -209,45 +230,19 @@ export default function VendorProfile({
                   )}
                 </>
               ) : (
-                vendor.phone
-              )}
-            </Descriptions.Item>
-            <Descriptions.Item label="Description">
-              {isEditing ? (
-                <>
-                  <Controller
-                    name="description"
-                    control={control}
-                    render={({ field }) => (
-                      <TextArea
-                        rows={7}
-                        placeholder="eg. Welcome to my vendor..."
-                        maxLength={200}
-                        showCount
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.description && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.description.message}{" "}
-                    </p>
-                  )}
-                </>
-              ) : (
-                vendor.description.slice(0, 50)
+                customer.phone
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Created At">
-              {new Date(vendor.createdAt).toLocaleDateString()}
+              {new Date(customer.createdAt).toLocaleDateString()}
             </Descriptions.Item>
             <Descriptions.Item label="Last Updated">
-              {new Date(vendor.updatedAt).toLocaleDateString()}
+              {new Date(customer.updatedAt).toLocaleDateString()}
             </Descriptions.Item>
             <Descriptions.Item label="Status">
               <Badge
-                status={vendor.isBlackListed ? "error" : "success"}
-                text={vendor.isBlackListed ? "Blacklisted" : "Active"}
+                status={customer.isDeleted ? "error" : "success"}
+                text={customer.isDeleted ? "Blacklisted" : "Active"}
               />
             </Descriptions.Item>
           </Descriptions>
