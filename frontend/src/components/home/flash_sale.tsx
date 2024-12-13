@@ -39,7 +39,7 @@ export default function FlashSale() {
             Ends in: <span className="font-mono">{formatTime(timeLeft)}</span>
           </div>
         </div>
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
           {products?.data?.map((item: IProduct) => (
             <FlashSaleCard {...item} />
           ))}
