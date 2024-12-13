@@ -54,8 +54,20 @@ const fetchMeProfileIncludeObj = {
         },
     },
 };
+const fetchAllVendorsIncludeObj = {
+    follower: {
+        include: {
+            user: {
+                select: {
+                    profile: true,
+                },
+            },
+        },
+    },
+};
 exports.UserConstants = {
     fetchAllUsersIncludeObj,
     fetchMeIncludeObj,
     fetchMeProfileIncludeObj,
+    fetchAllVendorsIncludeObj,
 };

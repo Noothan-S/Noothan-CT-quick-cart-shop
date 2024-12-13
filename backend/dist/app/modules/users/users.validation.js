@@ -10,7 +10,12 @@ const CreateUserValidationSchema = zod_1.z.object({
         email: zod_1.z.string().email(),
         role: zod_1.z.enum(["CUSTOMER", "VENDOR"]),
         password: zod_1.z.string().min(8),
-    })
+    }),
+});
+const blockUnblockUserValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        email: zod_1.z.string().email(),
+    }),
 });
 // Define Profile schema
 const UpdateProfileSchema = zod_1.z.object({
@@ -32,9 +37,10 @@ const UpdateVendorSchema = zod_1.z.object({
 });
 // Create a union schema
 const UpdateProfileOrVendorValidationSchema = zod_1.z.object({
-    body: zod_1.z.union([UpdateProfileSchema, UpdateVendorSchema])
+    body: zod_1.z.union([UpdateProfileSchema, UpdateVendorSchema]),
 });
 exports.UserValidations = {
     CreateUserValidationSchema,
     UpdateProfileOrVendorValidationSchema,
+    blockUnblockUserValidationSchema,
 };

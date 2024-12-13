@@ -177,9 +177,12 @@ function deleteReviewFromDb(user, id) {
                 data: null,
             };
         }
-        const result = yield prisma_constructor_1.default.review.delete({
+        const result = yield prisma_constructor_1.default.review.update({
             where: {
                 id,
+            },
+            data: {
+                isDeleted: true,
             },
             include: {
                 product: true,

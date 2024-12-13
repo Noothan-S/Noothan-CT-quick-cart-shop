@@ -40,6 +40,14 @@ function loginUserFromDb(payload) {
                 data: null,
             };
         }
+        if (user.status == "BLOCKED") {
+            return {
+                status: 400,
+                success: false,
+                message: "Account blocked",
+                data: null,
+            };
+        }
         const isValidPassword = yield bcrypt_1.bcryptOperation.comparePassword(payload.password, user.password);
         if (!isValidPassword) {
             return {

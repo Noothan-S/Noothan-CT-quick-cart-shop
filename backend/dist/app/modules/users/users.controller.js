@@ -16,6 +16,18 @@ exports.UserControllers = void 0;
 const catch_async_1 = __importDefault(require("../../../utils/catch_async"));
 const users_service_1 = require("./users.service");
 const pick_1 = __importDefault(require("../../../utils/pick"));
+const blockUnblockUser = (0, catch_async_1.default)(function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield users_service_1.UserServices.blockUnblockUserIntoDb(req.body);
+        res.status(result.status).json(result);
+    });
+});
+const getUser = (0, catch_async_1.default)(function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield users_service_1.UserServices.getUserFromDb(req.user);
+        res.status(result.status).json(result);
+    });
+});
 const getAllUsers = (0, catch_async_1.default)(function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
@@ -57,4 +69,6 @@ exports.UserControllers = {
     getAllUsers,
     getAllVendors,
     getMyProfile,
+    blockUnblockUser,
+    getUser,
 };

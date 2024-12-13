@@ -19,7 +19,13 @@ const products_service_1 = require("./products.service");
 const getAllProducts = (0, catch_async_1.default)(function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-        const filters = (0, pick_1.default)(req.query, ["vendorId", "searchTerm", "categoryId"]);
+        const filters = (0, pick_1.default)(req.query, [
+            "vendorId",
+            "searchTerm",
+            "categoryId",
+            "minPrice",
+            "maxPrice",
+        ]);
         const result = yield products_service_1.ProductServices.getAllProductsFromDb(options, filters);
         res.status(result.status).json(result);
     });

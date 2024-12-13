@@ -20,6 +20,9 @@ function getCategoriesFromDb() {
             where: {
                 isDeleted: false,
             },
+            orderBy: {
+                updatedAt: "desc",
+            },
         });
         return {
             status: 200,

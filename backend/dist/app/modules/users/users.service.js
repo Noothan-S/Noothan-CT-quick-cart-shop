@@ -29,6 +29,88 @@ const bcrypt_1 = require("../../../utils/bcrypt");
 const build_prisma_query_1 = __importDefault(require("../../../utils/build_prisma_query"));
 const prisma_constructor_1 = __importDefault(require("../../constants/prisma_constructor"));
 const users_constant_1 = require("./users.constant");
+function getUserFromDb(user) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield prisma_constructor_1.default.user.findUnique({
+            where: {
+                email: user.email,
+            },
+        });
+        if (!result) {
+            return {
+                status: 404,
+                success: false,
+                message: "user not found with that email",
+                data: null,
+            };
+        }
+        return {
+            status: 200,
+            success: true,
+            message: "user retrieved successfully",
+            data: result,
+        };
+    });
+}
+function blockUnblockUserIntoDb(payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user = yield prisma_constructor_1.default.user.findUnique({
+            where: {
+                email: payload.email,
+            },
+        });
+        if (!user) {
+            return {
+                status: 404,
+                success: false,
+                message: "user not found with that email",
+                data: null,
+            };
+        }
+        const actionPayloadForUser = {
+            status: user.status === client_1.UserStatus.ACTIVE
+                ? client_1.UserStatus.BLOCKED
+                : client_1.UserStatus.ACTIVE,
+        };
+        const result = yield prisma_constructor_1.default.$transaction((tx) => __awaiter(this, void 0, void 0, function* () {
+            const blockOrUnblockUser = yield prisma_constructor_1.default.user.update({
+                where: {
+                    email: payload.email,
+                },
+                data: actionPayloadForUser,
+            });
+            if (user.role === client_1.UserRole.VENDOR) {
+                const actionPayloadForVendor = {
+                    isBlackListed: user.status === client_1.UserStatus.ACTIVE,
+                };
+                yield prisma_constructor_1.default.vendor.update({
+                    where: {
+                        email: payload.email,
+                    },
+                    data: actionPayloadForVendor,
+                });
+            }
+            if (user.role === client_1.UserRole.CUSTOMER) {
+                const actionPayloadForCustomer = {
+                    isDeleted: user.status === client_1.UserStatus.ACTIVE,
+                };
+                yield prisma_constructor_1.default.profile.update({
+                    where: {
+                        email: payload.email,
+                    },
+                    data: actionPayloadForCustomer,
+                });
+            }
+            return blockOrUnblockUser;
+        }));
+        return {
+            status: 200,
+            success: true,
+            message: `User ${user.status === "ACTIVE" ? "Blocked" : "unblocked"} successfully`,
+            data: result,
+        };
+    });
+}
 function getMyProfileFromDb(user, options) {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
@@ -77,7 +159,7 @@ function getAllUsersFromDb(options, filters) {
         const result = yield (0, build_prisma_query_1.default)({
             model: "user",
             pagination: options,
-            filters: Object.assign(Object.assign({}, filters), { role: client_1.UserRole.CUSTOMER, isDeleted: false, status: "ACTIVE" }),
+            filters: Object.assign(Object.assign({}, filters), { role: client_1.UserRole.CUSTOMER }),
             include: users_constant_1.UserConstants.fetchAllUsersIncludeObj,
         });
         return {
@@ -101,6 +183,7 @@ function getAllVendorsFromDb(options, filters) {
             model: "vendor",
             pagination: options,
             filters: _filters,
+            include: users_constant_1.UserConstants.fetchAllVendorsIncludeObj,
         });
         return {
             status: 200,
@@ -189,4 +272,6 @@ exports.UserServices = {
     getAllUsersFromDb,
     getAllVendorsFromDb,
     getMyProfileFromDb,
+    blockUnblockUserIntoDb,
+    getUserFromDb,
 };
