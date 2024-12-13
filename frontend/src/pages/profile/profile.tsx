@@ -28,12 +28,10 @@ const Profile = () => {
       />
     );
 
-  if (user) {
-    if (user.role === "VENDOR") {
-      return <VendorProfile vendor={profile} />;
-    } else {
-      return <CustomerProfile customer={profile} />;
-    }
+  if (user!.role === "VENDOR") {
+    return <VendorProfile vendor={profile} />;
+  } else {
+    return <CustomerProfile customer={profile} />;
   }
 };
 
