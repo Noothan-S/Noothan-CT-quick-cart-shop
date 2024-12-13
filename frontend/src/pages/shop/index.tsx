@@ -21,7 +21,7 @@ export default function Products() {
     categoryParams ? categoryParams : ""
   );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100 * 50]);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const { data: categories } = useGetCategoriesQuery(undefined);
@@ -88,8 +88,8 @@ export default function Products() {
           value={sortOrder}
           onChange={(value) => setSortOrder(value)}
         >
-          <Option value="asc">Low to High</Option>
-          <Option value="desc">High to Low</Option>
+          <Option value="desc">Low to High</Option>
+          <Option value="asc">High to Low</Option>
         </Select>
       </div>
     </>
