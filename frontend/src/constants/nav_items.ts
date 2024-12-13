@@ -9,8 +9,8 @@ const navItems: INavItems[] = [
     link: "/",
   },
   {
-    name: "Categories",
-    link: "/categories",
+    name: "Products",
+    link: "/products",
   },
   {
     name: "Vendors",

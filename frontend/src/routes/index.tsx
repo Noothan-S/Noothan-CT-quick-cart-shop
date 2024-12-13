@@ -23,6 +23,7 @@ import Categories from "../pages/dashboard/admin/categories";
 import CheckUserStatus from "../utils/check-account-status";
 import Profile from "../pages/profile/profile";
 import ProtectedRoute from "../utils/protected-route";
+import VendorsPage from "../pages/vendors/vendors";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "/products/item/:id",
         element: <ItemDetails />,
+      },
+      {
+        path: "/vendors",
+        element: <VendorsPage />,
       },
       {
         path: "/profile",
