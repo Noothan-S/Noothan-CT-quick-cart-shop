@@ -103,4 +103,5 @@ export const {
   useGetAllVendorsQuery,
   useBlockUserMutation,
   useGetAllCustomersQuery,
+  useUpdateProfileMutation,
 } = profileApi;

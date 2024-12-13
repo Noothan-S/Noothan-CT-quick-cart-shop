@@ -118,6 +118,7 @@ const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Contact number
+                    <span className="text-red-600"> *</span>
                   </label>
                   <Controller
                     name="phone"
@@ -147,6 +148,7 @@ const UpdateUser: FC<IUpdateUserProps> = ({ metadata }) => {
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Address
+                    <span className="text-red-600"> *</span>
                   </label>
                   <Controller
                     name="address"

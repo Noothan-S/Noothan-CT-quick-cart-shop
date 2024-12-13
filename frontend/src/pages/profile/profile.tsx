@@ -8,8 +8,6 @@ const Profile = () => {
   const { data: profile, isLoading, isError } = useGetMyProfileQuery({});
   if (isLoading) return <Loading />;
 
-  console.log(profile);
-
   if (isError)
     return (
       <Result

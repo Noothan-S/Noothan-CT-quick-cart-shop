@@ -14,8 +14,16 @@ import {
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Camera } from "lucide-react";
 import { IVendorProfileData } from "../../../interfaces/api.res.vendor.profile.type";
+import { z } from "zod";
+import { updateVendorFromProfileValidationSchema } from "../../../validations/update_vendor_validation";
+import TextArea from "antd/es/input/TextArea";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const { Title, Text } = Typography;
+
+type IEditVendorFormInputs = z.infer<
+  typeof updateVendorFromProfileValidationSchema
+>;
 
 export default function VendorProfile({
   vendor,
@@ -23,7 +31,18 @@ export default function VendorProfile({
   vendor: IVendorProfileData;
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const { control, handleSubmit } = useForm<IVendorProfileData>();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IEditVendorFormInputs>({
+    defaultValues: {
+      phone: vendor.phone,
+      address: vendor.address,
+      description: vendor.description,
+    },
+    resolver: zodResolver(updateVendorFromProfileValidationSchema),
+  });
 
   async function handleChangeProfilePicture(
     event: ChangeEvent<HTMLInputElement>
@@ -33,7 +52,7 @@ export default function VendorProfile({
     }
   }
 
-  const onSubmit = (data: IVendorProfileData) => {
+  const onSubmit = (data: IEditVendorFormInputs) => {
     console.log("Form data submitted:", data);
     // Here you would typically send the data to your API
     message.success("Profile updated successfully");
@@ -83,36 +102,75 @@ export default function VendorProfile({
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Address">
               {isEditing ? (
-                <Controller
-                  name="address"
-                  control={control}
-                  defaultValue={vendor.address}
-                  render={({ field }) => <Input {...field} />}
-                />
+                <>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        placeholder="eg. Rangpur, Bangladesh"
+                        size="large"
+                        {...field}
+                      />
+                    )}
+                  />
+
+                  {errors.address && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </>
               ) : (
                 vendor.address
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Phone">
               {isEditing ? (
-                <Controller
-                  name="phone"
-                  control={control}
-                  defaultValue={vendor.phone}
-                  render={({ field }) => <Input {...field} />}
-                />
+                <>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        placeholder="eg. +8801712345678"
+                        size="large"
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.phone.message}{" "}
+                    </p>
+                  )}
+                </>
               ) : (
                 vendor.phone
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Description">
               {isEditing ? (
-                <Controller
-                  name="description"
-                  control={control}
-                  defaultValue={vendor.description}
-                  render={({ field }) => <Input.TextArea {...field} />}
-                />
+                <>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <TextArea
+                        rows={7}
+                        placeholder="eg. Welcome to my vendor..."
+                        maxLength={200}
+                        showCount
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.description.message}{" "}
+                    </p>
+                  )}
+                </>
               ) : (
                 vendor.description
               )}
