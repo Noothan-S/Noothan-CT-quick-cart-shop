@@ -193,6 +193,7 @@ async function getAllVendorsFromDb(
     model: "vendor",
     pagination: options,
     filters: _filters,
+    include: UserConstants.fetchAllVendorsIncludeObj,
   });
 
   return {

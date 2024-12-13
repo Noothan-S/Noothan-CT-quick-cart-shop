@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 const fetchAllUsersIncludeObj = {
   profile: true,
 };
@@ -54,8 +56,21 @@ const fetchMeProfileIncludeObj = {
   },
 };
 
+const fetchAllVendorsIncludeObj: Prisma.VendorInclude = {
+  follower: {
+    include: {
+      user: {
+        select: {
+          profile: true,
+        },
+      },
+    },
+  },
+};
+
 export const UserConstants = {
   fetchAllUsersIncludeObj,
   fetchMeIncludeObj,
   fetchMeProfileIncludeObj,
+  fetchAllVendorsIncludeObj,
 };
