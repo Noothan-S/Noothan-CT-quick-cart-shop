@@ -9,6 +9,11 @@ const router: Router = Router();
 
 router.get("/vendors", Auth(UserRole.ADMIN), UserControllers.getAllVendors);
 router.get("/customers", Auth(UserRole.ADMIN), UserControllers.getAllUsers);
+router.get(
+  "/",
+  Auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR),
+  UserControllers.getUser
+);
 
 router.patch(
   "/block-unblock",

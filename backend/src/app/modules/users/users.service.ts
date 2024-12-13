@@ -8,6 +8,30 @@ import { UserConstants } from "./users.constant";
 import { ICreateUser } from "./users.interface";
 import { JwtPayload } from "jsonwebtoken";
 
+async function getUserFromDb(user: JwtPayload): Promise<IServiceReturn> {
+  const result = await prisma.user.findUnique({
+    where: {
+      email: user.email,
+    },
+  });
+
+  if (!result) {
+    return {
+      status: 404,
+      success: false,
+      message: "user not found with that email",
+      data: null,
+    };
+  }
+
+  return {
+    status: 200,
+    success: true,
+    message: "user retrieved successfully",
+    data: result,
+  };
+}
+
 async function blockUnblockUserIntoDb(payload: {
   email: string;
 }): Promise<IServiceReturn> {
@@ -271,4 +295,5 @@ export const UserServices = {
   getAllVendorsFromDb,
   getMyProfileFromDb,
   blockUnblockUserIntoDb,
+  getUserFromDb,
 };

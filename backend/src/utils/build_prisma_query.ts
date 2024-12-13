@@ -28,9 +28,23 @@ const buildPrismaQuery = async (options: IQueryBuilderOptions) => {
     });
   }
 
+  // Handle price range filtering for `product` model
+  if (model === "product") {
+    if (filters.minPrice) {
+      andConditions.push({
+        price: { gte: +filters.minPrice },
+      });
+    }
+    if (filters.maxPrice) {
+      andConditions.push({
+        price: { lte: +filters.maxPrice },
+      });
+    }
+  }
+
   // Map other filters into Prisma's AND conditions
   Object.keys(filters).forEach((key) => {
-    if (key !== "searchTerm") {
+    if (key !== "searchTerm" && key !== "minPrice" && key !== "maxPrice") {
       andConditions.push({
         [key]: { equals: filters[key] },
       });
