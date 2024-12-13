@@ -9,7 +9,6 @@ import {
   Button,
   Form,
   Input,
-  message,
 } from "antd";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Camera } from "lucide-react";
@@ -18,6 +17,9 @@ import { z } from "zod";
 import { updateVendorFromProfileValidationSchema } from "../../../validations/update_vendor_validation";
 import TextArea from "antd/es/input/TextArea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUpdateProfileMutation } from "../../../redux/features/user/user.api";
+import { toast } from "sonner";
+import uploadImageToImgBb from "../../../utils/upload_image";
 
 const { Title, Text } = Typography;
 
@@ -31,6 +33,11 @@ export default function VendorProfile({
   vendor: IVendorProfileData;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(
+    vendor.logo
+  );
+  const [updateVendor] = useUpdateProfileMutation();
+
   const {
     control,
     handleSubmit,
@@ -40,6 +47,7 @@ export default function VendorProfile({
       phone: vendor.phone,
       address: vendor.address,
       description: vendor.description,
+      name: vendor.name,
     },
     resolver: zodResolver(updateVendorFromProfileValidationSchema),
   });
@@ -48,15 +56,45 @@ export default function VendorProfile({
     event: ChangeEvent<HTMLInputElement>
   ) {
     if (event.target.files && event.target.files[0]) {
-      console.log(event.target.files);
+      const loading = toast.loading("Updating profile picture...");
+      const imgBbResponse = await uploadImageToImgBb(
+        Array.from(event.target.files)
+      );
+
+      if (imgBbResponse.error) {
+        toast.error("Something bad happened with updating profile Picture", {
+          id: loading,
+        });
+        console.log("Error when updating profile picture", imgBbResponse.error);
+      }
+
+      if (imgBbResponse.urls?.length) {
+        setProfilePicture(imgBbResponse.urls[0]);
+        toast.success(
+          "Profile picture successfully updated. Click save button",
+          { id: loading }
+        );
+      }
     }
   }
 
-  const onSubmit = (data: IEditVendorFormInputs) => {
-    console.log("Form data submitted:", data);
-    // Here you would typically send the data to your API
-    message.success("Profile updated successfully");
-    setIsEditing(false);
+  const onSubmit = async (data: IEditVendorFormInputs) => {
+    try {
+      const res = await updateVendor({
+        ...data,
+        logo: profilePicture,
+        email: vendor.email,
+      }).unwrap();
+
+      if (res.success) {
+        toast.success("Vendor Profile successfully updated");
+        setIsEditing(false);
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      setIsEditing(false);
+      console.log("Error when updating vendor profile", error);
+    }
   };
 
   return (
@@ -79,7 +117,7 @@ export default function VendorProfile({
           </Avatar>
           {isEditing && (
             <label
-              className="absolute inset-0 w-16 h-16 top-1.5 flex items-center justify-center bg-black bg-opacity-20 opacity-100 transition-opacity duration-300 cursor-pointer rounded-full"
+              className="absolute inset-0 w-16 h-16 top-0.5 flex items-center justify-center bg-black bg-opacity-20 opacity-100 transition-opacity duration-300 cursor-pointer rounded-full"
               htmlFor="profile-picture"
             >
               <Camera className="text-white" size={20} />
@@ -93,7 +131,23 @@ export default function VendorProfile({
             onChange={handleChangeProfilePicture}
           />
           <div className="ml-4">
-            <Title level={2}>{vendor.name}</Title>
+            {isEditing ? (
+              <>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      size="large"
+                      placeholder="eg. Hurrreh Shop"
+                    />
+                  )}
+                />
+              </>
+            ) : (
+              <Title level={2}>{vendor.name}</Title>
+            )}
             <Text type="secondary">{vendor.email}</Text>
           </div>
         </div>
@@ -172,7 +226,7 @@ export default function VendorProfile({
                   )}
                 </>
               ) : (
-                vendor.description
+                vendor.description.slice(0, 50)
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Created At">

@@ -21,6 +21,7 @@ export const updateVendorValidationSchema = z.object({
 });
 
 export const updateVendorFromProfileValidationSchema = z.object({
+  name: z.string().min(1, "Vendor name is required"),
   phone: z
     .string()
     .regex(
