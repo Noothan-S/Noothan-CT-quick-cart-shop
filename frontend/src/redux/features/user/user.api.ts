@@ -27,6 +27,16 @@ const profileApi = baseApi.injectEndpoints({
       providesTags: ["profile"],
     }),
 
+    // update profile
+    updateProfile: builder.mutation({
+      query: (args: any) => ({
+        url: "/users",
+        method: "PUT",
+        body: args,
+      }),
+      invalidatesTags: ["profile"],
+    }),
+
     // fetch all vendors (admin)
     getAllVendors: builder.query({
       query: (args: Record<string, unknown>) => {

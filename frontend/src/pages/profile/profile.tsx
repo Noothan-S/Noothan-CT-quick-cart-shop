@@ -26,7 +26,7 @@ const Profile = () => {
       />
     );
 
-  return <VendorProfile />;
+  return <VendorProfile vendor={profile} />;
 };
 
 export default Profile;

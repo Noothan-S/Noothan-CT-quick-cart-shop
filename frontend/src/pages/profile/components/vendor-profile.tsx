@@ -13,38 +13,17 @@ import {
 } from "antd";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Camera } from "lucide-react";
+import { IVendorProfileData } from "../../../interfaces/api.res.vendor.profile.type";
 
 const { Title, Text } = Typography;
 
-interface VendorData {
-  address: string;
-  createdAt: string;
-  description: string;
-  email: string;
-  id: string;
-  isBlackListed: boolean;
-  logo: string | null;
-  name: string;
-  phone: string;
-  updatedAt: string;
-}
-
-export default function VendorProfile() {
+export default function VendorProfile({
+  vendor,
+}: {
+  vendor: IVendorProfileData;
+}) {
   const [isEditing, setIsEditing] = useState(false);
-  const { control, handleSubmit } = useForm<VendorData>();
-
-  const vendor: VendorData = {
-    address: "Dhaka",
-    createdAt: "2024-12-09T09:38:41.488Z",
-    description: "eewewewewewe",
-    email: "vendor@example.com",
-    id: "d6f44113-514a-4e67-ae7f-fc48d07e1e33",
-    isBlackListed: false,
-    logo: null,
-    name: "Nazmul's Vendor",
-    phone: "+8801772757378",
-    updatedAt: "2024-12-12T17:14:08.289Z",
-  };
+  const { control, handleSubmit } = useForm<IVendorProfileData>();
 
   async function handleChangeProfilePicture(
     event: ChangeEvent<HTMLInputElement>
@@ -54,7 +33,7 @@ export default function VendorProfile() {
     }
   }
 
-  const onSubmit = (data: VendorData) => {
+  const onSubmit = (data: IVendorProfileData) => {
     console.log("Form data submitted:", data);
     // Here you would typically send the data to your API
     message.success("Profile updated successfully");
