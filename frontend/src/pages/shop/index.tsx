@@ -6,6 +6,7 @@ import { IProduct } from "../../interfaces/api.products.res.type";
 import ProductCard from "../../components/products/product_card";
 import { useLocation } from "react-router-dom";
 import { useGetCategoriesQuery } from "../../redux/features/categories/categories.api";
+import useDebounce from "../../hooks/debounce";
 
 const { Header, Sider, Content } = Layout;
 const { Option } = Select;
@@ -17,6 +18,7 @@ export default function Products() {
   const categoryParams = searchParams.get("category");
 
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 500);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams ? categoryParams : ""
   );
@@ -29,12 +31,12 @@ export default function Products() {
   // Generate query parameters for filtering products
   const queryParams = useMemo(() => {
     const query = {
-      searchTerm,
+      searchTerm: debouncedSearch,
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
       sortOrder,
     } as {
-      searchTerm: string;
+      searchTerm: any;
       minPrice: number;
       maxPrice: number;
       sortOrder: "desc" | "asc";
@@ -46,7 +48,7 @@ export default function Products() {
     }
 
     return query;
-  }, [searchTerm, selectedCategory, priceRange, sortOrder]);
+  }, [debouncedSearch, selectedCategory, priceRange, sortOrder]);
 
   const { data: products } = useGetAllProductsQuery(queryParams);
 
