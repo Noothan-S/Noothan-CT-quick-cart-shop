@@ -11,6 +11,7 @@ import {
   replaceCart,
 } from "../../redux/features/cart/cart.slice";
 import { useAppDispatch } from "../../redux/hooks";
+import { toast } from "sonner";
 const FlashSaleCard: FC<IProduct> = ({
   title,
   imgs,
@@ -40,6 +41,7 @@ const FlashSaleCard: FC<IProduct> = ({
   function handleAddToCart() {
     try {
       dispatch(addToCart(payload));
+      toast.success("Item added into cart!");
     } catch (error: any) {
       if (error?.message === "vendor_conflict") {
         setShowWarning(true);
@@ -50,6 +52,7 @@ const FlashSaleCard: FC<IProduct> = ({
   const handleReplaceCart = () => {
     dispatch(replaceCart([payload]));
     setShowWarning(false);
+    toast.success("Item added into cart!");
   };
 
   return (

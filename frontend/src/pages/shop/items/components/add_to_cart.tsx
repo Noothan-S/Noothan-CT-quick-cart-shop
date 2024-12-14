@@ -10,6 +10,7 @@ import {
   replaceCart,
 } from "../../../../redux/features/cart/cart.slice";
 import { calculateProductPriceForCard } from "../../../../utils/calculate_price_card";
+import { toast } from "sonner";
 
 const AddToCart: FC<IProduct> = ({
   quantity,
@@ -41,6 +42,7 @@ const AddToCart: FC<IProduct> = ({
   function handleAddToCart() {
     try {
       dispatch(addToCart(payload));
+      toast.success("Item added into cart!");
     } catch (error: any) {
       if (error?.message === "vendor_conflict") {
         setShowWarning(true);
@@ -51,6 +53,7 @@ const AddToCart: FC<IProduct> = ({
   const handleReplaceCart = () => {
     dispatch(replaceCart([payload]));
     setShowWarning(false);
+    toast.success("Item added into cart!");
   };
 
   return (

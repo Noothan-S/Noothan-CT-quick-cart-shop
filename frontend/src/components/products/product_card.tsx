@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../utils/format-price";
+import { useAppDispatch } from "../../redux/hooks";
+import {
+  addToCart,
+  ICart,
+  replaceCart,
+} from "../../redux/features/cart/cart.slice";
+import { toast } from "sonner";
+import { Modal } from "antd";
 
 const ProductCard: React.FC<IProduct> = ({
   imgs,
@@ -12,8 +20,40 @@ const ProductCard: React.FC<IProduct> = ({
   price,
   discount,
   id,
+  vendorId,
 }) => {
   const calculatedPrice = calculateProductPriceForCard(price, discount);
+  const dispatch = useAppDispatch();
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+
+  const payload: ICart = {
+    vendorId,
+    item: {
+      id,
+      title: title,
+      img: imgs[0],
+      quantity: 1,
+      payable: calculatedPrice.totalPrice,
+      discount: calculatedPrice.discountAmount,
+    },
+  };
+
+  function handleAddToCart() {
+    try {
+      dispatch(addToCart(payload));
+      toast.success("Item added into cart!");
+    } catch (error: any) {
+      if (error?.message === "vendor_conflict") {
+        setShowWarning(true);
+      }
+    }
+  }
+
+  const handleReplaceCart = () => {
+    dispatch(replaceCart([payload]));
+    setShowWarning(false);
+    toast.success("Item added into cart!");
+  };
 
   return (
     <div className="max-w-sm w-full transform duration-500 hover:-translate-y-2 bg-white rounded-lg shadow-lg overflow-hidden">
@@ -63,7 +103,10 @@ const ProductCard: React.FC<IProduct> = ({
 
       {/* Add to Cart Section */}
       <div className="mt-4 p-4 bg-red-50 border-t border-gray-200">
-        <button className="w-full flex justify-between items-center font-bold cursor-pointer hover:underline text-gray-800">
+        <button
+          onClick={handleAddToCart}
+          className="w-full flex justify-between items-center font-bold cursor-pointer hover:underline text-gray-800"
+        >
           <span className="text-base">Add to Cart</span>
           <svg
             className="h-6 w-6"
@@ -81,6 +124,21 @@ const ProductCard: React.FC<IProduct> = ({
           </svg>
         </button>
       </div>
+      <Modal
+        title="Products can only be added from one vendor at a time."
+        centered
+        open={showWarning}
+        okType="danger"
+        onOk={handleReplaceCart}
+        okText="Replace with the new product"
+        onCancel={() => setShowWarning(false)}
+      >
+        <p>
+          To ensure a smooth shopping experience, you can only add products from
+          one vendor to your cart at a time. Please complete or clear your
+          current selection before adding items from another vendor.
+        </p>
+      </Modal>
     </div>
   );
 };
