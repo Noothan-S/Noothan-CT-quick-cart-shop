@@ -1,6 +1,7 @@
 import { Button, Divider, Drawer, Image, List, Space, Typography } from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
 import {
+  clearCart,
   deleteItem,
   ICart,
   selectCart,
@@ -48,7 +49,7 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
         }}
         extra={
           <Space>
-            <Button>Clear Cart</Button>
+            <Button onClick={() => dispatch(clearCart())}>Clear Cart</Button>
             <Button disabled={!cart.length} variant="solid" color="danger">
               Proceed to Checkout
             </Button>
