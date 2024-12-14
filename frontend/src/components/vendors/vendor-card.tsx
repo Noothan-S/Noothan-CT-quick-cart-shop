@@ -6,6 +6,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import { toast } from "sonner";
+import { useFollowUnfollowVendorMutation } from "../../redux/features/follow/follow.api";
 
 const { Title, Text } = Typography;
 
@@ -17,7 +18,7 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
   id,
 }) => {
   const user = useAppSelector(useCurrentUser);
-
+  const [followUnfollow] = useFollowUnfollowVendorMutation();
   const isAlreadyFollowed = follower.some(
     (item) => item.userId === decrypt(user?.id)
   );
@@ -26,6 +27,17 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
     if (!user) {
       toast.info("You are not logged in!");
       return;
+    }
+
+    try {
+      const res = await followUnfollow({ vendorId }).unwrap();
+
+      if (res.success) {
+        toast.success("Success");
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      console.log("Error when executing handleFollowUnfollow fn", error);
     }
   }
 

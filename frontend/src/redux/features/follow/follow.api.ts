@@ -5,7 +5,7 @@ const followApi = baseApi.injectEndpoints({
     // follow || unfollow vendor
     followUnfollowVendor: builder.mutation({
       query: (args: { vendorId: string }) => ({
-        url: `/follow/${args.vendorId}`,
+        url: `/follows/${args.vendorId}`,
         method: "POST",
       }),
       invalidatesTags: ["users", "follow", "profile"],
