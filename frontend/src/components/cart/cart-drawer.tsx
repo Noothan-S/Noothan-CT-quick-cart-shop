@@ -14,7 +14,10 @@ import { ICart, selectCart } from "../../redux/features/cart/cart.slice";
 import { RootState } from "../../redux/store";
 import { useAppSelector } from "../../redux/hooks";
 import { Trash } from "lucide-react";
+import ButtonGroup from "antd/es/button/button-group";
 const { Title, Text } = Typography;
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { formatPrice } from "../../utils/format-price";
 
 interface ICartDrawerProps {
   isOpen: boolean;
@@ -22,6 +25,18 @@ interface ICartDrawerProps {
 }
 const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
+
+  // calculate total price
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.item.payable * item.item.quantity,
+    0
+  );
+
+  // calculate total discount
+  const totalDiscount = cart.reduce(
+    (total, item) => total + item.item.discount * item.item.quantity,
+    0
+  );
 
   return (
     <>
@@ -68,27 +83,30 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
                 }
                 title={order.item.title}
                 description={
-                  <Text type="secondary">${order.item.payable.toFixed(2)}</Text>
+                  <Text type="secondary">
+                    {formatPrice(order.item.payable)}
+                  </Text>
                 }
               />
               <div>
-                <InputNumber
-                  min={1}
-                  value={order.item.quantity}
-                  // onChange={(value) =>
-                  //   updateQuantity(order.id, value as number)
-                  // }
-                />
+                <ButtonGroup size="small">
+                  <Button
+                    disabled={order.item.quantity <= 1}
+                    icon={<MinusOutlined />}
+                  />
+                  <Button
+                    disabled={order.item.quantity >= 20}
+                    icon={<PlusOutlined />}
+                  />
+                </ButtonGroup>
               </div>
             </List.Item>
           )}
         />
         <Divider />
         <Space className="w-full justify-between">
-          <Title level={4}>Total: $4343434</Title>
-          <Button type="primary" size="large">
-            Proceed to Checkout
-          </Button>
+          <Title level={5}>Discount: {formatPrice(totalDiscount)}</Title>
+          <Title level={5}>Subtotal: {formatPrice(totalPrice)}</Title>
         </Space>
       </Drawer>
     </>
