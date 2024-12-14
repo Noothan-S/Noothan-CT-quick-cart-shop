@@ -87,6 +87,7 @@ const profileApi = baseApi.injectEndpoints({
       providesTags: ["users"],
     }),
 
+    // block customers || vendors (admin)
     blockUser: builder.mutation({
       query: (args: { email: string }) => ({
         url: "/users/block-unblock",

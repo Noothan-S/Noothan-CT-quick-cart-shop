@@ -5,6 +5,7 @@ import { IVendorProfileData } from "../../interfaces/api.res.vendor.profile.type
 import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
+import { toast } from "sonner";
 
 const { Title, Text } = Typography;
 
@@ -22,7 +23,10 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
   );
 
   async function handleFollowUnfollow(vendorId: string) {
-    console.log(vendorId);
+    if (!user) {
+      toast.info("You are not logged in!");
+      return;
+    }
   }
 
   return (
