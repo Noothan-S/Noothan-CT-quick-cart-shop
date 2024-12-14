@@ -72,12 +72,26 @@ export const cartSlice = createSlice({
           targetedItem.item.payable += itemPrice;
           targetedItem.item.discount += itemDiscount;
         }
+
+        if (action.payload.actionType === "decrement") {
+          if (targetedItem.item.quantity > 1) {
+            targetedItem.item.quantity -= 1;
+            targetedItem.item.payable -= itemPrice;
+            targetedItem.item.discount -= itemDiscount;
+          }
+        }
       }
+    },
+
+    // delete
+    deleteItem: (state, action: PayloadAction<{ productId: string }>) => {
+      return state.filter((item) => item.item.id !== action.payload.productId);
     },
   },
 });
 
-export const selectCart = (state: RootState) => state.cart;
-export const { addToCart, replaceCart, updateQuantity } = cartSlice.actions;
+export const { addToCart, replaceCart, updateQuantity, deleteItem } =
+  cartSlice.actions;
 
+export const selectCart = (state: RootState) => state.cart;
 export default cartSlice.reducer;

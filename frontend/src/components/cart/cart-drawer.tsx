@@ -1,6 +1,7 @@
 import { Button, Divider, Drawer, Image, List, Space, Typography } from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
 import {
+  deleteItem,
   ICart,
   selectCart,
   updateQuantity,
@@ -48,8 +49,7 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
         extra={
           <Space>
             <Button>Clear Cart</Button>
-            <Button variant="solid" color="danger">
-              {" "}
+            <Button disabled={!cart.length} variant="solid" color="danger">
               Proceed to Checkout
             </Button>
           </Space>
@@ -61,7 +61,15 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
             <List.Item
               key={indx}
               actions={[
-                <Button key="delete" type="text" danger icon={<Trash />}>
+                <Button
+                  onClick={() =>
+                    dispatch(deleteItem({ productId: order.item.id }))
+                  }
+                  key="delete"
+                  type="text"
+                  danger
+                  icon={<Trash />}
+                >
                   Remove
                 </Button>,
               ]}
@@ -88,6 +96,14 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
                   <Button
                     disabled={order.item.quantity <= 1}
                     icon={<MinusOutlined />}
+                    onClick={() =>
+                      dispatch(
+                        updateQuantity({
+                          productId: order.item.id,
+                          actionType: "decrement",
+                        })
+                      )
+                    }
                   />
                   <Button
                     onClick={() =>
@@ -107,10 +123,12 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
           )}
         />
         <Divider />
-        <Space className="w-full justify-between">
-          <Title level={5}>Discount: {formatPrice(totalDiscount)}</Title>
-          <Title level={5}>Subtotal: {formatPrice(totalPrice)}</Title>
-        </Space>
+        {cart.length >= 1 && (
+          <Space className="w-full justify-between">
+            <Title level={5}>Discount: {formatPrice(totalDiscount)}</Title>
+            <Title level={5}>Subtotal: {formatPrice(totalPrice)}</Title>
+          </Space>
+        )}
       </Drawer>
     </>
   );
