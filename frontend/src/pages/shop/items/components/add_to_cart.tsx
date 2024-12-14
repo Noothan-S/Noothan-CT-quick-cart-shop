@@ -1,4 +1,4 @@
-import { Badge, Button } from "antd";
+import { Badge, Button, Modal } from "antd";
 import { ShoppingCart } from "lucide-react";
 import { FC, useState } from "react";
 import { IProduct } from "../../../../interfaces/api.products.res.type";
@@ -9,6 +9,7 @@ import {
   ICart,
   replaceCart,
 } from "../../../../redux/features/cart/cart.slice";
+import { calculateProductPriceForCard } from "../../../../utils/calculate_price_card";
 
 const AddToCart: FC<IProduct> = ({
   quantity,
@@ -17,6 +18,7 @@ const AddToCart: FC<IProduct> = ({
   imgs,
   price,
   title,
+  discount,
 }) => {
   const ButtonGroup = Button.Group;
   const [count, setCount] = useState<number>(1);
@@ -28,7 +30,9 @@ const AddToCart: FC<IProduct> = ({
     item: {
       id,
       img: imgs[0],
-      payable: price * count,
+      payable: calculateProductPriceForCard(price, discount).totalPrice * count,
+      discount:
+        calculateProductPriceForCard(price, discount).discountAmount * count,
       quantity: count,
       title: title,
     },
@@ -73,6 +77,21 @@ const AddToCart: FC<IProduct> = ({
           <ShoppingCart className="h-4 w-4" /> Add to Cart
         </Button>
       </Badge>
+      <Modal
+        title="Products can only be added from one vendor at a time."
+        centered
+        open={showWarning}
+        okType="danger"
+        onOk={handleReplaceCart}
+        okText="Replace with the new product"
+        onCancel={() => setShowWarning(false)}
+      >
+        <p>
+          To ensure a smooth shopping experience, you can only add products from
+          one vendor to your cart at a time. Please complete or clear your
+          current selection before adding items from another vendor.
+        </p>
+      </Modal>
     </div>
   );
 };
