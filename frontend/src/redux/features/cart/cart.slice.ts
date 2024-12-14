@@ -35,11 +35,9 @@ export const cartSlice = createSlice({
       );
 
       if (isExist) {
-        isExist.item = {
-          ...isExist.item,
-          quantity: action.payload.item.quantity,
-          payable: action.payload.item.payable,
-        };
+        isExist.item.quantity += action.payload.item.quantity;
+        isExist.item.payable += action.payload.item.payable;
+        isExist.item.discount += action.payload.item.discount;
         return;
       }
 

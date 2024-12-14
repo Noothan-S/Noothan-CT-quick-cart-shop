@@ -1,10 +1,16 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { IProduct } from "../../interfaces/api.products.res.type";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { ShoppingCart } from "lucide-react";
 import { calculateProductPriceForCard } from "../../utils/calculate_price_card";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../utils/format-price";
+import {
+  addToCart,
+  ICart,
+  replaceCart,
+} from "../../redux/features/cart/cart.slice";
+import { useAppDispatch } from "../../redux/hooks";
 const FlashSaleCard: FC<IProduct> = ({
   title,
   imgs,
@@ -12,9 +18,40 @@ const FlashSaleCard: FC<IProduct> = ({
   avgRating,
   quantity,
   discount,
+  vendorId,
   id,
 }) => {
   const calculatePrice = calculateProductPriceForCard(price, discount);
+  const dispatch = useAppDispatch();
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+
+  const payload: ICart = {
+    vendorId,
+    item: {
+      id,
+      title: title,
+      img: imgs[0],
+      quantity: 1,
+      payable: calculatePrice.totalPrice,
+      discount: calculatePrice.discountAmount,
+    },
+  };
+
+  function handleAddToCart() {
+    try {
+      dispatch(addToCart(payload));
+    } catch (error: any) {
+      if (error?.message === "vendor_conflict") {
+        setShowWarning(true);
+      }
+    }
+  }
+
+  const handleReplaceCart = () => {
+    dispatch(replaceCart([payload]));
+    setShowWarning(false);
+  };
+
   return (
     <section className="p-5 py-10 bg-red-50 rounded-md text-center transform duration-500 hover:-translate-y-2 cursor-pointer">
       <Link to={`/products/item/${id}`}>
@@ -42,6 +79,7 @@ const FlashSaleCard: FC<IProduct> = ({
         </h2>
       </Link>
       <Button
+        onClick={handleAddToCart}
         disabled={quantity < 1}
         variant="solid"
         size="large"
@@ -49,6 +87,21 @@ const FlashSaleCard: FC<IProduct> = ({
       >
         <ShoppingCart className="h-4 w-4" /> Add to Cart
       </Button>
+      <Modal
+        title="Products can only be added from one vendor at a time."
+        centered
+        open={showWarning}
+        okType="danger"
+        onOk={handleReplaceCart}
+        okText="Replace with the new product"
+        onCancel={() => setShowWarning(false)}
+      >
+        <p>
+          To ensure a smooth shopping experience, you can only add products from
+          one vendor to your cart at a time. Please complete or clear your
+          current selection before adding items from another vendor.
+        </p>
+      </Modal>
     </section>
   );
 };

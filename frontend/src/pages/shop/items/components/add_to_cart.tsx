@@ -23,18 +23,18 @@ const AddToCart: FC<IProduct> = ({
   const ButtonGroup = Button.Group;
   const [count, setCount] = useState<number>(1);
   const dispatch = useAppDispatch();
-  const [showWarning, setShowWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const payload: ICart = {
     vendorId,
     item: {
       id,
+      title: title,
       img: imgs[0],
+      quantity: count,
       payable: calculateProductPriceForCard(price, discount).totalPrice * count,
       discount:
         calculateProductPriceForCard(price, discount).discountAmount * count,
-      quantity: count,
-      title: title,
     },
   };
 
