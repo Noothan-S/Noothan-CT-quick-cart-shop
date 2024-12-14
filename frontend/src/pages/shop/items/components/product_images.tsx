@@ -13,7 +13,6 @@ const ProductImages: FC<{ images: string[] }> = ({ images }) => {
           className="w-full h-full rounded-lg shadow-md mb-4 object-cover"
         />
       </div>
-
       {/* Thumbnails */}
       <div className="flex space-x-2 mt-5">
         {images.map((image, index) => (

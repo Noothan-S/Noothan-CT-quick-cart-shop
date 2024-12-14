@@ -1,18 +1,12 @@
-import {
-  Button,
-  Card,
-  Divider,
-  Drawer,
-  Image,
-  InputNumber,
-  List,
-  Space,
-  Typography,
-} from "antd";
+import { Button, Divider, Drawer, Image, List, Space, Typography } from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
-import { ICart, selectCart } from "../../redux/features/cart/cart.slice";
+import {
+  ICart,
+  selectCart,
+  updateQuantity,
+} from "../../redux/features/cart/cart.slice";
 import { RootState } from "../../redux/store";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Trash } from "lucide-react";
 import ButtonGroup from "antd/es/button/button-group";
 const { Title, Text } = Typography;
@@ -25,6 +19,7 @@ interface ICartDrawerProps {
 }
 const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
+  const dispatch = useAppDispatch();
 
   // calculate total price
   const totalPrice = cart.reduce(
@@ -52,7 +47,7 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
         }}
         extra={
           <Space>
-            <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+            <Button>Clear Cart</Button>
             <Button variant="solid" color="danger">
               {" "}
               Proceed to Checkout
@@ -95,6 +90,14 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
                     icon={<MinusOutlined />}
                   />
                   <Button
+                    onClick={() =>
+                      dispatch(
+                        updateQuantity({
+                          productId: order.item.id,
+                          actionType: "increment",
+                        })
+                      )
+                    }
                     disabled={order.item.quantity >= 20}
                     icon={<PlusOutlined />}
                   />

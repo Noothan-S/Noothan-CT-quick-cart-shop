@@ -49,10 +49,35 @@ export const cartSlice = createSlice({
       // Replace the entire cart with the new vendor's products
       return action.payload;
     },
+
+    updateQuantity: (
+      state,
+      action: PayloadAction<{
+        productId: string;
+        actionType: "increment" | "decrement";
+      }>
+    ) => {
+      const targetedItem = state.find(
+        (item) => item.item.id === action.payload.productId
+      );
+
+      if (targetedItem) {
+        const itemPrice =
+          targetedItem.item.payable / targetedItem.item.quantity;
+        const itemDiscount =
+          targetedItem.item.discount / targetedItem.item.quantity;
+
+        if (action.payload.actionType === "increment") {
+          targetedItem.item.quantity += 1;
+          targetedItem.item.payable += itemPrice;
+          targetedItem.item.discount += itemDiscount;
+        }
+      }
+    },
   },
 });
 
 export const selectCart = (state: RootState) => state.cart;
-export const { addToCart, replaceCart } = cartSlice.actions;
+export const { addToCart, replaceCart, updateQuantity } = cartSlice.actions;
 
 export default cartSlice.reducer;
