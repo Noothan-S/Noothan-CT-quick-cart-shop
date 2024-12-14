@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Avatar, Typography, Button, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { IVendorProfileData } from "../../../interfaces/api.res.vendor.profile.type";
+import { IVendorProfileData } from "../../interfaces/api.res.vendor.profile.type";
 
 const { Title, Text } = Typography;
 
@@ -30,7 +30,7 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
         </div>
       }
       actions={[
-        <Button key="follow" type="primary">
+        <Button key="follow" danger>
           Follow
         </Button>,
         <Button key="viewProducts">View Products</Button>,
