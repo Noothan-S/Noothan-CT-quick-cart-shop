@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface ICart {
-  vendorId: string;
-  id: string;
-  title: string;
-  img: string;
-  quantity: number;
-  payable: number;
+  vendorId?: string;
+  item: {
+    id: string;
+    title: string;
+    img: string;
+    quantity: number;
+    payable: number;
+  };
 }
 
 const initialState: ICart[] = [];
@@ -15,8 +17,17 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<ICart>) => {
-      console.log(action);
-      console.log({ action });
+      const isExist = state.find(
+        (item) => item.item.id === action.payload.item.id
+      );
+
+      if (isExist) {
+        isExist.item.quantity = action.payload.item.quantity;
+        isExist.item.payable = action.payload.item.payable;
+        return;
+      }
+
+      state.push(action.payload);
     },
   },
 });

@@ -3,10 +3,34 @@ import { ShoppingCart } from "lucide-react";
 import { FC, useState } from "react";
 import { IProduct } from "../../../../interfaces/api.products.res.type";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../../../redux/hooks";
+import { addToCart, ICart } from "../../../../redux/features/cart/cart.slice";
 
-const AddToCart: FC<IProduct> = ({ quantity }) => {
+const AddToCart: FC<IProduct> = ({
+  quantity,
+  vendorId,
+  id,
+  imgs,
+  price,
+  title,
+}) => {
   const ButtonGroup = Button.Group;
   const [count, setCount] = useState<number>(1);
+  const dispatch = useAppDispatch();
+
+  function handleAddToCart() {
+    const payload: ICart = {
+      vendorId,
+      item: {
+        id,
+        img: imgs[0],
+        payable: price * count,
+        quantity: count,
+        title: title,
+      },
+    };
+    dispatch(addToCart(payload));
+  }
 
   return (
     <div className="flex items-center space-x-4 mb-6">
@@ -22,7 +46,7 @@ const AddToCart: FC<IProduct> = ({ quantity }) => {
           icon={<PlusOutlined />}
         />
       </ButtonGroup>
-      <Badge count={count}>
+      <Badge onClick={handleAddToCart} count={count}>
         <Button
           disabled={quantity < 1}
           variant="solid"
