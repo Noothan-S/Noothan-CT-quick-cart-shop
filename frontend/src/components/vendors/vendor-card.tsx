@@ -2,6 +2,9 @@ import React from "react";
 import { Card, Avatar, Typography, Button, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IVendorProfileData } from "../../interfaces/api.res.vendor.profile.type";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { decrypt } from "../../utils/text_encryption";
 
 const { Title, Text } = Typography;
 
@@ -10,7 +13,18 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
   name,
   description,
   follower,
+  id,
 }) => {
+  const user = useAppSelector(useCurrentUser);
+
+  const isAlreadyFollowed = follower.some(
+    (item) => item.userId === decrypt(user?.id)
+  );
+
+  async function handleFollowUnfollow(vendorId: string) {
+    console.log(vendorId);
+  }
+
   return (
     <Card
       hoverable
@@ -30,8 +44,8 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
         </div>
       }
       actions={[
-        <Button key="follow" danger>
-          Follow
+        <Button onClick={() => handleFollowUnfollow(id)} key="follow" danger>
+          {isAlreadyFollowed ? "Unfollow" : "Follow"}
         </Button>,
         <Button key="viewProducts">View Products</Button>,
       ]}
