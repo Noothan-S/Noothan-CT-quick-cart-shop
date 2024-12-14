@@ -24,11 +24,13 @@ import CheckUserStatus from "../utils/check-account-status";
 import Profile from "../pages/profile/profile";
 import ProtectedRoute from "../utils/protected-route";
 import VendorsPage from "../pages/vendors/vendors";
+import ErrorElement from "../errors/error-element";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <ErrorElement />,
     children: [
       {
         index: true,

@@ -13,7 +13,7 @@ import { SearchOutlined, MenuOutlined } from "@ant-design/icons";
 import { useGetAllProductsQuery } from "../../redux/features/products/products.api";
 import { IProduct } from "../../interfaces/api.products.res.type";
 import ProductCard from "../../components/products/product_card";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useGetCategoriesQuery } from "../../redux/features/categories/categories.api";
 import useDebounce from "../../hooks/debounce";
 import Loading from "../../components/loading";
@@ -26,11 +26,15 @@ export default function Products() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const categoryParams = searchParams.get("category");
+  const vendorParams = searchParams.get("vendor");
 
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 500);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams ? categoryParams : ""
+  );
+  const [selectedVendor, setSelectedVendor] = useState<string | null>(
+    vendorParams ? vendorParams : ""
   );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100 * 50]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -38,7 +42,8 @@ export default function Products() {
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
-  const { data: categories } = useGetCategoriesQuery(undefined);
+  const { data: categories, isError: categoryError } =
+    useGetCategoriesQuery(undefined);
 
   // Generate query parameters for filtering products
   const queryParams = useMemo(() => {
@@ -54,6 +59,7 @@ export default function Products() {
       minPrice: number;
       maxPrice: number;
       sortOrder: "desc" | "asc";
+      vendorId: string;
       categoryId?: string | null;
       page: number;
       limit: number;
@@ -63,10 +69,39 @@ export default function Products() {
       query.categoryId = selectedCategory;
     }
 
-    return query;
-  }, [debouncedSearch, selectedCategory, priceRange, sortOrder, currentPage]);
+    if (selectedVendor) {
+      query.vendorId = selectedVendor;
+    }
 
-  const { data: products, isLoading } = useGetAllProductsQuery(queryParams);
+    return query;
+  }, [
+    debouncedSearch,
+    selectedCategory,
+    selectedVendor,
+    priceRange,
+    sortOrder,
+    currentPage,
+  ]);
+
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useGetAllProductsQuery(queryParams);
+
+  if (categoryError || isError)
+    return (
+      <Result
+        status="500"
+        title="500"
+        subTitle="Sorry, something went wrong."
+        extra={
+          <Link to={"/"}>
+            <Button danger>Back Home</Button>
+          </Link>
+        }
+      />
+    );
 
   const categoriesOptions = categories
     ? categories.map((item: Record<string, unknown>) => ({
@@ -77,12 +112,11 @@ export default function Products() {
 
   categoriesOptions.unshift({ value: "", label: "All Categories" });
 
-  console.log(products);
-
   function handleClearFilter() {
     setSearchTerm("");
     setPriceRange([0, 100 * 50]);
     setSelectedCategory("");
+    setSelectedVendor("");
   }
 
   const FilterOptions = () => (

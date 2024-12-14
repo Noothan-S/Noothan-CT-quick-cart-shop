@@ -7,6 +7,8 @@ import { useCurrentUser } from "../../redux/features/auth/auth.slice";
 import { decrypt } from "../../utils/text_encryption";
 import { toast } from "sonner";
 import { useFollowUnfollowVendorMutation } from "../../redux/features/follow/follow.api";
+import { Link } from "react-router-dom";
+import UserRole from "../../constants/user_role";
 
 const { Title, Text } = Typography;
 
@@ -26,6 +28,9 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
   async function handleFollowUnfollow(vendorId: string) {
     if (!user) {
       toast.info("You are not logged in!");
+      return;
+    } else if (decrypt(user.role) !== UserRole.customer) {
+      toast.info("This Feature Only for Customers!");
       return;
     }
 
@@ -63,14 +68,16 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
         <Button onClick={() => handleFollowUnfollow(id)} key="follow" danger>
           {isAlreadyFollowed ? "Unfollow" : "Follow"}
         </Button>,
-        <Button key="viewProducts">View Products</Button>,
+        <Link to={`/products?vendor=${id}`}>
+          <Button key="viewProducts">View Products</Button>
+        </Link>,
       ]}
     >
       <Card.Meta
         title={<Title level={4}>{name}</Title>}
         description={
           <Space direction="vertical">
-            <Text>{description}</Text>
+            <Text>{description.slice(0, 70)}</Text>
             <Text type="secondary">
               <UserOutlined /> {follower.length} followers
             </Text>

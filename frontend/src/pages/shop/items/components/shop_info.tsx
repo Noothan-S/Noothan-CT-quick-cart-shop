@@ -7,7 +7,10 @@ const ShopInfo: FC<IVendor> = ({ name, id }) => {
     <div className="mb-6">
       <p className="text-sm text-muted-foreground">
         Sold by:{" "}
-        <Link to={`/shop/${id}`} className="text-primary hover:underline">
+        <Link
+          to={`/products?vendor=${id}`}
+          className="text-primary hover:underline"
+        >
           {name}
         </Link>
       </p>
