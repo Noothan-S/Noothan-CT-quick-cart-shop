@@ -4,7 +4,11 @@ import { FC, useState } from "react";
 import { IProduct } from "../../../../interfaces/api.products.res.type";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../redux/hooks";
-import { addToCart, ICart } from "../../../../redux/features/cart/cart.slice";
+import {
+  addToCart,
+  ICart,
+  replaceCart,
+} from "../../../../redux/features/cart/cart.slice";
 
 const AddToCart: FC<IProduct> = ({
   quantity,
@@ -17,20 +21,33 @@ const AddToCart: FC<IProduct> = ({
   const ButtonGroup = Button.Group;
   const [count, setCount] = useState<number>(1);
   const dispatch = useAppDispatch();
+  const [showWarning, setShowWarning] = useState(false);
+
+  const payload: ICart = {
+    vendorId,
+    item: {
+      id,
+      img: imgs[0],
+      payable: price * count,
+      quantity: count,
+      title: title,
+    },
+  };
 
   function handleAddToCart() {
-    const payload: ICart = {
-      vendorId,
-      item: {
-        id,
-        img: imgs[0],
-        payable: price * count,
-        quantity: count,
-        title: title,
-      },
-    };
-    dispatch(addToCart(payload));
+    try {
+      dispatch(addToCart(payload));
+    } catch (error: any) {
+      if (error?.message === "vendor_conflict") {
+        setShowWarning(true);
+      }
+    }
   }
+
+  const handleReplaceCart = () => {
+    dispatch(replaceCart([payload]));
+    setShowWarning(false);
+  };
 
   return (
     <div className="flex items-center space-x-4 mb-6">

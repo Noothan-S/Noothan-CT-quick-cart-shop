@@ -2,9 +2,12 @@ import { Badge } from "antd";
 import { ShoppingCart } from "lucide-react";
 import { FC, useState } from "react";
 import ShoppingCartDrawer from "./cart-drawer";
+import { useAppSelector } from "../../redux/hooks";
+import { RootState } from "../../redux/store";
+import { selectCart } from "../../redux/features/cart/cart.slice";
 
 const Cart: FC = () => {
-  const [cartItem, setCartItem] = useState(6);
+  const cart = useAppSelector((state: RootState) => selectCart(state));
   const [isShoppingCartDrawerOpen, setIsShoppingCartDrawerOpen] =
     useState<boolean>(false);
 
@@ -13,7 +16,7 @@ const Cart: FC = () => {
       <Badge
         className="cursor-pointer"
         onClick={() => setIsShoppingCartDrawerOpen(true)}
-        count={cartItem}
+        count={cart.length}
       >
         <ShoppingCart />
       </Badge>
