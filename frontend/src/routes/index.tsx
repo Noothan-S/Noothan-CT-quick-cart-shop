@@ -25,6 +25,7 @@ import Profile from "../pages/profile/profile";
 import ProtectedRoute from "../utils/protected-route";
 import VendorsPage from "../pages/vendors/vendors";
 import ErrorElement from "../errors/error-element";
+import Checkout from "../pages/checkout/checkout";
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +62,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <ProtectedRoute>
+            <Checkout />
           </ProtectedRoute>
         ),
       },

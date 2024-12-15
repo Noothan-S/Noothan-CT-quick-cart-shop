@@ -207,6 +207,7 @@ export default function Products() {
           )}
 
           <Pagination
+            className="mt-10"
             align="end"
             pageSize={16}
             current={products?.meta?.page}

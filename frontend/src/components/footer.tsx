@@ -8,7 +8,9 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">About MultiMart</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              About Quick<span className="text-red-500">Cart</span>
+            </h3>
             <p className="text-gray-400">
               Connecting global vendors with customers worldwide. Discover
               unique products and support independent sellers.

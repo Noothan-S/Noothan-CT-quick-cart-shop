@@ -47,7 +47,7 @@ export default function FlashSale() {
         <div className="mt-8 text-center">
           {/* Replace Link with <a> if not using React Router */}
           <Link
-            to="/flash-sale"
+            to="/products"
             className="inline-flex items-center text-danger-500 hover:underline"
           >
             View All Flash Sale Items <ArrowRight className="ml-2 h-4 w-4" />

@@ -1,5 +1,7 @@
+import { ShoppingCart } from "lucide-react";
 import heroImg from "../../assets/home/hero-banner.webp";
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -12,9 +14,11 @@ export default function Hero() {
           <p className="text-xl mb-6">
             Shop from thousands of independent sellers all in one place
           </p>
-          <Button color="danger" size="large" variant="solid">
-            Start Shopping
-          </Button>
+          <Link to="/products">
+            <Button color="danger" size="large" variant="solid">
+              <ShoppingCart className="h-4 w-4" /> Start Shopping New
+            </Button>
+          </Link>
         </div>
         <div className="md:w-1/2">
           <img

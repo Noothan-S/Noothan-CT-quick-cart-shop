@@ -23,16 +23,13 @@ import ButtonGroup from "antd/es/button/button-group";
 const { Title, Text } = Typography;
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { formatPrice } from "../../utils/format-price";
-import { useCurrentUser } from "../../redux/features/auth/auth.slice";
-import { decrypt } from "../../utils/text_encryption";
-import UserRole from "../../constants/user_role";
+import { Link } from "react-router-dom";
 
 interface ICartDrawerProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
-  const user = useAppSelector(useCurrentUser);
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
   const dispatch = useAppDispatch();
 
@@ -64,13 +61,12 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
           <Space>
             <Button onClick={() => dispatch(clearCart())}>Clear Cart</Button>
             <Button
-              disabled={
-                !cart.length || decrypt(user?.role) !== UserRole.customer
-              }
+              onClick={() => setIsOpen(false)}
+              disabled={!cart.length}
               variant="solid"
               color="danger"
             >
-              Proceed to Checkout
+              <Link to="/checkout">Proceed to Checkout</Link>
             </Button>
           </Space>
         }
