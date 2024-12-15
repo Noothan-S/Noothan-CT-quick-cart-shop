@@ -1,4 +1,13 @@
-import { Button, Divider, Drawer, Image, List, Space, Typography } from "antd";
+import {
+  Badge,
+  Button,
+  Divider,
+  Drawer,
+  Image,
+  List,
+  Space,
+  Typography,
+} from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
 import {
   clearCart,
@@ -14,12 +23,16 @@ import ButtonGroup from "antd/es/button/button-group";
 const { Title, Text } = Typography;
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { formatPrice } from "../../utils/format-price";
+import { useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { decrypt } from "../../utils/text_encryption";
+import UserRole from "../../constants/user_role";
 
 interface ICartDrawerProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
+  const user = useAppSelector(useCurrentUser);
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
   const dispatch = useAppDispatch();
 
@@ -50,7 +63,13 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
         extra={
           <Space>
             <Button onClick={() => dispatch(clearCart())}>Clear Cart</Button>
-            <Button disabled={!cart.length} variant="solid" color="danger">
+            <Button
+              disabled={
+                !cart.length || decrypt(user?.role) !== UserRole.customer
+              }
+              variant="solid"
+              color="danger"
+            >
               Proceed to Checkout
             </Button>
           </Space>
@@ -77,13 +96,15 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
             >
               <List.Item.Meta
                 avatar={
-                  <Image
-                    src={order.item.img}
-                    alt={order.item.title}
-                    width={64}
-                    height={64}
-                    className="object-cover rounded"
-                  />
+                  <Badge count={order.item.quantity}>
+                    <Image
+                      src={order.item.img}
+                      alt={order.item.title}
+                      width={64}
+                      height={64}
+                      className="object-cover rounded"
+                    />
+                  </Badge>
                 }
                 title={order.item.title}
                 description={
@@ -115,7 +136,9 @@ const ShoppingCartDrawer: FC<ICartDrawerProps> = ({ isOpen, setIsOpen }) => {
                         })
                       )
                     }
-                    disabled={order.item.quantity >= 20}
+                    disabled={
+                      order.item.quantity > Math.floor(Math.random() * 100) + 1
+                    }
                     icon={<PlusOutlined />}
                   />
                 </ButtonGroup>
