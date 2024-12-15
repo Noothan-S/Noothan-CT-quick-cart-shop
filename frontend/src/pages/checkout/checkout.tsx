@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Form,
   Input,
@@ -12,7 +11,7 @@ import {
 import { UserOutlined, MailOutlined, HomeOutlined } from "@ant-design/icons";
 import { useGetMyProfileQuery } from "../../redux/features/user/user.api";
 import Loading from "../../components/loading";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ICart, selectCart } from "../../redux/features/cart/cart.slice";
 import { useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
@@ -22,9 +21,9 @@ const { Title, Text } = Typography;
 
 export default function Checkout() {
   const [form] = Form.useForm();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: profile, isError, isLoading } = useGetMyProfileQuery({});
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
+  const navigate = useNavigate();
 
   // calculate total price
   const totalPrice = cart.reduce(
@@ -38,13 +37,8 @@ export default function Checkout() {
     0
   );
 
-  const onFinish = async (values: any) => {
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    console.log("Received values of form: ", values);
-    alert("Order submitted successfully!");
+  const onFinish = async () => {
+    navigate("/payout");
   };
 
   if (isLoading) return <Loading />;
@@ -135,10 +129,9 @@ export default function Checkout() {
               variant="solid"
               size="large"
               htmlType="submit"
-              loading={isSubmitting}
               block
             >
-              {isSubmitting ? "Processing..." : "Pay and Confirm Order"}
+              Pay and Confirm Order
             </Button>
           </Form.Item>
         </Form>

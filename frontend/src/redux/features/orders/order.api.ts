@@ -1,8 +1,28 @@
 import { TApiResponse } from "../../../interfaces/api_response.types";
+import { INewOrderPayload } from "../../../interfaces/order.payload.type";
 import { baseApi } from "../../api/base_api";
 
 const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // create payment intent
+    createPaymentIntent: builder.mutation({
+      query: (args: { amount: number }) => ({
+        url: "/payout/stripe",
+        method: "POST",
+        body: args,
+      }),
+    }),
+
+    // create new order (customer)
+    createNewOrder: builder.mutation({
+      query: (args: INewOrderPayload) => ({
+        url: "/orders",
+        method: "POST",
+        body: args,
+      }),
+      invalidatesTags: ["orders", "users", "profile"],
+    }),
+
     // fetch all orders
     getAllOrders: builder.query({
       query: (args: Record<string, unknown>) => {
@@ -42,4 +62,8 @@ const orderApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllOrdersQuery, useUpdateOrderStatusMutation } = orderApi;
+export const {
+  useGetAllOrdersQuery,
+  useCreatePaymentIntentMutation,
+  useUpdateOrderStatusMutation,
+} = orderApi;
