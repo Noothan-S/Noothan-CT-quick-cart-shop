@@ -69,7 +69,9 @@ export const router = createBrowserRouter([
         path: "/checkout",
         element: (
           <ProtectedRoute>
-            <Checkout />
+            <CheckUserStatus>
+              <Checkout />
+            </CheckUserStatus>
           </ProtectedRoute>
         ),
       },

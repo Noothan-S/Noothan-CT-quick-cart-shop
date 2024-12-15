@@ -1,12 +1,42 @@
 import { useState } from "react";
-import { Form, Input, Button, Card, Divider, Typography, Space } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  Divider,
+  Typography,
+  Space,
+  Result,
+} from "antd";
 import { UserOutlined, MailOutlined, HomeOutlined } from "@ant-design/icons";
+import { useGetMyProfileQuery } from "../../redux/features/user/user.api";
+import Loading from "../../components/loading";
+import { Link } from "react-router-dom";
+import { ICart, selectCart } from "../../redux/features/cart/cart.slice";
+import { useAppSelector } from "../../redux/hooks";
+import { RootState } from "../../redux/store";
+import { formatPrice } from "../../utils/format-price";
 
 const { Title, Text } = Typography;
 
 export default function Checkout() {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: profile, isError, isLoading } = useGetMyProfileQuery({});
+  const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
+
+  // calculate total price
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.item.payable * item.item.quantity,
+    0
+  );
+
+  // calculate total discount
+  const totalDiscount = cart.reduce(
+    (total, item) => total + item.item.discount * item.item.quantity,
+    0
+  );
 
   const onFinish = async (values: any) => {
     setIsSubmitting(true);
@@ -16,6 +46,20 @@ export default function Checkout() {
     console.log("Received values of form: ", values);
     alert("Order submitted successfully!");
   };
+
+  if (isLoading) return <Loading />;
+  if (isError) {
+    <Result
+      status="500"
+      title="500"
+      subTitle="Sorry, something went wrong."
+      extra={
+        <Link to={"/"}>
+          <Button danger>Back Home</Button>
+        </Link>
+      }
+    />;
+  }
 
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "24px" }}>
@@ -31,33 +75,32 @@ export default function Checkout() {
           onFinish={onFinish}
           style={{ marginTop: "24px" }}
         >
-          <Form.Item
-            name="fullName"
-            label="Full Name"
-            rules={[
-              { required: true, message: "Please input your full name!" },
-            ]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="John Doe" />
+          <Form.Item name="fullName" label="Full Name">
+            <Input
+              size="large"
+              defaultValue={`${profile.firstName} ${profile.lastName}`}
+              prefix={<UserOutlined />}
+              placeholder="John Doe"
+            />
           </Form.Item>
 
           <Form.Item
             name="email"
             label="Email"
-            rules={[
-              { required: true, message: "Please input your email!" },
-              { type: "email", message: "Please enter a valid email!" },
-            ]}
-          >
-            <Input prefix={<MailOutlined />} placeholder="john@example.com" />
-          </Form.Item>
-
-          <Form.Item
-            name="address"
-            label="Address"
-            rules={[{ required: true, message: "Please input your address!" }]}
+            rules={[{ type: "email", message: "Please enter a valid email!" }]}
           >
             <Input
+              defaultValue={profile.email}
+              size="large"
+              prefix={<MailOutlined />}
+              placeholder="john@example.com"
+            />
+          </Form.Item>
+
+          <Form.Item name="address" label="Address">
+            <Input
+              size="large"
+              defaultValue={profile.address}
               prefix={<HomeOutlined />}
               placeholder="123 Main St, City, Country"
             />
@@ -69,27 +112,33 @@ export default function Checkout() {
           <Space direction="vertical" style={{ width: "100%" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Text>Subtotal</Text>
-              <Text>$99.99</Text>
+              <Text>{formatPrice(totalPrice)}</Text>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Text>Discount</Text>
+              <Text>{formatPrice(totalDiscount)}</Text>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Text>Shipping</Text>
-              <Text>$9.99</Text>
+              <Text>$0.00</Text>
             </div>
             <Divider style={{ margin: "12px 0" }} />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Text strong>Total</Text>
-              <Text strong>$109.98</Text>
+              <Text strong>{formatPrice(totalPrice - totalDiscount)}</Text>
             </div>
           </Space>
 
           <Form.Item style={{ marginTop: "24px" }}>
             <Button
-              type="primary"
+              color="danger"
+              variant="solid"
+              size="large"
               htmlType="submit"
               loading={isSubmitting}
               block
             >
-              {isSubmitting ? "Processing..." : "Place Order"}
+              {isSubmitting ? "Processing..." : "Pay and Confirm Order"}
             </Button>
           </Form.Item>
         </Form>
