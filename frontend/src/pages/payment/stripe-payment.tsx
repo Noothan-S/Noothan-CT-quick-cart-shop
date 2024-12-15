@@ -19,8 +19,6 @@ export default function StripePayment() {
   const navigate = useNavigate();
   const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
-  console.log(cart);
-
   if (!cart.length) {
     navigate("/");
   }
@@ -59,7 +57,6 @@ export default function StripePayment() {
   return (
     <div className="w-full max-w-lg mx-auto py-20">
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold mb-4">Make Payment</h2>
         <Elements options={{ clientSecret }} stripe={stripePromise}>
           <PaymentForm />
         </Elements>

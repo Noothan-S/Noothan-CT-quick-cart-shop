@@ -66,4 +66,5 @@ export const {
   useGetAllOrdersQuery,
   useCreatePaymentIntentMutation,
   useUpdateOrderStatusMutation,
+  useCreateNewOrderMutation,
 } = orderApi;

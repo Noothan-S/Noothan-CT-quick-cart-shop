@@ -25,6 +25,10 @@ export default function Checkout() {
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
   const navigate = useNavigate();
 
+  if (!cart.length) {
+    navigate("/");
+  }
+
   // calculate total price
   const totalPrice = cart.reduce(
     (total, item) => total + item.item.payable * item.item.quantity,
