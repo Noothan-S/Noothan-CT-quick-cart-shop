@@ -5,6 +5,9 @@ import router from "./app/routes"; // Importing routes
 import config from "./app/config"; // Importing configuration settings
 import globalErrorHandler from "./app/middlewares/global_error_handler"; // Global error handling middleware
 import cookieParser from "cookie-parser";
+import { stripe } from "./app/modules/payment/payment.stripe";
+import Auth from "./app/middlewares/auth";
+import { UserRole } from "@prisma/client";
 
 // Initialize the Express application
 const app: Application = express();
@@ -19,7 +22,7 @@ app.use(cookieParser());
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different origins
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://quick-cart-shop.web.app"],
     credentials: true,
   })
 );
@@ -34,6 +37,7 @@ app.get("/", (_: Request, res: Response) => {
 
 // Use the router for API endpoints under '/api/v1'
 app.use("/api/v1", router);
+app.post("/api/v1/payout/stripe", Auth(UserRole.CUSTOMER), stripe);
 
 // Global error handling middleware
 app.use(globalErrorHandler);

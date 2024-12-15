@@ -51,7 +51,7 @@ app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different origins
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://quick-cart-shop.web.app"],
     credentials: true,
 }));
 // Middleware to parse URL-encoded request bodies (e.g., form data)
