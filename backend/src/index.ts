@@ -8,6 +8,8 @@ import cookieParser from "cookie-parser";
 import { stripe } from "./app/modules/payment/payment.stripe";
 import Auth from "./app/middlewares/auth";
 import { UserRole } from "@prisma/client";
+import ValidationRequest from "./app/middlewares/zod_validation";
+import { createPaymentIntentValidationSchema } from "./app/modules/payment/payment.validation";
 
 // Initialize the Express application
 const app: Application = express();
@@ -37,7 +39,12 @@ app.get("/", (_: Request, res: Response) => {
 
 // Use the router for API endpoints under '/api/v1'
 app.use("/api/v1", router);
-app.post("/api/v1/payout/stripe", Auth(UserRole.CUSTOMER), stripe);
+app.post(
+  "/api/v1/payout/stripe",
+  Auth(UserRole.CUSTOMER),
+  ValidationRequest(createPaymentIntentValidationSchema),
+  stripe
+);
 
 // Global error handling middleware
 app.use(globalErrorHandler);

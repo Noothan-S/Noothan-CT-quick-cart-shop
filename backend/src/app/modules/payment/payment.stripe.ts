@@ -5,7 +5,7 @@ import config from "../../config";
 export async function stripe(req: Request, res: Response) {
   const stripe = new Stripe(config.stripe_secret_key as string);
 
-  if (!req.body.amount) {
+  if (!req?.body?.amount) {
     res.status(400).json({
       status: 400,
       success: false,
@@ -16,13 +16,13 @@ export async function stripe(req: Request, res: Response) {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: parseInt(req.body.amount),
+      amount: parseInt(req?.body?.amount),
       currency: "usd",
     });
 
     res.status(201).json({
       status: 201,
-      success: false,
+      success: true,
       message: "Stripe payment intent created successfully",
       data: {
         clientSecret: paymentIntent.client_secret,
