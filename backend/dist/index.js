@@ -42,6 +42,11 @@ const routes_1 = __importDefault(require("./app/routes")); // Importing routes
 const config_1 = __importDefault(require("./app/config")); // Importing configuration settings
 const global_error_handler_1 = __importDefault(require("./app/middlewares/global_error_handler")); // Global error handling middleware
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const payment_stripe_1 = require("./app/modules/payment/payment.stripe");
+const auth_1 = __importDefault(require("./app/middlewares/auth"));
+const client_1 = require("@prisma/client");
+const zod_validation_1 = __importDefault(require("./app/middlewares/zod_validation"));
+const payment_validation_1 = require("./app/modules/payment/payment.validation");
 // Initialize the Express application
 const app = (0, express_1.default)();
 let server;
@@ -62,6 +67,7 @@ app.get("/", (_, res) => {
 });
 // Use the router for API endpoints under '/api/v1'
 app.use("/api/v1", routes_1.default);
+app.post("/api/v1/payout/stripe", (0, auth_1.default)(client_1.UserRole.CUSTOMER), (0, zod_validation_1.default)(payment_validation_1.createPaymentIntentValidationSchema), payment_stripe_1.stripe);
 // Global error handling middleware
 app.use(global_error_handler_1.default);
 // Handle all other routes that don't match, returning a 404 error
