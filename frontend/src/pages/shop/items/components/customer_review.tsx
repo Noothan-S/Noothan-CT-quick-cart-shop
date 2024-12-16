@@ -7,6 +7,8 @@ import { decrypt } from "../../../../utils/text_encryption";
 import { useState } from "react";
 import EditReviewDrawer from "./edit-review-drawer";
 import { Popconfirm } from "antd";
+import { useDeleteReviewMutation } from "../../../../redux/features/reviews/reviews.api";
+import { toast } from "sonner";
 
 const CustomerReview = ({
   reviews,
@@ -17,9 +19,18 @@ const CustomerReview = ({
 }) => {
   const user = useAppSelector(useCurrentUser);
   const [targetedReview, setTargetedReview] = useState<null | IReview>(null);
+  const [deleteReview] = useDeleteReviewMutation();
 
   async function handleDeleteReview(reviewId: string) {
-    console.log(reviewId);
+    try {
+      const response = await deleteReview({ reviewId }).unwrap();
+      if (response.success) {
+        toast.success("Review successfully deleted");
+      }
+    } catch (error) {
+      toast.error("Something bad happened!");
+      console.log("Error when deleting review", error);
+    }
   }
 
   return (
