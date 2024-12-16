@@ -55,6 +55,20 @@ const reviewsApi = baseApi.injectEndpoints({
       invalidatesTags: ["reviews"],
     }),
 
+    // leave new review (customer)
+    leaveNewReview: builder.mutation({
+      query: (args: {
+        productId: string;
+        description: string;
+        rating: string;
+      }) => ({
+        url: "/reviews",
+        method: "POST",
+        body: args,
+      }),
+      invalidatesTags: ["orders", "products"],
+    }),
+
     // delete review(admin & customer)
     deleteReview: builder.mutation({
       query: (args: { reviewId: string }) => ({
@@ -82,4 +96,5 @@ export const {
   useDeleteReviewResponseMutation,
   useDeleteReviewMutation,
   useUpdateCustomerReviewMutation,
+  useLeaveNewReviewMutation,
 } = reviewsApi;

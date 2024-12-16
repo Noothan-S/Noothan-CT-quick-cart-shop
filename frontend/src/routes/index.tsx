@@ -80,11 +80,11 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: (
-          <ProtectedRoute>
+          <RoleGard role={UserRole.customer}>
             <CheckUserStatus>
               <CustomerOrders />
             </CheckUserStatus>
-          </ProtectedRoute>
+          </RoleGard>
         ),
       },
       {

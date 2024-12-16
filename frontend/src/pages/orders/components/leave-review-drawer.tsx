@@ -1,47 +1,40 @@
 import { Button, Drawer, Rate, Space } from "antd";
 import { Dispatch, FC, SetStateAction, useState } from "react";
-import { IReview } from "../../../../interfaces/api.products.res.type";
 import { StarFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { Controller, useForm } from "react-hook-form";
-import { useUpdateCustomerReviewMutation } from "../../../../redux/features/reviews/reviews.api";
+import { useLeaveNewReviewMutation } from "../../../redux/features/reviews/reviews.api";
 import { toast } from "sonner";
 
 interface IEditReviewDrawerProps {
-  setReview: Dispatch<SetStateAction<null | IReview>>;
-  review: IReview | null;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  productId: string | null;
 }
-const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
-  setReview,
-  review,
+export const LeaveReviewDrawer: FC<IEditReviewDrawerProps> = ({
+  isOpen,
+  setIsOpen,
+  productId,
 }) => {
-  const [updateReview] = useUpdateCustomerReviewMutation();
-  const [updatedRating, setUpdatedRating] = useState<number>(
-    review?.rating as number
-  );
-
-  const { handleSubmit, control } = useForm({
-    defaultValues: {
-      description: review?.description,
-    },
-  });
-
+  console.log(productId);
+  const [rating, setRating] = useState<number>(0);
+  const { handleSubmit, control } = useForm({});
+  const [leaveNewReview] = useLeaveNewReviewMutation();
   async function handleUpdateReview(data: any) {
     try {
-      const res = await updateReview({
+      const response = await leaveNewReview({
         ...data,
-        rating: updatedRating,
-        reviewId: review?.id,
+        productId,
+        rating,
       }).unwrap();
-
-      if (res.success) {
-        toast.success("Review successfully updated");
-        setReview(null);
+      if (response) {
+        toast.success("Review successfully send!");
       }
+      setIsOpen(false);
     } catch (error) {
-      toast.error("Something bad happened");
-      setReview(null);
-      console.log("Error when updating review", error);
+      toast.error("Something bad happened!");
+      setIsOpen(false);
+      console.log("Error when leave review", error);
     }
   }
 
@@ -50,8 +43,8 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
       <Drawer
         title="Edit Review"
         width={400}
-        onClose={() => setReview(null)}
-        open={!!review}
+        onClose={() => setIsOpen(false)}
+        open={isOpen}
         styles={{
           body: {
             paddingBottom: 80,
@@ -59,7 +52,7 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
         }}
         extra={
           <Space>
-            <Button onClick={() => setReview(null)}>Cancel</Button>
+            <Button onClick={() => setIsOpen(false)}>Cancel</Button>
             <Button danger onClick={handleSubmit(handleUpdateReview)}>
               Submit
             </Button>
@@ -73,22 +66,23 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
               control={control}
               render={({ field }) => (
                 <TextArea
+                  required
                   {...field}
                   maxLength={200}
                   showCount
                   minLength={5}
                   rows={5}
+                  placeholder="eg. Very nice product. highly recommended"
                   size="large"
                 />
               )}
             />
             <Rate
-              value={updatedRating}
-              onChange={(val) => setUpdatedRating(val)}
+              value={rating}
+              onChange={(val) => setRating(val)}
               character={<StarFilled />}
               className="text-2xl text-red-500"
             />
-            <p className="text-lg">Current Rating: {review?.rating} stars</p>
           </div>
         </form>
       </Drawer>
@@ -96,4 +90,4 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
   );
 };
 
-export default EditReviewDrawer;
+export default LeaveReviewDrawer;
