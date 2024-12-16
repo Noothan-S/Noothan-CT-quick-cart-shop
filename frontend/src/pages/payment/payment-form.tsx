@@ -41,7 +41,7 @@ const PaymentForm = () => {
       setTimeout(() => {
         navigate("/");
         dispatch(clearCart());
-      }, 2000);
+      }, 5000);
     } catch (error) {
       toast.error("Something bad happened!");
       setIsLoading(false);
@@ -89,12 +89,19 @@ const PaymentForm = () => {
         subTitle={`Order number: ${Math.random()}. Order Confirmation takes 1-5 hours, please wait.`}
         extra={[
           <Link to="/">
-            <Button type="primary" key="console">
+            <Button
+              onClick={() => dispatch(clearCart())}
+              type="default"
+              key="console"
+            >
               Go Home
             </Button>
           </Link>,
           <Link to="/products">
-            <Button danger>Buy Again</Button>,
+            <Button onClick={() => dispatch(clearCart())} danger>
+              Buy Again
+            </Button>
+            ,
           </Link>,
         ]}
       />

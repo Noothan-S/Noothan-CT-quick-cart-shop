@@ -8,9 +8,10 @@ import { RootState } from "../store";
 import { logOut } from "../features/auth/auth.slice";
 import { toast } from "sonner";
 import { decrypt } from "../../utils/text_encryption";
+import { config } from "../../config";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/v1",
+  baseUrl: `${config.server_url}/api/v1`,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;

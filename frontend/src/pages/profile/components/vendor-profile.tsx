@@ -113,7 +113,7 @@ export default function VendorProfile({
       >
         <div className="flex items-center mb-4 relative">
           <Avatar size={64} src={vendor.logo}>
-            {vendor.name.charAt(0)}
+            {vendor?.name?.charAt(0)}
           </Avatar>
           {isEditing && (
             <label

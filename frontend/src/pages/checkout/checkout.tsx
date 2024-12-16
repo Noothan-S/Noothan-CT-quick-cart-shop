@@ -7,15 +7,20 @@ import {
   Typography,
   Space,
   Result,
+  Modal,
 } from "antd";
 import { UserOutlined, MailOutlined, HomeOutlined } from "@ant-design/icons";
 import { useGetMyProfileQuery } from "../../redux/features/user/user.api";
 import Loading from "../../components/loading";
 import { Link, useNavigate } from "react-router-dom";
 import { ICart, selectCart } from "../../redux/features/cart/cart.slice";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { formatPrice } from "../../utils/format-price";
+import { logOut, useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { useState } from "react";
+import { decrypt } from "../../utils/text_encryption";
+import UserRole from "../../constants/user_role";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +29,9 @@ export default function Checkout() {
   const { data: profile, isError, isLoading } = useGetMyProfileQuery({});
   const cart: ICart[] = useAppSelector((state: RootState) => selectCart(state));
   const navigate = useNavigate();
+  const user = useAppSelector(useCurrentUser);
+  const dispatch = useAppDispatch();
+  const [userConflict, setUserConflict] = useState<boolean>(false);
 
   if (!cart.length) {
     navigate("/");
@@ -42,6 +50,11 @@ export default function Checkout() {
   );
 
   const onFinish = async () => {
+    if (decrypt(user?.role as string) !== UserRole.customer) {
+      setUserConflict(true);
+      return;
+    }
+
     navigate("/payout");
   };
 
@@ -140,6 +153,21 @@ export default function Checkout() {
           </Form.Item>
         </Form>
       </Card>
+      <Modal
+        title="Order placement is restricted to customers"
+        centered
+        open={userConflict}
+        okType="danger"
+        onOk={() => dispatch(logOut())}
+        okText="Login as Customer"
+        cancelText="Go Home"
+        onCancel={() => navigate("/")}
+      >
+        <p>
+          This action is restricted to customer accounts. Vendors and admins
+          cannot place orders.
+        </p>
+      </Modal>
     </div>
   );
 }

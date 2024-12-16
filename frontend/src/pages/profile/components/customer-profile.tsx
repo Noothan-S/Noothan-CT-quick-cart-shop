@@ -111,7 +111,7 @@ export default function CustomerProfile({
       >
         <div className="flex items-center mb-4 relative">
           <Avatar size={64} src={customer.img}>
-            {customer.firstName.charAt(0)}
+            {customer?.firstName?.charAt(0)}
           </Avatar>
           {isEditing && (
             <label
