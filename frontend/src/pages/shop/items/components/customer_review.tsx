@@ -1,4 +1,4 @@
-import { CornerDownRight, Pen, Star } from "lucide-react";
+import { CornerDownRight, Pen, Star, Trash2 } from "lucide-react";
 import { IReview } from "../../../../interfaces/api.products.res.type";
 import { IsoToDate } from "../../../../utils/iso_to_date";
 import { useAppSelector } from "../../../../redux/hooks";
@@ -6,6 +6,7 @@ import { useCurrentUser } from "../../../../redux/features/auth/auth.slice";
 import { decrypt } from "../../../../utils/text_encryption";
 import { useState } from "react";
 import EditReviewDrawer from "./edit-review-drawer";
+import { Popconfirm } from "antd";
 
 const CustomerReview = ({
   reviews,
@@ -16,6 +17,10 @@ const CustomerReview = ({
 }) => {
   const user = useAppSelector(useCurrentUser);
   const [targetedReview, setTargetedReview] = useState<null | IReview>(null);
+
+  async function handleDeleteReview(reviewId: string) {
+    console.log(reviewId);
+  }
 
   return (
     <>
@@ -64,11 +69,26 @@ const CustomerReview = ({
                 <div className="flex gap-2 items-center">
                   <p className="text-gray-700">{review.description}</p>
                   {user && decrypt(user.id) === review.userId && (
-                    <Pen
-                      onClick={() => setTargetedReview(review)}
-                      className="cursor-pointer hover:scale-105 transition-all hover:text-red-500"
-                      size={15}
-                    />
+                    <>
+                      <Pen
+                        onClick={() => setTargetedReview(review)}
+                        className="cursor-pointer hover:scale-105 transition-all hover:text-red-500"
+                        size={15}
+                      />
+                      <Popconfirm
+                        title="Delete the review"
+                        description="Are you sure to delete this review?"
+                        onConfirm={() => handleDeleteReview(review.id)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Trash2
+                          className="cursor-pointer hover:scale-105 transition-all"
+                          size={15}
+                          color="red"
+                        />
+                      </Popconfirm>
+                    </>
                   )}
                 </div>
               </div>
