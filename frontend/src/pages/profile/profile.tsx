@@ -6,6 +6,7 @@ import VendorProfile from "./components/vendor-profile";
 import CustomerProfile from "./components/customer-profile";
 import { useAppSelector } from "../../redux/hooks";
 import { useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { decrypt } from "../../utils/text_encryption";
 
 const Profile = () => {
   const user = useAppSelector(useCurrentUser);
@@ -28,7 +29,7 @@ const Profile = () => {
       />
     );
 
-  if (user!.role === "VENDOR") {
+  if (decrypt(user!.role) === "VENDOR") {
     return <VendorProfile vendor={profile} />;
   } else {
     return <CustomerProfile customer={profile} />;
