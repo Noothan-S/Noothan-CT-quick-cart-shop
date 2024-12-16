@@ -57,12 +57,18 @@ export default function Header() {
                       <span className="badge">New</span>
                     </Link>
                   </li>
-                  {decrypt(user.role) !== UserRole.customer && (
+                  {decrypt(user.role) !== UserRole.customer ? (
                     <li>
                       <Link
                         to={`/dashboard/${decrypt(user.role).toLowerCase()}`}
                       >
                         Dashboard
+                      </Link>
+                    </li>
+                  ) : (
+                    <li>
+                      <Link to="/orders" className="justify-between">
+                        My Orders
                       </Link>
                     </li>
                   )}

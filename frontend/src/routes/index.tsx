@@ -27,6 +27,7 @@ import VendorsPage from "../pages/vendors/vendors";
 import ErrorElement from "../errors/error-element";
 import Checkout from "../pages/checkout/checkout";
 import StripePayment from "../pages/payment/stripe-payment";
+import CustomerOrders from "../pages/orders/customer-orders";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,16 @@ export const router = createBrowserRouter([
           <ProtectedRoute>
             <CheckUserStatus>
               <Checkout />
+            </CheckUserStatus>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/orders",
+        element: (
+          <ProtectedRoute>
+            <CheckUserStatus>
+              <CustomerOrders />
             </CheckUserStatus>
           </ProtectedRoute>
         ),

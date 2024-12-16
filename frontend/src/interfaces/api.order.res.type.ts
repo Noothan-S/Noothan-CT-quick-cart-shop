@@ -63,3 +63,16 @@ export interface IAdminOrder {
   items: IOrderItem[];
   vendor: IOrderVendor;
 }
+
+export interface ICustomerOrder {
+  id: string;
+  userId: string;
+  vendorId: string;
+  totalPrice: number;
+  status: string;
+  paymentStatus: string;
+  createdAt: string;
+  updatedAt: string;
+  items: IOrderItem[];
+  vendor: IOrderVendor;
+}
