@@ -60,6 +60,7 @@ const productApi = baseApi.injectEndpoints({
         }
         return response.data;
       },
+      providesTags: ["products"],
     }),
 
     // delete product

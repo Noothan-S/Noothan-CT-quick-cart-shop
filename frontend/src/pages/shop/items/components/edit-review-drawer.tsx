@@ -1,9 +1,11 @@
-import { Button, Descriptions, Drawer, Input, Rate, Space } from "antd";
+import { Button, Drawer, Rate, Space } from "antd";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import { IReview } from "../../../../interfaces/api.products.res.type";
 import { StarFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import { Controller, FieldValue, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { useUpdateCustomerReviewMutation } from "../../../../redux/features/reviews/reviews.api";
+import { toast } from "sonner";
 
 interface IEditReviewDrawerProps {
   setReview: Dispatch<SetStateAction<null | IReview>>;
@@ -13,6 +15,7 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
   setReview,
   review,
 }) => {
+  const [updateReview] = useUpdateCustomerReviewMutation();
   const [updatedRating, setUpdatedRating] = useState<number>(
     review?.rating as number
   );
@@ -24,7 +27,22 @@ const EditReviewDrawer: FC<IEditReviewDrawerProps> = ({
   });
 
   async function handleUpdateReview(data: any) {
-    console.log(data);
+    try {
+      const res = await updateReview({
+        ...data,
+        rating: updatedRating,
+        reviewId: review?.id,
+      }).unwrap();
+
+      if (res.success) {
+        toast.success("Review successfully updated");
+        setReview(null);
+      }
+    } catch (error) {
+      toast.error("Something bad happened");
+      setReview(null);
+      console.log("Error when updating review", error);
+    }
   }
 
   return (
