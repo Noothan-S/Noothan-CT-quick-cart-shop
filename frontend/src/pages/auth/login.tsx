@@ -11,7 +11,7 @@ import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import UserRole from "../../constants/user_role";
 
@@ -21,6 +21,10 @@ const Login: FC = () => {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const [showPass, setShowPass] = useState<boolean>(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location?.search);
+  const redirect = searchParams.get("redirect");
+  const navigate = useNavigate();
 
   const {
     control,
@@ -50,8 +54,17 @@ const Login: FC = () => {
               : authUser,
         })
       );
-
       toast.success(`${res.data?.data?.user?.role} logged in success`);
+
+      if (redirect) {
+        navigate(redirect);
+      } else if (location.state) {
+        navigate(location.state);
+      } else if (res.data?.data?.user?.role === UserRole.customer) {
+        navigate("/profile");
+      } else {
+        navigate(`/dashboard/${res.data?.data?.user?.role.toLowerCase()}`);
+      }
     }
   };
 

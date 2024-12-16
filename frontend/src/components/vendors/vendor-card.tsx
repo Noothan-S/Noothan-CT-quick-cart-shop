@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Avatar, Typography, Button, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IVendorProfileData } from "../../interfaces/api.res.vendor.profile.type";
@@ -21,9 +21,21 @@ const VendorProfileCard: React.FC<IVendorProfileData> = ({
 }) => {
   const user = useAppSelector(useCurrentUser);
   const [followUnfollow] = useFollowUnfollowVendorMutation();
-  const isAlreadyFollowed = follower.some(
-    (item) => item.userId === decrypt(user?.id)
-  );
+  const [isAlreadyFollowed, setIsAlreadyFollowed] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (user) {
+      const isAlreadyFollowed = follower.some(
+        (item) => item.userId === decrypt(user.id)
+      );
+
+      if (isAlreadyFollowed) {
+        setIsAlreadyFollowed(true);
+      } else {
+        setIsAlreadyFollowed(false);
+      }
+    }
+  }, [follower, user]);
 
   async function handleFollowUnfollow(vendorId: string) {
     if (!user) {

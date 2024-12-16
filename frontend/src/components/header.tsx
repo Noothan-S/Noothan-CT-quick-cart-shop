@@ -15,11 +15,9 @@ export default function Header() {
   const { data: profile } = useGetMyProfileQuery({}, { skip: !user });
   const dispatch = useAppDispatch();
 
-  console.log(profile);
-
   return (
-    <Headroom>
-      <header className="bg-white shadow-sm">
+    <Headroom className="z-[100000]">
+      <header className="bg-white shadow-sm ">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Logo />
           <nav className="hidden md:flex space-x-8">
