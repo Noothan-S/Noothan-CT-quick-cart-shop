@@ -14,10 +14,10 @@ export const compareSlice = createSlice({
   reducers: {
     addToCompare: (state, action: PayloadAction<ICompare>) => {
       if (state.length >= 3) {
-        throw new Error("limit extend");
+        throw new Error("limit_extended");
       }
 
-      if (state.length > 1) {
+      if (state.length > 0) {
         const existingCategoryId = state[0].categoryId;
 
         if (existingCategoryId !== action.payload.categoryId) {
