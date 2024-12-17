@@ -12,6 +12,7 @@ import AddToCart from "./components/add_to_cart";
 import RelatedProducts from "./components/related_products";
 import CustomerReview from "./components/customer_review";
 import { Button, Result } from "antd";
+import AddToCompare from "./components/add-to-compare";
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -59,7 +60,10 @@ export default function ProductDetailsPage() {
         <div>
           <ProductDetails {...product} />
           <ShopInfo {...product.vendor} />
-          <AddToCart {...product} />
+          <div className="flex gap-4">
+            <AddToCompare {...product} />
+            <AddToCart {...product} />
+          </div>
         </div>
       </div>
       {filteredRelatedProducts.length > 0 && (
