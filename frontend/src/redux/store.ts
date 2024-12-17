@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/auth.slice";
 import cartReducer from "./features/cart/cart.slice";
+import compareSlice from "./features/compare/compare.slice";
 import { baseApi } from "./api/base_api";
 import storage from "redux-persist/lib/storage";
 import {
@@ -22,6 +23,7 @@ export const store = configureStore({
     [baseApi.reducerPath]: baseApi.reducer,
     auth: persistedAuthReducer,
     cart: cartReducer,
+    compare: compareSlice,
   },
 
   middleware: (getDefaultMiddleware) =>
