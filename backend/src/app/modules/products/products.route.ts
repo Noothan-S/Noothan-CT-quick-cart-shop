@@ -8,11 +8,7 @@ import ValidationRequest from "../../middlewares/zod_validation";
 const router: Router = Router();
 
 router.get("/", ProductControllers.getAllProducts);
-router.get(
-  "/compare",
-  ValidationRequest(ProductValidations.getProductsForCompareValidationSchema),
-  ProductControllers.getProductsForCompare
-);
+router.get("/compare", ProductControllers.getProductsForCompare);
 router.get("/:id", ProductControllers.getSingleProduct);
 
 router.post(

@@ -29,7 +29,8 @@ async function getAllProductsFromDb(
 async function getProductsForCompareFromDb(
   ids: string[]
 ): Promise<IServiceReturn> {
-  if (!Array.isArray(ids) || ids.length === 0) {
+  const idsArray = Array.isArray(ids) ? ids : [ids];
+  if (!Array.isArray(idsArray) || idsArray.length === 0) {
     return {
       success: false,
       status: 400,
@@ -41,7 +42,7 @@ async function getProductsForCompareFromDb(
   const result = await prisma.product.findMany({
     where: {
       id: {
-        in: ids,
+        in: idsArray,
       },
     },
     include: ProductsConstants.productIncludeObj,

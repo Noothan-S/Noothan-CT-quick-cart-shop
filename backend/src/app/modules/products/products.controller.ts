@@ -23,7 +23,7 @@ const getProductsForCompare = catchAsync(async function (
   res: Response
 ) {
   const result = await ProductServices.getProductsForCompareFromDb(
-    req.body.ids
+    req.query.ids as string[]
   );
 
   res.status(result.status).json(result);
