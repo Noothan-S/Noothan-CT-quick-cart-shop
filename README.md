@@ -95,7 +95,6 @@ The application is built with scalability and performance in mind, utilizing mod
 2. Image upload sometimes fails on slow internet connections
 3. Infinite scroll functionality not yet implemented
 4. Recent Products feature (tracking and displaying last 10 viewed products) not yet implemented
-5. Shop Following feature (users following shops to prioritize their products) not yet implemented
 
 I'm actively working on resolving these issues. If you encounter any additional bugs, please report them in the Issues section of that GitHub repository.
 
