@@ -97,7 +97,7 @@ The application is built with scalability and performance in mind, utilizing mod
 4. Recent Products feature (tracking and displaying last 10 viewed products) not yet implemented
 5. Shop Following feature (users following shops to prioritize their products) not yet implemented
 
-I'm are actively working on resolving these issues. If you encounter any additional bugs, please report them in the Issues section of that GitHub repository.
+I'm actively working on resolving these issues. If you encounter any additional bugs, please report them in the Issues section of that GitHub repository.
 
 ## Contributing
 
