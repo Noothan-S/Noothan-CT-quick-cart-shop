@@ -53,21 +53,28 @@ const Categories: React.FC = () => {
 
   if (categories.length < 1) {
     return (
-      <Empty
-        className="flex flex-col items-center"
-        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-        imageStyle={{ height: 60 }}
-        description={
-          <Typography.Text>No Available Categories found</Typography.Text>
-        }
-      >
-        <Button
-          type="primary"
-          onClick={() => setIsCreateNewCategoryDrawerOpen(true)}
+      <>
+        <Empty
+          className="flex flex-col items-center"
+          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+          imageStyle={{ height: 60 }}
+          description={
+            <Typography.Text>No Available Categories found</Typography.Text>
+          }
         >
-          Create One
-        </Button>
-      </Empty>
+          <Button
+            type="primary"
+            onClick={() => setIsCreateNewCategoryDrawerOpen(true)}
+          >
+            Create One
+          </Button>
+        </Empty>
+
+        <CreateNewCategoryDrawer
+          isDrawerOpen={isCreateNewCategoryDrawerOpen}
+          setIsDrawerOpen={setIsCreateNewCategoryDrawerOpen}
+        />
+      </>
     );
   }
 

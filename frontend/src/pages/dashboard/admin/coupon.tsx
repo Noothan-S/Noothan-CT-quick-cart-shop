@@ -15,18 +15,25 @@ const AdminCoupons = () => {
 
   if (coupons.data.length < 1) {
     return (
-      <Empty
-        className="flex flex-col items-center"
-        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-        imageStyle={{ height: 60 }}
-        description={
-          <Typography.Text>No Available Coupon Found</Typography.Text>
-        }
-      >
-        <Button onClick={() => setIsDrawerOpen(true)} type="primary">
-          Create One
-        </Button>
-      </Empty>
+      <>
+        <Empty
+          className="flex flex-col items-center"
+          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+          imageStyle={{ height: 60 }}
+          description={
+            <Typography.Text>No Available Coupon Found</Typography.Text>
+          }
+        >
+          <Button onClick={() => setIsDrawerOpen(true)} type="primary">
+            Create One
+          </Button>
+        </Empty>
+
+        <AssignNewCouponDrawer
+          isOpenDrawer={isOpenDrawer}
+          setIsDrawerOpen={setIsDrawerOpen}
+        />
+      </>
     );
   }
 
