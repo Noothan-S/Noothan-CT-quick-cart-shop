@@ -30,6 +30,7 @@ import StripePayment from "../pages/payment/stripe-payment";
 import CustomerOrders from "../pages/orders/customer-orders";
 import ProductComparison from "../pages/comparison/product-comparison";
 import AboutPage from "../pages/about/about";
+import ForgotPassword from "../pages/auth/forgot-password/forgot-password";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/register",
         element: <Register />,
+      },
+      {
+        path: "/auth/forgot-password",
+        element: <ForgotPassword />,
       },
       {
         path: "about",

@@ -160,12 +160,12 @@ const Login: FC = () => {
                     </label>
                   </div>
                 </div>
-                <a
-                  href="#"
+                <Link
+                  to="/auth/forgot-password"
                   className="text-sm font-medium text-primary-600 hover:underline"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <Button
                 htmlType="submit"
