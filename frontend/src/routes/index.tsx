@@ -28,6 +28,7 @@ import ErrorElement from "../errors/error-element";
 import Checkout from "../pages/checkout/checkout";
 import StripePayment from "../pages/payment/stripe-payment";
 import CustomerOrders from "../pages/orders/customer-orders";
+import ProductComparison from "../pages/comparison/product-comparison";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ export const router = createBrowserRouter([
       {
         path: "/vendors",
         element: <VendorsPage />,
+      },
+      {
+        path: "/compare",
+        element: <ProductComparison />,
       },
       {
         path: "/profile",

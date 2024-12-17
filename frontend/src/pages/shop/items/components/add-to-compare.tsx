@@ -7,9 +7,11 @@ import {
   ICompare,
   replaceCompare,
 } from "../../../../redux/features/compare/compare.slice";
+import { useNavigate } from "react-router-dom";
 
 const AddToCompare: FC<IProduct> = ({ id, categoryId }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [showSuccessModal, setSuccessModal] = useState<boolean>(false);
   const [showConflictModal, setShowConflictModal] = useState<boolean>(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
@@ -43,7 +45,7 @@ const AddToCompare: FC<IProduct> = ({ id, categoryId }) => {
   };
 
   function handleGotoCompare() {
-    console.log("hello");
+    navigate("/compare");
   }
 
   return (

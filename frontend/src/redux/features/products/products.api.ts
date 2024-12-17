@@ -63,6 +63,27 @@ const productApi = baseApi.injectEndpoints({
       providesTags: ["products"],
     }),
 
+    // get comparison products
+    getComparisonProducts: builder.query({
+      query: (args: { ids: string[] }) => {
+        const queryParams = new URLSearchParams();
+        args.ids.forEach((id) => queryParams.append("ids", id));
+
+        return {
+          url: `/products/compare`,
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      transformErrorResponse: (response: TApiResponse) => {
+        if (!response || response.data) {
+          throw new Error("Invalid response structure");
+        }
+        return response.data;
+      },
+      providesTags: ["products"],
+    }),
+
     // delete product
     deleteProduct: builder.mutation({
       query: (args: { id: string }) => ({
@@ -80,4 +101,5 @@ export const {
   useCreateNewProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetComparisonProductsQuery,
 } = productApi;
