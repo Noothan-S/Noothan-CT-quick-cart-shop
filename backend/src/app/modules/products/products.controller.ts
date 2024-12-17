@@ -18,6 +18,17 @@ const getAllProducts = catchAsync(async function (req: Request, res: Response) {
   res.status(result.status).json(result);
 });
 
+const getProductsForCompare = catchAsync(async function (
+  req: Request,
+  res: Response
+) {
+  const result = await ProductServices.getProductsForCompareFromDb(
+    req.body.ids
+  );
+
+  res.status(result.status).json(result);
+});
+
 const getSingleProduct = catchAsync(async function (
   req: Request,
   res: Response
@@ -61,4 +72,5 @@ export const ProductControllers = {
   deleteProduct,
   getAllProducts,
   getSingleProduct,
+  getProductsForCompare,
 };

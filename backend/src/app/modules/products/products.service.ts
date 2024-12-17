@@ -26,6 +26,35 @@ async function getAllProductsFromDb(
   };
 }
 
+async function getProductsForCompareFromDb(
+  ids: string[]
+): Promise<IServiceReturn> {
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return {
+      success: false,
+      status: 400,
+      message: "Invalid or empty product IDs array.",
+      data: null,
+    };
+  }
+
+  const result = await prisma.product.findMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+    include: ProductsConstants.productIncludeObj,
+  });
+
+  return {
+    success: true,
+    status: 200,
+    message: "Products retrieved successfully for compare",
+    data: result,
+  };
+}
+
 async function getSingleProductFromDb(id: string): Promise<IServiceReturn> {
   const result = await prisma.product.findUnique({
     where: {
@@ -242,4 +271,5 @@ export const ProductServices = {
   deleteProductFromDb,
   getAllProductsFromDb,
   getSingleProductFromDb,
+  getProductsForCompareFromDb,
 };
