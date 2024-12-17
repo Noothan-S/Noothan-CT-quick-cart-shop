@@ -23,6 +23,8 @@ const AddToCompare: FC<IProduct> = ({ id, categoryId }) => {
     } catch (error: any) {
       if (error?.message === "category_conflict") {
         alert("Category conflict");
+      } else if (error.message === "product_exist") {
+        alert("product exist");
       }
     }
   }
