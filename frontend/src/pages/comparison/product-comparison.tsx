@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Row, Col, Typography, Rate, Tag, Result, Button } from "antd";
+import { Card, Col, Typography, Rate, Tag, Result, Button } from "antd";
 import { ShoppingOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../redux/hooks";
 import {

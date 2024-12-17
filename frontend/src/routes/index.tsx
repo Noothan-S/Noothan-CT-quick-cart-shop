@@ -29,6 +29,7 @@ import Checkout from "../pages/checkout/checkout";
 import StripePayment from "../pages/payment/stripe-payment";
 import CustomerOrders from "../pages/orders/customer-orders";
 import ProductComparison from "../pages/comparison/product-comparison";
+import AboutPage from "../pages/about/about";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/register",
         element: <Register />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
       },
       {
         path: "/products",
