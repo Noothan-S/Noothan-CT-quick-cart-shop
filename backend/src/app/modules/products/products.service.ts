@@ -47,11 +47,28 @@ async function getProductsForCompareFromDb(
     include: ProductsConstants.productIncludeObj,
   });
 
+  let computedResult = result;
+
+  if (result) {
+    computedResult = result.map((item: any) => {
+      const avgRating =
+        item.review?.length > 0
+          ? item.review.reduce((sum: number, rev: any) => sum + rev.rating, 0) /
+            item.review.length
+          : 0;
+
+      return {
+        ...item,
+        avgRating,
+      };
+    });
+  }
+
   return {
     success: true,
     status: 200,
     message: "Products retrieved successfully for compare",
-    data: result,
+    data: computedResult,
   };
 }
 
