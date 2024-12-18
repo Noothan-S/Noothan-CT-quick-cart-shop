@@ -8,8 +8,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidationSchema } from "../../validations/login_validation";
 import { useLoginUserMutation } from "../../redux/features/auth/auth.api";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setUser, useCurrentUser } from "../../redux/features/auth/auth.slice";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/features/auth/auth.slice";
 import { encrypt } from "../../utils/text_encryption";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -25,11 +25,6 @@ const Login: FC = () => {
   const searchParams = new URLSearchParams(location?.search);
   const redirect = searchParams.get("redirect");
   const navigate = useNavigate();
-  const user = useAppSelector(useCurrentUser);
-
-  if (user) {
-    navigate("/profile");
-  }
 
   const {
     control,

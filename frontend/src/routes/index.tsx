@@ -31,6 +31,7 @@ import CustomerOrders from "../pages/orders/customer-orders";
 import ProductComparison from "../pages/comparison/product-comparison";
 import AboutPage from "../pages/about/about";
 import ForgotPassword from "../pages/auth/forgot-password/forgot-password";
+import AntiLoginGard from "../utils/anti-login-gard";
 
 export const router = createBrowserRouter([
   {
@@ -44,15 +45,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "/auth/login",
-        element: <Login />,
+        element: (
+          <AntiLoginGard>
+            <Login />
+          </AntiLoginGard>
+        ),
       },
       {
         path: "/auth/register",
-        element: <Register />,
+        element: (
+          <AntiLoginGard>
+            <Register />
+          </AntiLoginGard>
+        ),
       },
       {
         path: "/auth/forgot-password",
-        element: <ForgotPassword />,
+        element: (
+          <AntiLoginGard>
+            <ForgotPassword />
+          </AntiLoginGard>
+        ),
       },
       {
         path: "about",

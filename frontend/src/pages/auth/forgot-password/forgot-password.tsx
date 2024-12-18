@@ -4,20 +4,11 @@ import { MailOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useRequestForgotPasswordMutation } from "../../../redux/features/auth/auth.api";
 import Swal from "sweetalert2";
-import { useAppSelector } from "../../../redux/hooks";
-import { useCurrentUser } from "../../../redux/features/auth/auth.slice";
-import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [form] = Form.useForm();
   const [requestForgotPassword] = useRequestForgotPasswordMutation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const user = useAppSelector(useCurrentUser);
-  const navigate = useNavigate();
-
-  if (user) {
-    navigate("/");
-  }
 
   async function onFinish(data: { email: string }) {
     try {
