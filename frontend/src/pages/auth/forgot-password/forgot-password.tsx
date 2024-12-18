@@ -1,12 +1,32 @@
 import { Button, Form, Input } from "antd";
 import Logo from "../../../constants/logo";
 import { MailOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { useRequestForgotPasswordMutation } from "../../../redux/features/auth/auth.api";
+import Swal from "sweetalert2";
 
 const ForgotPassword = () => {
   const [form] = Form.useForm();
+  const [requestForgotPassword] = useRequestForgotPasswordMutation();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function onFinish(data: { email: string }) {
-    console.log(data);
+    try {
+      setIsLoading(true);
+      const response = await requestForgotPassword(data).unwrap();
+      if (response.success) {
+        Swal.fire({
+          title: "Forgot password link send!",
+          text: "A reset link has been sent to your email. Please check your inbox and spam folder.",
+          icon: "success",
+        });
+        setIsLoading(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log("Error when send reset link", error);
+    }
   }
 
   return (
@@ -39,6 +59,7 @@ const ForgotPassword = () => {
 
               <Form.Item style={{ marginTop: "24px" }}>
                 <Button
+                  loading={isLoading}
                   color="danger"
                   variant="solid"
                   size="large"
