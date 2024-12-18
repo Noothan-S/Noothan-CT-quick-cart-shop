@@ -1,33 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { decodeToken } from "../../../utils/jwt-decode";
-import { Button, Form, Input, Result, message } from "antd";
+import { Button, Form, Input, Result } from "antd";
 import Logo from "../../../constants/logo";
+import { config } from "../../../config";
 
 const ResetPassword: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
   const [isPassed, setIsPassed] = useState<boolean>(true);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const decodedToken = decodeToken(token);
+
+  const onFinish = async (values: { password: string; confirm: string }) => {
+    try {
+      setIsLoading(true);
+      fetch(`${config.server_url}/api/v1/auth/reset-password`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ newPassword: values.password }),
+      }).then((res) => {
+        if (res.ok) {
+          setIsSuccess(true);
+          setIsLoading(false);
+        } else {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error when reset password", error);
+      setIsLoading(false);
+      setIsError(true);
+    }
+  };
 
   useEffect(() => {
     if (!decodedToken) {
       setIsPassed(false);
     }
   }, [decodedToken]);
-
-  const onFinish = async (values: { password: string; confirm: string }) => {
-    try {
-      // Here you would typically send the new password to your backend
-      console.log("New password:", values.password);
-      message.success("Password reset successfully!");
-      // Redirect to login page or show success message
-    } catch (error) {
-      message.error("Failed to reset password. Please try again.");
-    }
-  };
 
   if (!isPassed) {
     return (
@@ -44,13 +63,51 @@ const ResetPassword: React.FC = () => {
     );
   }
 
+  console.log(decodedToken);
+
+  if (isSuccess && isPassed)
+    return (
+      <Result
+        status="success"
+        title="Welcome Back"
+        subTitle="Congratulations! You have successfully recovered your account. You can now log in to your account with your new password. Happy shopping."
+        extra={[
+          <Link to="/auth/login">
+            <Button danger key="console">
+              Login
+            </Button>
+          </Link>,
+          <Link to="/">
+            <Button key="buy">Go Home</Button>
+          </Link>,
+        ]}
+      />
+    );
+
+  if (isError)
+    return (
+      <Result
+        status="error"
+        title="Password reset failed"
+        subTitle="An error occurred while trying to change the password. Please try again."
+        extra={[
+          <Link to="/auth/login">
+            <Button danger key="console">
+              Login
+            </Button>
+          </Link>,
+          <Link to="/">
+            <Button key="buy">Go Home</Button>
+          </Link>,
+        ]}
+      ></Result>
+    );
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col items-center justify-center px-6 py-8">
       <Logo />
       <div className="w-full max-w-md bg-white rounded-lg shadow mt-6 p-8">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Reset your password
-        </h1>
+        <h1 className="text-2xl font-bold mb-6">Reset your password</h1>
         <Form
           form={form}
           name="reset_password"
@@ -100,6 +157,7 @@ const ResetPassword: React.FC = () => {
 
           <Form.Item>
             <Button
+              loading={isLoading}
               type="primary"
               htmlType="submit"
               danger
