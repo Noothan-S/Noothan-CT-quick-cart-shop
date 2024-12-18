@@ -32,6 +32,7 @@ import ProductComparison from "../pages/comparison/product-comparison";
 import AboutPage from "../pages/about/about";
 import ForgotPassword from "../pages/auth/forgot-password/forgot-password";
 import AntiLoginGard from "../utils/anti-login-gard";
+import ResetPassword from "../pages/auth/reset-password/reset-password";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,14 @@ export const router = createBrowserRouter([
         element: (
           <AntiLoginGard>
             <ForgotPassword />
+          </AntiLoginGard>
+        ),
+      },
+      {
+        path: "/auth/reset-password",
+        element: (
+          <AntiLoginGard>
+            <ResetPassword />
           </AntiLoginGard>
         ),
       },
