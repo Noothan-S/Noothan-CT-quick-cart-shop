@@ -30,6 +30,12 @@ const getAllProducts = (0, catch_async_1.default)(function (req, res) {
         res.status(result.status).json(result);
     });
 });
+const getProductsForCompare = (0, catch_async_1.default)(function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield products_service_1.ProductServices.getProductsForCompareFromDb(req.query.ids);
+        res.status(result.status).json(result);
+    });
+});
 const getSingleProduct = (0, catch_async_1.default)(function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield products_service_1.ProductServices.getSingleProductFromDb(req.params.id);
@@ -60,4 +66,5 @@ exports.ProductControllers = {
     deleteProduct,
     getAllProducts,
     getSingleProduct,
+    getProductsForCompare,
 };

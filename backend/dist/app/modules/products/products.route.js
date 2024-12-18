@@ -12,6 +12,7 @@ const products_validation_1 = require("./products.validation");
 const zod_validation_1 = __importDefault(require("../../middlewares/zod_validation"));
 const router = (0, express_1.Router)();
 router.get("/", products_controller_1.ProductControllers.getAllProducts);
+router.get("/compare", products_controller_1.ProductControllers.getProductsForCompare);
 router.get("/:id", products_controller_1.ProductControllers.getSingleProduct);
 router.post("/", (0, auth_1.default)(client_1.UserRole.VENDOR), (0, zod_validation_1.default)(products_validation_1.ProductValidations.createProductValidationSchema), products_controller_1.ProductControllers.createProduct);
 router.patch("/:id", (0, auth_1.default)(client_1.UserRole.VENDOR, client_1.UserRole.ADMIN), (0, zod_validation_1.default)(products_validation_1.ProductValidations.updateProductValidationSchema), products_controller_1.ProductControllers.updateProduct);

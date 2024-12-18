@@ -34,6 +34,44 @@ function getAllProductsFromDb(options, filters) {
         };
     });
 }
+function getProductsForCompareFromDb(ids) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const idsArray = Array.isArray(ids) ? ids : [ids];
+        if (!Array.isArray(idsArray) || idsArray.length === 0) {
+            return {
+                success: false,
+                status: 400,
+                message: "Invalid or empty product IDs array.",
+                data: null,
+            };
+        }
+        const result = yield prisma_constructor_1.default.product.findMany({
+            where: {
+                id: {
+                    in: idsArray,
+                },
+            },
+            include: products_constant_1.ProductsConstants.productIncludeObj,
+        });
+        let computedResult = result;
+        if (result) {
+            computedResult = result.map((item) => {
+                var _a;
+                const avgRating = ((_a = item.review) === null || _a === void 0 ? void 0 : _a.length) > 0
+                    ? item.review.reduce((sum, rev) => sum + rev.rating, 0) /
+                        item.review.length
+                    : 0;
+                return Object.assign(Object.assign({}, item), { avgRating });
+            });
+        }
+        return {
+            success: true,
+            status: 200,
+            message: "Products retrieved successfully for compare",
+            data: computedResult,
+        };
+    });
+}
 function getSingleProductFromDb(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield prisma_constructor_1.default.product.findUnique({
@@ -227,4 +265,5 @@ exports.ProductServices = {
     deleteProductFromDb,
     getAllProductsFromDb,
     getSingleProductFromDb,
+    getProductsForCompareFromDb,
 };
