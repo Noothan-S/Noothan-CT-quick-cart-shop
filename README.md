@@ -1,5 +1,6 @@
 # QuickCart E-Commerce Application
 
+
 ## Project Description
 
 This E-Commerce Application is a comprehensive online shopping platform designed to provide a seamless experience for users, vendors, and administrators. It offers a feature-rich environment where customers can browse and purchase products, vendors can manage their shops and inventories, and administrators can oversee and control the entire system.
