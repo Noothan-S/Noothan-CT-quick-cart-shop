@@ -26,13 +26,17 @@ jobs:
             --name frontend-plan \
             --resource-group RG-CTB45-AZ-400-2 \
             --sku F1 \
-            --is-linux
+            --is-linux \
+            --location centralindia
+            
 
           az appservice plan create \
             --name backend-plan \
             --resource-group RG-CTB45-AZ-400-2 \
             --sku F1 \
-            --is-linux
+            --is-linux \
+            --location centralindia
+            
 
       - name: Create Web Apps
         run: |
