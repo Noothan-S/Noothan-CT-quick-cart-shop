@@ -25,13 +25,13 @@ jobs:
           az appservice plan create \
             --name frontend-plan \
             --resource-group RG-CTB45-AZ-400-2 \
-            --sku B1 \
+            --sku F1 \
             --is-linux
 
           az appservice plan create \
             --name backend-plan \
             --resource-group RG-CTB45-AZ-400-2 \
-            --sku B1 \
+            --sku F1 \
             --is-linux
 
       - name: Create Web Apps
