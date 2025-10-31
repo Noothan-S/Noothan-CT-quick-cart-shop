@@ -1,0 +1,49 @@
+name: Create Azure App Services
+
+on:
+  workflow_dispatch:  # Allows manual run
+  push:
+    branches:
+      - main
+
+jobs:
+  create-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Removed Resource Group creation (you already have one)
+
+      - name: Create App Service Plans
+        run: |
+          az appservice plan create \
+            --name frontend-plan \
+            --resource-group RG-CTB45-AZ-400-2 \
+            --sku B1 \
+            --is-linux
+
+          az appservice plan create \
+            --name backend-plan \
+            --resource-group RG-CTB45-AZ-400-2 \
+            --sku B1 \
+            --is-linux
+
+      - name: Create Web Apps
+        run: |
+          az webapp create \
+            --resource-group RG-CTB45-AZ-400-2 \
+            --plan backend-plan \
+            --name my-backend-app123 \
+            --runtime "NODE|20-lts"
+
+          az webapp create \
+            --resource-group RG-CTB45-AZ-400-2 \
+            --plan frontend-plan \
+            --name my-frontend-app123 \
+            --runtime "NODE|20-lts"
