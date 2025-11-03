@@ -55,14 +55,20 @@ app.use(express_1.default.json());
 // Use cookie-parser middleware
 app.use((0, cookie_parser_1.default)());
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different origins
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "https://my-frontend-app123.azurewebsites.net"
+//     ],
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
 app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:5173",
-        "https://my-frontend-app123.azurewebsites.net"
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    origin: "https://my-frontend-app123.azurewebsites.net", // your frontend app URL
+    credentials: true
 }));
 // Middleware to parse URL-encoded request bodies (e.g., form data)
 app.use((0, express_1.urlencoded)({ extended: true }));

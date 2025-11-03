@@ -34,8 +34,6 @@ app.use(cookieParser());
 //   })
 // );
 
-import cors from "cors";
-
 app.use(
   cors({
     origin: "https://my-frontend-app123.azurewebsites.net", // your frontend app URL
