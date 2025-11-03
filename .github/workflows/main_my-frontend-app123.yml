@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - my-backend-app123
+name: Build and deploy Vite React app to Azure Web App - my-frontend-app123
 
 on:
   push:
@@ -16,44 +16,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install dependencies & generate Prisma Client
-        working-directory: backend
+      - name: Install dependencies and build
+        working-directory: frontend
         run: |
-          npm install
-          npx prisma generate
+          npm ci
           npm run build
 
-      - name: Upload backend artifact (dist + node_modules + Prisma client)
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend-app
-          path: |
-            backend/dist
-            backend/node_modules
-            backend/package.json
-            backend/prisma
-            backend/.env
+          name: react-build
+          path: frontend/dist/**   # ✅ Upload actual static files
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Download backend artifact
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: backend-app
-          path: backend
+          name: react-build
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'my-backend-app123'
+          app-name: 'my-frontend-app123'
           slot-name: 'Production'
-          package: backend   # 👈 Deploy the backend folder
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3EB3453C96564A268C3FAB990081303A }}
+          package: .   # ✅ Deploy downloaded files into wwwroot
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
