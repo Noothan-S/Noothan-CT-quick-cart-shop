@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout repository
@@ -31,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: frontend/dist/**   # ✅ Upload actual static files
+          path: frontend/dist        # ✅ Upload folder itself, not /**
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,6 +45,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'my-frontend-app123'
-          slot-name: 'Production'
-          package: .   # ✅ Deploy downloaded files into wwwroot
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
+          package: react-build       # ✅ Deploy the *dist folder* directly
