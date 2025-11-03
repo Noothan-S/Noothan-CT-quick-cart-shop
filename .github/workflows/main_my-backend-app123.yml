@@ -1,4 +1,4 @@
-name: Build and deploy Node.js backend to Azure Web App - my-backend-app123
+name: Build and deploy backend to Azure
 
 on:
   push:
@@ -11,34 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install backend dependencies
+      - name: Install dependencies & build backend
         working-directory: backend
         run: |
           npm install
           npx prisma generate
           npm run build
+          # remove prisma engines cache to reduce size
+          rm -rf node_modules/.cache
 
-      - name: Copy files needed for deployment
-        run: |
-          mkdir backend-release
-          cp -R backend/dist backend-release/dist
-          cp backend/package.json backend-release/
-          cp backend/package-lock.json backend-release/
-          cp -R backend/prisma backend-release/prisma
-          cp -R backend/node_modules backend-release/node_modules
+      - name: Zip backend for deployment
+        working-directory: backend
+        run: zip -r ../backend.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend-release
-          path: backend-release
+          name: backend-artifact
+          path: backend.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,11 +46,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: backend-release
+          name: backend-artifact
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: "my-backend-app123"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3EB3453C96564A268C3FAB990081303A }}
-          package: .
+          package: backend.zip
