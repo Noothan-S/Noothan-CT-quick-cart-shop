@@ -24,10 +24,16 @@ app.use(cookieParser());
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different origins
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://quick-cart-shop.web.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://my-frontend-app123.azurewebsites.net"
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 
 // Middleware to parse URL-encoded request bodies (e.g., form data)
 app.use(urlencoded({ extended: true }));
