@@ -21,18 +21,23 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build backend
-        working-directory: backend     # 👈 Run commands inside backend folder
+      - name: Install dependencies & generate Prisma Client
+        working-directory: backend
         run: |
           npm install
-          npx prisma generate          # 👈 Ensure Prisma Client exists
-          npm run build --if-present   # 👈 Compile TypeScript → JS
+          npx prisma generate
+          npm run build
 
-      - name: Upload backend artifact
+      - name: Upload backend artifact (dist + node_modules + Prisma client)
         uses: actions/upload-artifact@v4
         with:
           name: backend-app
-          path: backend   # 👈 Upload only backend code + build
+          path: |
+            backend/dist
+            backend/node_modules
+            backend/package.json
+            backend/prisma
+            backend/.env
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,11 +48,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-app
+          path: backend
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'my-backend-app123'   # 👈 Your backend App Service Name
+          app-name: 'my-backend-app123'
           slot-name: 'Production'
-          package: .                      # 👈 Deploy downloaded backend code
+          package: backend   # 👈 Deploy the backend folder
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3EB3453C96564A268C3FAB990081303A }}
