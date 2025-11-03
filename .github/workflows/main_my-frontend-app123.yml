@@ -25,7 +25,7 @@ jobs:
         working-directory: frontend   # 👈 IMPORTANT
         run: |
           npm ci
-          npm run build   # 👈 This generates frontend/dist
+          npm run build   # 👈 Generates frontend/dist
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -48,5 +48,5 @@ jobs:
         with:
           app-name: 'my-frontend-app123'
           slot-name: 'Production'
-          package: .   # 👈 Deploy the extracted build output
+          package: ./   # Artifact extracts into current directory
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
