@@ -29,22 +29,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: frontend/dist   # ✅ Upload correct folder
+          path: frontend/dist   # ✅ Upload dist folder
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Download build artifact
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: react-build
-          path: dist   # ✅ Extract to dist
+          path: ./dist   # ✅ Extract to ./dist
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'my-frontend-app123'
+          app-name: "my-frontend-app123"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
-          package: dist   # ✅ Deploy dist folder
+          package: ./dist   # ✅ Deploy *contents of dist*
