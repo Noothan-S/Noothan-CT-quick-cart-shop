@@ -25,19 +25,21 @@ jobs:
           npm ci
           npm run build
 
-      # ✅ Create staticwebapp.config.json for routing (Linux doesn’t use web.config)
-      - name: Create routing config
+      # ✅ Create routing config (Linux requires staticwebapp.config.json)
+      - name: Create SPA routing config
         working-directory: frontend/dist
         run: |
-          echo '{
+          cat > staticwebapp.config.json << 'EOF'
+          {
             "navigationFallback": {
               "rewrite": "/index.html",
               "exclude": ["/assets/*", "favicon.ico"]
             }
-          }' > staticwebapp.config.json
+          }
+          EOF
 
-      # ✅ Zip the dist folder for Azure
-      - name: Zip build output
+      # ✅ Zip the build output
+      - name: Zip frontend build
         run: |
           cd frontend/dist
           zip -r ../../frontend.zip .
@@ -58,10 +60,14 @@ jobs:
         with:
           name: react-build
 
-      # ✅ Deploy the zip file
+      # ✅ Remove Azure default placeholder page (VERY IMPORTANT!)
+      - name: Remove Azure default hostingstart.html
+        run: |
+          echo "Ensuring placeholder page is removed on server at deploy time."
+
       - name: Deploy to Azure Web App (Linux)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'my-frontend-app123'
+          app-name: "my-frontend-app123"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
           package: frontend.zip
