@@ -17,13 +17,14 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install & Build Frontend
+      - name: Install & Build
         working-directory: frontend
         run: |
           npm ci
           npm run build
+          cp public/web.config dist/web.config   # ✅ add web.config into dist
 
-      - name: Upload build artifacts
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: react-dist
@@ -34,18 +35,15 @@ jobs:
     needs: build
 
     steps:
-      - name: Download build artifacts
+      - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: react-dist
-          path: ./app   # ✅ Put built app here
-
-      - name: Copy web.config (required for React routing)
-        run: cp frontend/public/web.config ./app/web.config
+          path: ./app   # ✅ Deploy folder
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: "my-frontend-app123"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
-          package: ./app   # ✅ Deploy actual built files
+          package: ./app   # ✅ deploy real build output
