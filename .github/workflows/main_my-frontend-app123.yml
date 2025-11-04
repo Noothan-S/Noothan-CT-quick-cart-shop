@@ -1,4 +1,4 @@
-name: Build and deploy Vite React app to Azure Web App - my-frontend-app123
+name: Deploy Frontend to Azure Web App
 
 on:
   push:
@@ -11,40 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build
+      - name: Install & Build Frontend
         working-directory: frontend
         run: |
           npm ci
           npm run build
 
-      - name: Upload build artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: react-build
-          path: frontend/dist   # ✅ Upload dist folder
+          name: react-dist
+          path: frontend/dist
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Download artifact
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: react-build
-          path: ./dist   # ✅ Extract to ./dist
+          name: react-dist
+          path: ./app   # ✅ Put built app here
+
+      - name: Copy web.config (required for React routing)
+        run: cp frontend/public/web.config ./app/web.config
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: "my-frontend-app123"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02DD8D6C42AD4230A2FB3FE628E7ACA8 }}
-          package: ./dist   # ✅ Deploy *contents of dist*
+          package: ./app   # ✅ Deploy actual built files
